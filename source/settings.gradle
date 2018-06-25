@@ -1,0 +1,1 @@
+include ':app', ':zxing', ':flowlayout-lib', ':okhttp-lib'

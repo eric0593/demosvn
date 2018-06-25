@@ -1,0 +1,113 @@
+apply plugin: 'com.android.application'
+//apply plugin: 'com.alibaba.arouter'
+
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.3"
+    defaultConfig {
+        applicationId "com.idea.jgw"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/notice'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/rxjava.properties'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'lib/x86_64/darwin/libscrypt.dylib'
+        exclude 'lib/x86_64/freebsd/libscrypt.so'
+        exclude 'lib/x86_64/linux/libscrypt.so'
+        exclude 'com/google/thirdparty/publicsuffix/PublicSuffixPatterns.gwt.xml'
+        exclude 'com/google/thirdparty/publicsuffix/PublicSuffixType.gwt.xml'
+        exclude 'org/bitcoinj/crypto/mnemonic/wordlist/english.txt'
+        exclude 'org/bitcoinj/crypto/cacerts'
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
+    compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
+    testCompile 'junit:junit:4.12'
+    compile 'com.alibaba:fastjson:1.2.47'
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
+    compile 'io.reactivex:rxandroid:1.0.1'
+    compile 'com.jakewharton:butterknife:8.1.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.0.1'
+    compile 'com.alibaba:arouter-api:1.3.1'
+    //    compile 'com.alibaba:arouter-register:1.0.2'
+    annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
+    //glide
+    compile 'com.github.bumptech.glide:glide:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+    //dex分包
+    compile 'com.android.support:multidex:1.0.1'
+    //内存溢出
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    //以太的第三方钱包库
+    compile('org.web3j:core:3.3.1-android') {
+        exclude group: 'com.squareup.okhttp3'
+    }
+    //权限
+    compile 'com.github.jokermonn:permissions4m:2.1.2-lib'
+    annotationProcessor 'com.github.jokermonn:permissions4m:2.1.2-processor'
+    compile('org.bitcoinj:bitcoinj-core:0.14.7') {
+        exclude group: 'com.squareup.okhttp3'
+    }
+    compile 'com.neovisionaries:nv-websocket-client:1.30'
+    compile('io.socket:socket.io-client:0.7.0') {
+        // excluding org.json which is provided by Android
+        exclude group: 'org.json', module: 'json'
+    }
+    compile 'info.guardianproject.netcipher:netcipher:1.2.1'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'commons-io:commons-io:2.4'
+    //bug收集 //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.2.0
+    //    compile 'com.tencent.bugly:crashreport:latest.release'
+    compile project(':zxing')
+    compile project(':flowlayout-lib')
+    compile 'com.github.jokermonn:permissions4m:2.1.2-lib'
+    annotationProcessor 'com.github.jokermonn:permissions4m:2.1.2-processor'
+    //okhttp 上传文件工具
+    //    compile ('com.github.zhaokaiqiang.okhttpplus:library:1.0.0') {
+    //        exclude group:'com.squareup.okhttp3'
+    //    }
+    compile project(':okhttp-lib')
+    compile files('libs/bugly_crash_release.jar')
+}
+
