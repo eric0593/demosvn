@@ -14,7 +14,10 @@ import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.common.Common;
+import com.idea.jgw.logic.btc.interfaces.TLCallback;
+import com.idea.jgw.logic.btc.model.TLCoin;
 import com.idea.jgw.logic.eth.EthWalltUtils;
+import com.idea.jgw.logic.eth.IBAN;
 import com.idea.jgw.logic.eth.utils.WalletStorage;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.MToast;
@@ -41,6 +44,8 @@ public class EthSendActivity extends SendActivity {
 
         tvOfBalance.setText(TextUtils.isEmpty(mCurAmount) ? "0.00" : mCurAmount);
         tvLight.setText("wei");
+
+        ivDigitalLogo.setImageResource(R.mipmap.icon_eth);
     }
 
     @Override
@@ -49,15 +54,30 @@ public class EthSendActivity extends SendActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case QrSanActivity.REQ_CODE:
-                    String qrString = data.getExtras().getString(QrSanActivity.EXTRA_RESULT_QR);
-                    if (validAddress(qrString)) {
-                        String addressNoPrefix = Numeric.cleanHexPrefix(qrString);
+                    String address = data.getExtras().getString(QrSanActivity.EXTRA_RESULT_QR);
+                    if (address.contains("?") && address.contains("&") && address.contains("token")) {
+                        String iban = address.substring("iban:".length(), address.indexOf("?"));
+                        String amount = address.substring(address.indexOf("=") + 1, address.indexOf("&"));
+                        String tokenType = address.substring(address.indexOf("token") + 6);
+
+                        address = IBAN.IBAN2Address(iban);
+
+                    } else if (validAddress(address)) {
+                        if(address.startsWith("iban:")){
+                            address = address.replace("iban:","");
+                        }
+                        if(IBAN.validateIBAN(address)){
+                            address = IBAN.IBAN2Address(address);
+                        }
+                        String addressNoPrefix = Numeric.cleanHexPrefix(address);
                         if (addressNoPrefix.contains("0x")) {
                             int index = addressNoPrefix.indexOf("0x") + 2;
                             addressNoPrefix = addressNoPrefix.substring(index);
                         }
-                        etReceivedAddress.setText(addressNoPrefix);
                     }
+                    if(address.contains("iban:"))
+                        address.replace("iban:","");
+                    etReceivedAddress.setText(address);
                     break;
             }
         }
@@ -112,8 +132,33 @@ public class EthSendActivity extends SendActivity {
                 String pwd = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.PREFERENCES_PWD_KEY, "").toString();
 
                 try {
-                    final Credentials keys = WalletStorage.getInstance(getApplicationContext()).getFullWallet(getApplicationContext(), pwd, mWalletAddress);
-                    EthWalltUtils.sendCoin(EthSendActivity.this, mWalletAddress, etReceivedAddress.getText().toString(), pwd, etSendAmount.getText().toString(), 7000000000l, 0);
+//                    final Credentials keys = WalletStorage.getInstance(getApplicationContext()).getFullWallet(getApplicationContext(), pwd, mWalletAddress);
+
+//                    mWalletAddress = "5abe551cb725c20a24f6c12d0705e3d31417449e";
+//                    etReceivedAddress.setText("");
+
+                    EthWalltUtils.sendCoin(EthSendActivity.this, mWalletAddress, etReceivedAddress.getText().toString(), pwd, etSendAmount.getText().toString(), 7000000000l, 0, new TLCallback() {
+                        @Override
+                        public void onSuccess(Object obj) {
+
+                            MToast.showLongToast(R.string.send_coin_success);
+                        }
+
+                        @Override
+                        public void onFail(Integer status, String error) {
+                            MToast.showLongToast(R.string.send_coin_fail);
+                        }
+
+                        @Override
+                        public void onSetHex(String hex) {
+
+                        }
+
+                        @Override
+                        public void onAmountMoveFromAccount(TLCoin amountMovedFromAccount) {
+
+                        }
+                    });
                 } catch (Exception e) {
                     MToast.showLongToast(getResources().getString(R.string.password_wrong));
                 }

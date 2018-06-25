@@ -50,7 +50,7 @@ public class StartActivity extends BaseActivity {
                     e.printStackTrace();
                 }
                 boolean isLogin = (boolean) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_LOGIN, false);
-                if(!isLogin) {
+                if(!isLogin || !App.login) {
                     ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
                 } else {
                     ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();

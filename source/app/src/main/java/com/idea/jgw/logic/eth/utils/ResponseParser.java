@@ -3,6 +3,7 @@ package com.idea.jgw.logic.eth.utils;
 import android.content.Context;
 import android.util.Log;
 
+import com.idea.jgw.common.Common;
 import com.idea.jgw.logic.eth.data.TokenDisplay;
 import com.idea.jgw.logic.eth.data.TransactionDisplay;
 import com.idea.jgw.logic.eth.data.WalletDisplay;
@@ -41,7 +42,9 @@ public class ResponseParser {
                 }
                 if (data.getJSONObject(i).getString("value").equals("0") && !Settings.showTransactionsWithZero)
                     continue; // Skip contract calls or empty transactions
-                erg.add(new TransactionDisplay(
+
+
+                TransactionDisplay td =   new TransactionDisplay(
                         from,
                         to,
                         new BigInteger(vorzeichen + data.getJSONObject(i).getString("value")),
@@ -55,7 +58,9 @@ public class ResponseParser {
                         data.getJSONObject(i).getInt("gasUsed"),
                         (data.getJSONObject(i).has("gasPrice") ? data.getJSONObject(i).getLong("gasPrice") : 0),
                         (data.getJSONObject(i).has("isError") && data.getJSONObject(i).getInt("isError") == 1)
-                ));
+                );
+                td.setCoinType(Common.CoinTypeEnum.ETH);
+                erg.add(td);
             }
 
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
@@ -65,7 +66,8 @@ public class TransactionDetailActivity extends BaseActivity {
     TextView tvChainNumber;
     @BindView(R.id.tv_send_label)
     TextView tvSendLabel;
-
+    @BindView(R.id.iv_coin_logo)
+    ImageView ivCoinLogo;
     ClipboardManager mClipboardManager;
 
 
@@ -91,9 +93,9 @@ public class TransactionDetailActivity extends BaseActivity {
         //根据货币类型做处理
         coinType = getIntent().getIntExtra(EXTRA_COIN_TYPE, -1);
         if (coinType == Common.CoinTypeEnum.BTC.getIndex()) {
-
+            ivCoinLogo.setImageResource(R.mipmap.icon_btc);
         } else if (coinType == Common.CoinTypeEnum.ETH.getIndex()) {
-
+            ivCoinLogo.setImageResource(R.mipmap.icon_eth);
             BigDecimal bd = new BigDecimal(10).pow(18);
             DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
             df.setMaximumFractionDigits(18);
@@ -117,6 +119,7 @@ public class TransactionDetailActivity extends BaseActivity {
                 tvSendAddress.setText(td.getFromAddress());
             }
         } else if (coinType == Common.CoinTypeEnum.JGW.getIndex()) {
+            ivCoinLogo.setImageResource(R.mipmap.icon_oce);
 //            String address = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.PREFERENCES_ADDRESS_KEY, "").toString();
             TransactionDisplay td = (TransactionDisplay) getIntent().getSerializableExtra(EXTRA_DETAIL_OBJECT);
 

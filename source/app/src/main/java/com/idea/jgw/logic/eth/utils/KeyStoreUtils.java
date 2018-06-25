@@ -26,7 +26,7 @@ import java.math.BigInteger;
 
 public class KeyStoreUtils {
     public static final String DEFAULTKEY = "DEFAULT";
-    public static final String KEYSTORE_PATH = App.getInstance().getFilesDir().getPath() + "/keystore";
+//    public static final String KEYSTORE_PATH = App.getInstance().getFilesDir().getPath() + "/keystore";
 
     /**
      * 在内置存储生成keystore方便选择
@@ -50,9 +50,13 @@ public class KeyStoreUtils {
         return null;
     }
 
-    public static Credentials getCredentials(String tagetAddress) throws FileNotFoundException {
+    public static Credentials getCredentials(String pwd,String tagetAddress) throws FileNotFoundException {
 
-        File keystorePath = new File(KEYSTORE_PATH);
+        File keystorePath = new File(App.getInstance().getFilesDir(), "");
+
+        if(tagetAddress.startsWith("0x")){
+            tagetAddress = tagetAddress.substring(2);
+        }
 
         File[] files = keystorePath.listFiles();
         for (File file : files) {
@@ -63,7 +67,7 @@ public class KeyStoreUtils {
 
                 try {
                     WalletFile walletFile = mapper.readValue(file, WalletFile.class);
-                    return Credentials.create(Wallet.decrypt(DEFAULTKEY, walletFile));
+                    return Credentials.create(Wallet.decrypt(pwd, walletFile));
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -74,7 +78,7 @@ public class KeyStoreUtils {
         throw new FileNotFoundException("not found keystore(找不到keystore文件)");
     }
 
-    public static String signedTransactionData(String from, String to, String nonce, String gasPrice, String gasLimit, String value) throws FileNotFoundException {
+    public static String signedTransactionData(String pwd,String from, String to, String nonce, String gasPrice, String gasLimit, String value) throws FileNotFoundException {
         RawTransaction rawTransaction = RawTransaction.createEtherTransaction(
                 new BigInteger(nonce),
                 new BigInteger(gasPrice),
@@ -82,14 +86,14 @@ public class KeyStoreUtils {
                 to,
                 new BigInteger(value));
 
-        Credentials credentials = KeyStoreUtils.getCredentials(from);
+        Credentials credentials = KeyStoreUtils.getCredentials(pwd,from);
         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
         return Numeric.toHexString(signedMessage);
 
     }
 
     public static File getKeyStorePathFile() {
-        File file = new File(KEYSTORE_PATH);
+        File file =  new File(App.getInstance().getFilesDir(), "");
         if (!file.exists()) {
             file.mkdirs();
         }

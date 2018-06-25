@@ -5,12 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 
+import com.idea.jgw.common.Common;
 import com.idea.jgw.logic.eth.APIKey;
 import com.idea.jgw.logic.eth.interfaces.LastIconLoaded;
 import com.idea.jgw.logic.eth.interfaces.StorableWallet;
 import com.idea.jgw.logic.eth.utils.Key;
 import com.idea.jgw.logic.eth.utils.RequestCache;
 import com.idea.jgw.logic.eth.utils.TokenIconCache;
+import com.idea.jgw.utils.common.MyLog;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -73,6 +75,7 @@ public class EtherscanAPI {
      */
     public void getNormalTransactions(String address, Callback b, boolean force) throws IOException {
         if (!force && RequestCache.getInstance().contains(RequestCache.TYPE_TXS_NORMAL, address)) {
+//            MyLog.e("getNormalTransactions-url--->"+"http://api.etherscan.io/api?module=account&action=txlist&address=" + address + "&startblock=0&endblock=99999999&sort=asc&apikey=" + token);
             b.onResponse(null, new Response.Builder().code(200).message("").request(new Request.Builder()
                     .url("http://api.etherscan.io/api?module=account&action=txlist&address=" + address + "&startblock=0&endblock=99999999&sort=asc&apikey=" + token)
                     .build()).protocol(Protocol.HTTP_1_0).body(ResponseBody.create(MediaType.parse("JSON"), RequestCache.getInstance().get(RequestCache.TYPE_TXS_NORMAL, address))).build());
@@ -158,6 +161,7 @@ public class EtherscanAPI {
 
     public void getBalance(String address, Callback b) throws IOException {
         get("http://api.etherscan.io/api?module=account&action=balance&address=" + address + "&apikey=" + token, b);
+//        get(Common.Eth.URL,b);
     }
 
 

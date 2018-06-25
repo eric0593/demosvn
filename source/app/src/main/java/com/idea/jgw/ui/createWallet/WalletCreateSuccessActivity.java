@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.logic.btc.model.TLAppDelegate;
@@ -56,6 +57,13 @@ public class WalletCreateSuccessActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_restore_pwd:
+
+                if(App.isWalletDebug)
+                {
+                    ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
+                    return;
+                }
+
                 ARouter.getInstance().build(RouterPath.COPY_KEY_WORDS_ACTIVITY).navigation(this, COPY_KEY_WORDS);
                 break;
         }

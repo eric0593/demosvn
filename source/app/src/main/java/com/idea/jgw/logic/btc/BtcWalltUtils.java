@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.annotation.UiThread;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.util.Pair;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.idea.jgw.App;
@@ -27,14 +28,27 @@ import com.idea.jgw.logic.btc.model.TLNotificationEvents;
 import com.idea.jgw.logic.btc.model.TLSendFormData;
 import com.idea.jgw.logic.btc.model.TLSpaghettiGodSend;
 import com.idea.jgw.logic.btc.model.TLStealthAddress;
+import com.idea.jgw.utils.common.MyLog;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.crypto.MnemonicCode;
+import org.bitcoinj.crypto.MnemonicException;
 import org.json.JSONArray;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static org.bitcoinj.core.Utils.HEX;
 
 
 /**
@@ -101,6 +115,86 @@ public class BtcWalltUtils {
         TLAppDelegate.instance().transactionListener.reconnect();
         TLAppDelegate.instance().stealthWebSocket.reconnect();
     }
+
+
+    /**
+     * 获取btc的助记词
+     * @return
+     */
+    public static final String getPassphrase(){
+        String passphrase = SharedPreferenceManager.getInstance().getPassphrase();
+        MyLog.e("passphrase-->"+passphrase);
+        if(TextUtils.isEmpty(passphrase)){
+            passphrase = BtcWalltUtils.generateMnemonicPassphrase(App.getInstance());
+            SharedPreferenceManager.getInstance().setPassphrase(passphrase);
+        }
+        return passphrase;
+    }
+
+
+    public static Boolean phraseIsValid(Context context,String phrase) {
+        try {
+            InputStream is = context.getAssets().open("bip39-wordlist.txt");
+            MnemonicCode mc = new MnemonicCode(is,"ad90bf3beb7b0eb7e5acd74727dc0da96e0a280a258354e7293fb7e211ac03db");
+            byte[] entropy = mc.toEntropy(split(phrase));
+            return true;
+        } catch (IOException name) {
+            return false;
+        } catch (MnemonicException name) {
+            return false;
+        }
+    }
+
+
+    //助记词跟熵
+    private static String generateMnemonicPassphrase(Context context ) {
+        try {
+            SecureRandom secureRandom = new SecureRandom();
+            BigInteger b = new BigInteger(128, secureRandom);
+            //
+            //
+            //这里是用以太的随机数
+            //
+//            b = new BigInteger("87793574208385090030104583069767126443749156201006497373256486138372425411882");
+//            String s = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.PREFERENCES_SHANG_KEY, "").toString();
+//            b = new BigInteger(s);
+            Log.e("SecureRandom", "" + b);
+//            String entropy = new BigInteger(entropyBitLength, secureRandom).toString(16); //熵
+            String entropy = b.toString(16);
+            while (entropy.length() < 32) {
+                entropy = '0' + entropy;
+            }
+            InputStream is = context.getAssets().open("bip39-wordlist.txt");
+            MnemonicCode mc = new MnemonicCode(is,"ad90bf3beb7b0eb7e5acd74727dc0da96e0a280a258354e7293fb7e211ac03db");
+//            MnemonicCode mc = new MnemonicCode();
+            List<String> code = mc.toMnemonic(HEX.decode(entropy));
+            String mnemonic = StringUtils.join(code, " ");
+            return mnemonic;
+        } catch (IOException name) {
+            return null;
+        } catch (MnemonicException name) {
+            return null;
+        }
+    }
+
+
+    //对助记词进行HEX ,也就是种子
+    public static String getMasterHex(Context context,String mnemonic) {
+        try {
+            InputStream is = context.getAssets().open("bip39-wordlist.txt");
+            MnemonicCode mc = new MnemonicCode(is,"ad90bf3beb7b0eb7e5acd74727dc0da96e0a280a258354e7293fb7e211ac03db");
+//            MnemonicCode mc = new MnemonicCode();
+            byte[] entropy = mc.toSeed(split(mnemonic), "");
+            return HEX.encode(entropy);
+        } catch (IOException name) {
+        } catch (Exception e) {
+        }
+        return null;
+    }
+    private static List<String> split(String words) {
+        return new ArrayList<String>(Arrays.asList(words.split("\\s+")));
+    }
+
 
     /**
      * 恢复钱包

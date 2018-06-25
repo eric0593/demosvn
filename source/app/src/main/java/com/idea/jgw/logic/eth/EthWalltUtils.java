@@ -4,26 +4,41 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.idea.jgw.App;
+import com.idea.jgw.RouterPath;
 import com.idea.jgw.common.Common;
+import com.idea.jgw.logic.btc.BtcWalltUtils;
+import com.idea.jgw.logic.btc.interfaces.TLCallback;
+import com.idea.jgw.logic.btc.model.TLHDWalletWrapper;
 import com.idea.jgw.logic.eth.data.FullWallet;
 import com.idea.jgw.logic.eth.data.WalletDisplay;
+import com.idea.jgw.logic.eth.interfaces.StorableWallet;
 import com.idea.jgw.logic.eth.network.EtherscanAPI;
 import com.idea.jgw.logic.eth.service.TransactionService;
 import com.idea.jgw.logic.eth.utils.AddressNameConverter;
+import com.idea.jgw.logic.eth.utils.ExchangeCalculator;
 import com.idea.jgw.logic.eth.utils.KeyStoreUtils;
 import com.idea.jgw.logic.eth.utils.ResponseParser;
 import com.idea.jgw.logic.eth.utils.WalletStorage;
+import com.idea.jgw.ui.createWallet.SetTransactionPinActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.MyLog;
+import com.idea.jgw.utils.common.ShareKey;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bitcoinj.core.Base58;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
@@ -42,6 +57,8 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.JsonRpc2_0Web3j;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.EthCall;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
@@ -62,6 +79,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.security.spec.ECGenParameterSpec;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -90,7 +108,103 @@ public class EthWalltUtils extends WalletUtils {
      * @param gasPrice       手续费（单位gwei）
      * @param gasLimit       最大限制（单位gwei）
      */
-    public static void sendCoin(Activity ac, String fromAddress, String toAddress, String password, String sendAmountGwei, long gasPrice, int gasLimit) {
+    public static void sendCoin(Activity ac, final String fromAddress, final String toAddress, final String password, final String sendAmountGwei, final long gasPrice, final int gasLimit, final TLCallback callback) throws Exception {
+
+
+        final Handler handler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+
+                if (msg.what == 0) {
+                    callback.onSuccess(msg.obj);
+                } else {
+                    callback.onFail(-1, null);
+                }
+            }
+        };
+
+
+        EtherscanAPI.getInstance().getNonceForAddress(fromAddress, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                MyLog.e("sendCoin ----onFailure");
+                handler.sendEmptyMessage(-1);
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Web3j web3j = Web3jFactory.build(new HttpService(Common.Eth.URL));
+                        try {
+                            JSONObject o = new JSONObject(response.body().string());
+                            BigInteger nonce = new BigInteger(o.getString("result").substring(2), 16);
+                            String hexValue = KeyStoreUtils.signedTransactionData(password, fromAddress, toAddress, nonce.toString(), web3j.ethGasPrice().send().getGasPrice().toString(), String.valueOf(gasLimit), String.valueOf(sendAmountGwei));
+                            EthSendTransaction send = web3j.ethSendRawTransaction(hexValue).send();
+                            String result = send.getResult();
+                            MyLog.e("sendCoin ----result--ok---" + result);
+                            handler.sendEmptyMessage(0);
+                        } catch (Exception e) {
+                            MyLog.e("sendCoin ----onResponse---exception");
+                            handler.sendEmptyMessage(-1);
+
+                        }
+                    }
+                }).start();
+            }
+        });
+
+        if (true) return;
+
+
+//        EtherscanAPI.getInstance().getNonceForAddress(fromAddress, new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, final Response response) throws IOException {
+////                try {
+////                    JSONObject o = new JSONObject(response.body().string());
+////                    BigInteger nonce = new BigInteger(o.getString("result").substring(2), 16);
+//////                        if(nonce.compareTo(new BigInteger("0")) ==0){
+//////                            nonce =new BigInteger("1");
+//////                        }
+////
+//////                    RawTransaction tx = RawTransaction.createTransaction(
+//////                            nonce,
+//////                            new BigInteger(String.valueOf(gasPrice)),
+//////                            new BigInteger(String.valueOf(gasLimit)),
+//////                            toAddress,
+//////                            new BigDecimal(sendAmountGwei).multiply(ExchangeCalculator.ONE_ETHER).toBigInteger(),
+//////                            ""
+//////                    );
+//////
+//////                    Log.d("txx",
+//////                            "Nonce: " + tx.getNonce() + "\n" +
+//////                                    "gasPrice: " + tx.getGasPrice() + "\n" +
+//////                                    "gasLimit: " + tx.getGasLimit() + "\n" +
+//////                                    "To: " + tx.getTo() + "\n" +
+//////                                    "Amount: " + tx.getValue() + "\n" +
+//////                                    "Data: " + tx.getData()
+//////                    );
+//////
+//////                    EthSendTransaction send = web3j.ethSendRawTransaction(hexValue).send();
+//////                    byte[] signed = TransactionEncoder.signMessage(tx, (byte) 1, keys);
+//////
+//////                    forwardTX(signed);
+////                } catch (IOException e) {
+////                    e.printStackTrace();
+//////                    error("Can't connect to network, retry it later");
+////                }catch (JSONException)
+//            }
+//        });
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         if (TextUtils.isEmpty(fromAddress) || !EthWalltUtils.isValidAddress(fromAddress)) {
 
         } else if (TextUtils.isEmpty(toAddress) || !EthWalltUtils.isValidAddress(toAddress)) {
@@ -144,6 +258,35 @@ public class EthWalltUtils extends WalletUtils {
     }
 
 
+    public static void createEthWallet(Context context, CreateUalletCallback callback) {
+
+        ArrayList<StorableWallet> storedwallets = new ArrayList<StorableWallet>(WalletStorage.getInstance(context).get());
+
+        for (StorableWallet s : storedwallets) {
+            EthWalltUtils.delWallet(context, s.getPubKey());
+        }
+        //删除姨太的第二种方式
+        try {
+            File[] wallets = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Lunary/").listFiles();
+            if (null != wallets)
+                for (File f : wallets) {
+                    f.delete();
+                }
+        } catch (Exception e) {
+
+        }
+
+        String passphrase = BtcWalltUtils.getPassphrase();
+        String masterHex = BtcWalltUtils.getMasterHex(context, passphrase);
+        if (null == masterHex)
+            masterHex = passphrase;
+        String pwd = Base58.encode(masterHex.getBytes());
+//        pwd= "EthWalltUtilsEthWalltUtils";
+        EthWalltUtils.createWallet(context, null, pwd, callback);
+
+    }
+
+
     /**
      * 创建钱包的总入口（创建的是一个正常钱包）
      *
@@ -153,6 +296,7 @@ public class EthWalltUtils extends WalletUtils {
      * @param callback   回调接口
      */
     public static void createWallet(Context context, String privatekey, String password, CreateUalletCallback callback) {
+
         try {
             String walletAddress;
             if (TextUtils.isEmpty(privatekey)) { // Create new key
@@ -167,7 +311,8 @@ public class EthWalltUtils extends WalletUtils {
             WalletStorage.getInstance(context).add(new FullWallet("0x" + walletAddress, walletAddress), context);
             AddressNameConverter.getInstance(context).put("0x" + walletAddress, "Wallet " + ("0x" + walletAddress).substring(0, 6), context);
 
-            MyLog.e("adddres--->>"+walletAddress);
+            MyLog.e("adddres--->>" + walletAddress);
+
 
             SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_ADDRESS_KEY, walletAddress);
 
@@ -178,40 +323,97 @@ public class EthWalltUtils extends WalletUtils {
         }
     }
 
+
+
+    public static String parseBalance(String balance, int comma)   {
+        if (balance.equals("0")) return "0";
+        return new BigDecimal(balance).divide(new BigDecimal(1000000000000000000d), comma, BigDecimal.ROUND_UP).toPlainString();
+    }
+
     /**
      * 获取可用的姨太币数量
      *
      * @param address  地址
      * @param callback 回调
      */
-    public static final void getCurAvailable(String address, Callback callback) {
-        try {
-            EtherscanAPI.getInstance().getBalance(address, callback != null ? callback : new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                }
+    public static final void getCurAvailable(final Activity ac,  String address, final TLCallback callback) {
 
-                @Override
-                public void onResponse(Call call, final Response response) throws IOException {
-//                    ac.runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            try {
-//                                BigDecimal curAvailable = new BigDecimal(ResponseParser.parseBalance(response.body().string(), 6));
-//                            } catch (Exception e) {
-//                                ac.snackError("Cant fetch your account balance");
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    });
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-            if (null != callback) {
-                callback.onFailure(null, e);
-            }
+        if(!address.contains("0x")){
+            address = "0x"+address;
         }
+
+        final Handler handler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+
+                if (msg.what == 0) {
+                    callback.onSuccess(msg.obj);
+                } else {
+                    callback.onFail(-1, null);
+                }
+            }
+        };
+
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+
+                final Message msg = handler.obtainMessage();
+//                try {
+//                    Web3j web3j = Web3jFactory.build(new HttpService(Common.Eth.URL));
+//                    Request<?, EthGetBalance> ethGetBalanceRequest = web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST);
+//                    BigInteger balance = ethGetBalanceRequest.sendAsync().get().getBalance();
+//
+//                    msg.obj = balance.toString();
+//                    msg.what = 0;
+//                    MyLog.e("balance--getCurAvailable>>>?" + balance.toString());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+                    //另外一种方式
+                    try {
+                        EtherscanAPI.getInstance().getBalance(address, new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+                                msg.what = -1;
+                            }
+
+                            @Override
+                            public void onResponse(final Call call, final Response response) throws IOException {
+//                                callback.onResponse(call, response);
+//                                {"status":"1","message":"OK","result":"0"}
+                               try{
+                                   msg.what = 0;
+                                   msg.obj =new JSONObject( response.body().string()).optString("result");
+                                   handler.sendMessage(msg);
+                               }catch (Exception e){
+                                   msg.what = -1;
+                                   handler.sendMessage(msg);
+                               }
+
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        if (null != callback) {
+
+                        }
+                        msg.what = -1;
+                        handler.sendMessage(msg);
+                    }finally {
+
+                    }
+
+//                } finally {
+//                    handler.sendMessage(msg);
+//                }
+//            }
+//        }).start();
+
+
+        //////////////////////////////////////////////////////////////
+
+
     }
 
     /**
@@ -301,56 +503,51 @@ public class EthWalltUtils extends WalletUtils {
 
     public static String generateWalletFile(String password, ECKeyPair ecKeyPair, File destinationDirectory, boolean useFullScrypt) throws CipherException, IOException {
 
-           if(true){
-               if (!destinationDirectory.exists()) {
-                   destinationDirectory.mkdirs();
-               }
-//               ECKeyPair ecKeyPair = Keys.createEcKeyPair();
-               //在外置卡生成
-               String filename = WalletUtils.generateWalletFile(password, ecKeyPair, destinationDirectory, false);
-
-               KeyStoreUtils.genKeyStore2Files(ecKeyPair);
-
-               String msg = "fileName:\n" + filename
-                       + "\nprivateKey:\n" + Numeric.encodeQuantity(ecKeyPair.getPrivateKey())
-                       + "\nPublicKey:\n" + Numeric.encodeQuantity(ecKeyPair.getPublicKey());
-               MyLog.e("地址信息>>>",msg);
-
-               SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_PRIVET_KEY, ecKeyPair.getPrivateKey().toString());
-               SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_PWD_KEY, password);
-
-               SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.FILE_DIR, destinationDirectory.getPath());
-               SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.FILE_NAME, filename);
-
-
-               int lastIndex = filename.lastIndexOf("--")+2;
-               filename = filename.substring(lastIndex,filename.length() -5);
-               return filename;
-           }
-
-
-
-
-
-        WalletFile walletFile;
-        if (useFullScrypt) {
-            walletFile = Wallet.createStandard(password, ecKeyPair);
-        } else {
-            walletFile = Wallet.createLight(password, ecKeyPair);
+        if (!destinationDirectory.exists()) {
+            destinationDirectory.mkdirs();
         }
+//               ECKeyPair ecKeyPair = Keys.createEcKeyPair();
+        //在外置卡生成
+        String filename = WalletUtils.generateWalletFile(password, ecKeyPair, destinationDirectory, false);
 
-        //保存私钥跟密码
+        KeyStoreUtils.genKeyStore2Files(ecKeyPair);
+
+        String msg = "fileName:\n" + filename
+                + "\nprivateKey:\n" + Numeric.encodeQuantity(ecKeyPair.getPrivateKey())
+                + "\nPublicKey:\n" + Numeric.encodeQuantity(ecKeyPair.getPublicKey());
+        MyLog.e("地址信息>>>", msg);
+
         SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_PRIVET_KEY, ecKeyPair.getPrivateKey().toString());
         SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_PWD_KEY, password);
 
+        SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.FILE_DIR, destinationDirectory.getPath());
+        SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.FILE_NAME, filename);
 
-        String fileName = getWalletFileName(walletFile);
-        File destination = new File(destinationDirectory, fileName);
 
-        ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
-        objectMapper.writeValue(destination, walletFile);
+        int lastIndex = filename.lastIndexOf("--") + 2;
+        filename = filename.substring(lastIndex, filename.length() - 5);
+        return filename;
 
-        return fileName;
+
+// ----------下面的代码会内存溢出----------------------------------------------
+//        WalletFile walletFile;
+//        if (useFullScrypt) {
+//            walletFile = Wallet.createStandard(password, ecKeyPair);
+//        } else {
+//            walletFile = Wallet.createLight(password, ecKeyPair);
+//        }
+//
+//        //保存私钥跟密码
+//        SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_PRIVET_KEY, ecKeyPair.getPrivateKey().toString());
+//        SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_PWD_KEY, password);
+//
+//
+//        String fileName = getWalletFileName(walletFile);
+//        File destination = new File(destinationDirectory, fileName);
+//
+//        ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
+//        objectMapper.writeValue(destination, walletFile);
+//        return fileName;
     }
 
     private static String getWalletFileName(WalletFile walletFile) {
@@ -365,5 +562,9 @@ public class EthWalltUtils extends WalletUtils {
             addressNoPrefix = addressNoPrefix.substring(index);
         }
         return addressNoPrefix.length() == ADDRESS_LENGTH_IN_HEX;
+    }
+
+    public void createWallet(Context context, String pwd) {
+        File file = new File(context.getFilesDir(), "");
     }
 }

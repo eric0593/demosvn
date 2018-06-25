@@ -12,9 +12,12 @@ import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.common.Common;
+import com.idea.jgw.logic.btc.interfaces.TLCallback;
+import com.idea.jgw.logic.btc.model.TLCoin;
 import com.idea.jgw.logic.eth.EthWalltUtils;
 import com.idea.jgw.logic.eth.data.TransactionDisplay;
 import com.idea.jgw.logic.eth.interfaces.StorableWallet;
@@ -23,12 +26,22 @@ import com.idea.jgw.logic.eth.utils.RequestCache;
 import com.idea.jgw.logic.eth.utils.ResponseParser;
 import com.idea.jgw.logic.eth.utils.WalletStorage;
 import com.idea.jgw.ui.main.adapter.TransferRecordListAdapter;
+import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.MyLog;
+
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.Web3jFactory;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.Request;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
+import org.web3j.protocol.http.HttpService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -65,10 +78,25 @@ public class EthBalanceActivity extends BalanceActivity {
         transferRecordListAdapter.setOnItemClickListener(this);
         rvOfTransferRecord.setAdapter(transferRecordListAdapter);
 
+        ivOfLogo.setImageResource(R.mipmap.icon_eth);
 
-        ArrayList<StorableWallet> storedwallets = new ArrayList<StorableWallet>(WalletStorage.getInstance(this).get());
+
+//        if (App.isWalletDebug) {
+//
+//            try {
+//                Web3j web3j = Web3jFactory.build(new HttpService(Common.Eth.URL));
+//                Request<?, EthGetBalance> ethGetBalanceRequest = web3j.ethGetBalance("0x339b66306381b81d9dc15771059a559e5ecb838e", DefaultBlockParameterName.LATEST);
+//                BigInteger balance = ethGetBalanceRequest.sendAsync().get().getBalance();
+//                MyLog.e("balance--getCurAvailable>>>?" + balance.toString());
+//            } catch (Exception e) {
+//
+//            }
+//        }
+
+
+        String ethAddress = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.PREFERENCES_ADDRESS_KEY, "").toString();
         //钱包为空
-        if (storedwallets.isEmpty()) {
+        if (TextUtils.isEmpty(ethAddress)) {
 
         } else {
 
@@ -76,37 +104,76 @@ public class EthBalanceActivity extends BalanceActivity {
             getTransactionRecord(false);
 
             //获取姨太的金额
-            getEthBanlance(storedwallets);
+            getEthBanlance(ethAddress);
         }
     }
 
+    @Override
+    public void initView() {
+        super.initView();
+        tvOfTitle.setText(R.string.eth);
+        ivOfLogo.setImageResource(R.mipmap.icon_eth);
+    }
 
-    private void getEthBanlance(ArrayList<StorableWallet> storedwallets) {
-        StorableWallet storableWallet = storedwallets.get(0);
-        mCurAddress = storableWallet.getPubKey();
-        EthWalltUtils.getCurAvailable(mCurAddress, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Toast.makeText(EthBalanceActivity.this, "获取不到钱包信息", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onResponse(Call call, final Response response) throws IOException {
-                runOnUiThread(new Runnable() {
+    private void getEthBanlance(String address) {
+        mCurAddress = address;
+        EthWalltUtils.getCurAvailable(EthBalanceActivity.this, mCurAddress,
+                new TLCallback() {
                     @Override
-                    public void run() {
-                        try {
-                            mCurAvailable = new BigDecimal(ResponseParser.parseBalance(response.body().string(), 18));
-                            tvOfUsableBalanceValue.setText(mCurAvailable.toString());
-                        } catch (Exception e) {
-                            Toast.makeText(EthBalanceActivity.this, "获取不到钱包信息", Toast.LENGTH_LONG).show();
-//                                        ac.snackError("Cant fetch your account balance");
-                            e.printStackTrace();
-                        }
+                    public void onSuccess(Object obj) {
+                        if (null == obj) return;
+                        String str = obj.toString();
+//                    BigInteger bi = new BigInteger(new BigInteger(str,16).toString(10));
+                        BigInteger bi = new BigInteger(str);
+                        BigDecimal bd = new BigDecimal(10).pow(18);
+                        DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
+//                    df.setMaximumFractionDigits(18);
+                        BigDecimal amount = new BigDecimal(bi.toString(10)).divide(bd);
+                        String balance = df.format(amount.doubleValue());
+
+                        tvOfUsableBalanceValue.setText(balance);
+                    }
+
+                    @Override
+                    public void onFail(Integer status, String error) {
+
+                    }
+
+                    @Override
+                    public void onSetHex(String hex) {
+
+                    }
+
+                    @Override
+                    public void onAmountMoveFromAccount(TLCoin amountMovedFromAccount) {
+
                     }
                 });
-            }
-        });
+
+
+//                new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                Toast.makeText(EthBalanceActivity.this, "获取不到钱包信息", Toast.LENGTH_LONG).show();
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, final Response response) throws IOException {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        try {
+//                            mCurAvailable = new BigDecimal(ResponseParser.parseBalance(response.body().string(), 18));
+//                            tvOfUsableBalanceValue.setText(mCurAvailable.toString());
+//                        } catch (Exception e) {
+//                            Toast.makeText(EthBalanceActivity.this, "获取不到钱包信息", Toast.LENGTH_LONG).show();
+////                                        ac.snackError("Cant fetch your account balance");
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                });
+//    }
+//});
     }
 
 
@@ -162,6 +229,7 @@ public class EthBalanceActivity extends BalanceActivity {
                 MToast.showLongToast(getResources().getString(result ? R.string.send_eth_result_success : R.string.send_eth_result_fail));
             }
         }
+
     }
 
     @Override
@@ -202,7 +270,7 @@ public class EthBalanceActivity extends BalanceActivity {
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
                             String restring = response.body().string();
-                            MyLog.e("response--->>"+restring);
+                            MyLog.e("response--->>" + restring);
                             if (restring != null && restring.length() > 2)
                                 RequestCache.getInstance().put(RequestCache.TYPE_TXS_NORMAL, currentWallet.getPubKey(), restring);
                             final ArrayList<TransactionDisplay> w = new ArrayList<TransactionDisplay>(ResponseParser.parseTransactions(restring, "Unnamed Address", currentWallet.getPubKey(), TransactionDisplay.NORMAL));
@@ -275,7 +343,7 @@ public class EthBalanceActivity extends BalanceActivity {
             }
 
 
-            if(null != transferRecordListAdapter){
+            if (null != transferRecordListAdapter) {
                 transferRecordListAdapter.replaceData(wallets);
             }
         }
@@ -319,6 +387,7 @@ public class EthBalanceActivity extends BalanceActivity {
      */
     public void addUnconfirmedTransaction(String from, String to, BigInteger amount) {
         unconfirmed = new TransactionDisplay(from, to, amount, 0, System.currentTimeMillis(), "", TransactionDisplay.NORMAL, "", "0", 0, 1, 1, false);
+        unconfirmed.setCoinType(Common.CoinTypeEnum.ETH);
         unconfirmed_addedTime = System.currentTimeMillis();
         wallets.add(0, unconfirmed);
         transferRecordListAdapter.notifyDataSetChanged();
@@ -328,11 +397,11 @@ public class EthBalanceActivity extends BalanceActivity {
     @Override
     public void onItemClick(int position, Object data) {
 
-        TransactionDisplay td = (TransactionDisplay)data;
+        TransactionDisplay td = (TransactionDisplay) data;
         ARouter.getInstance().build(RouterPath.TRANSACTION_DETAIL_ACTIVITY)
 //                .withObject(EXTRA_DETAIL_OBJECT,data)
-                .withSerializable(TransactionDetailActivity.EXTRA_DETAIL_OBJECT,td)
-                .withInt(TransactionDetailActivity.EXTRA_COIN_TYPE,Common.CoinTypeEnum.ETH.getIndex())
+                .withSerializable(TransactionDetailActivity.EXTRA_DETAIL_OBJECT, td)
+                .withInt(TransactionDetailActivity.EXTRA_COIN_TYPE, Common.CoinTypeEnum.ETH.getIndex())
                 .navigation();
     }
 }

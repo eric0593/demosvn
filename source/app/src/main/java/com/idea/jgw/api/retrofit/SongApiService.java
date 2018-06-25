@@ -45,6 +45,10 @@ public interface SongApiService {
     Observable<BaseResponse> editinfo(@Field ("token") String token, @Field ("nickname") String nickname, @Field ("sex") int sex);
 
     @FormUrlEncoded
+    @POST("feedback")
+    Observable<BaseResponse> feedback(@Field ("token") String token, @Field ("content") String content, @Field ("contact") String contact);
+
+    @FormUrlEncoded
     @POST("http://120.132.120.251:10004/getinfo")
     Observable<BaseResponse> getinfo(@Field ("token") String token);
 
@@ -55,8 +59,12 @@ public interface SongApiService {
     @Multipart
     @POST("edit_face")
 //    Observable<BaseResponse> updatePhoto(@PartMap() Map<String, RequestBody> files);
-//    Observable<BaseResponse> updatePhoto(@Part("token") RequestBody token, @Part MultipartBody.Part file);
-    Observable<BaseResponse> updatePhoto(@Part("token") String token, @Part MultipartBody.Part file);
+    Observable<BaseResponse> updatePhoto(@Part("token") RequestBody token, @Part MultipartBody.Part file);
+//    Observable<BaseResponse> updatePhoto(@Part("token") String token, @Part MultipartBody.Part file);
+
+    @FormUrlEncoded
+    @POST("http://120.132.120.251:8080/cal_record")
+    Observable<BaseResponse> calRecord(@Field("token") String token, @Field("page") int page);
 
     @FormUrlEncoded
     @POST("http://120.132.120.251:8080/book")

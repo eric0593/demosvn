@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.idea.jgw.R;
 import com.idea.jgw.bean.MiningCoinData;
+import com.idea.jgw.ui.BaseAdapter;
 import com.idea.jgw.ui.BaseRecyclerAdapter;
 import com.idea.jgw.utils.common.DateUtils;
 
@@ -18,7 +19,7 @@ import butterknife.ButterKnife;
  * Created by idea on 2018/5/16.
  */
 
-public class MiningDetailAdapter extends BaseRecyclerAdapter<MiningCoinData> {
+public class MiningDetailAdapter extends BaseAdapter<MiningCoinData> {
 
     @Override
     public RecyclerView.ViewHolder onCreate(ViewGroup parent, int viewType) {
@@ -37,7 +38,7 @@ public class MiningDetailAdapter extends BaseRecyclerAdapter<MiningCoinData> {
             prefix = "-";
         }
         ((DigitalCurrencyListHolder)viewHolder).tvOfMiningNumber.setText(prefix + String.valueOf(data.getNum()));
-        ((DigitalCurrencyListHolder)viewHolder).tvOfMiningTime.setText(DateUtils.longToString(data.getTime(), DateUtils.DTIME_STYLE1));
+        ((DigitalCurrencyListHolder)viewHolder).tvOfMiningTime.setText(DateUtils.longToString(data.getTime() * 1000, DateUtils.DTIME_STYLE1));
     }
 
     class DigitalCurrencyListHolder extends Holder {

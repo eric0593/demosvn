@@ -125,11 +125,12 @@ public class SetPasswordActivity extends BaseActivity {
 
             @Override
             protected void _onNext(BaseResponse baseResponse) {
-                if (baseResponse.getCode() == 200) {
+                if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
                     MToast.showToast(baseResponse.getData().toString());
 
                     login();
-                } else if (baseResponse.getCode() == 0) {
+                } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                    reLogin();
                     MToast.showToast(baseResponse.getData().toString());
                 }
             }
@@ -159,7 +160,7 @@ public class SetPasswordActivity extends BaseActivity {
 
             @Override
             protected void _onNext(BaseResponse baseResponse) {
-                if(baseResponse.getCode() == 200) {
+                if(baseResponse.getCode() == BaseResponse.RESULT_OK) {
                     SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_SESSION, baseResponse.getData().toString());
                     SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_LOGIN, true);
                     ARouter.getInstance().build(RouterPath.LOAD_OR_CREATE_WALLET_ACTIVITY).navigation();

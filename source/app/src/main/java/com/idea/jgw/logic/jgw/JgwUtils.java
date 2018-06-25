@@ -3,6 +3,7 @@ package com.idea.jgw.logic.jgw;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.idea.jgw.App;
@@ -18,7 +19,11 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
+import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.Request;
+import org.web3j.protocol.core.methods.response.EthCall;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 
@@ -41,7 +46,7 @@ public class JgwUtils {
      * @param address
      * @param callback
      */
-    public void queryEthBalance(final String address, final TLCallback callback) {
+    public void queryBalance( String address, final TLCallback callback) {
 
 
         final Handler handler = new Handler(Looper.getMainLooper()) {
@@ -57,25 +62,37 @@ public class JgwUtils {
         };
 
 
+
+        if(!address.startsWith("0x")){
+            address = "0x"+address;
+        }
+
+        final String tempAddress = address;
+        final String tempAddres2  = address;
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String tokenAddress = Common.Jgw.SMART_CONTRACT;//智能合约地址
+
                 Web3j web3j = Web3jFactory.build(new HttpService(Common.Jgw.URL));
                 String methodHex = "0x70a08231"; //查询余额
-                String addressHex = address.replace("0x", "");
+                String addressHex = tempAddres2.replace("0x", "");
                 String dataHex = methodHex + StringUtils.leftPad(addressHex, 64, '0');
-                org.web3j.protocol.core.methods.request.Transaction etherTransaction = org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction(address, tokenAddress, dataHex);
+                org.web3j.protocol.core.methods.request.Transaction etherTransaction = org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction(tempAddress, tokenAddress, dataHex);
                 try {
-                    org.web3j.protocol.core.methods.response.EthCall r = web3j.ethCall(etherTransaction, DefaultBlockParameterName.LATEST).send();
-                    if (null == r.getResult()) {
+                    Future<EthCall> ethCallFuture = web3j.ethCall(etherTransaction, DefaultBlockParameterName.LATEST).sendAsync();
+                    EthCall r = ethCallFuture.get();
+                    // org.web3j.protocol.core.methods.response.EthCall r = ethCallFuture;
+                    if (TextUtils.isEmpty( r.getResult())) {
                         handler.sendEmptyMessage(-1);
                         return;
                     }
 
+                    String vallue = r.getResult().substring(2);
                     Message msg = handler.obtainMessage();
                     msg.what = 0;
-                    msg.obj = r.getResult();
+                    msg.obj = new BigInteger(vallue,16).toString(10).toString();
                     handler.sendMessage(msg);
                 } catch (Exception e) {
                     handler.sendEmptyMessage(-1);
@@ -86,7 +103,7 @@ public class JgwUtils {
     }
 
 
-    public void sendCoin(final String toAddress, final String amont, final TLCallback callback) {
+    public void sendCoin(final String fromAddress,final String toAddress, final String amont, final TLCallback callback) {
         final Handler handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -97,6 +114,38 @@ public class JgwUtils {
                 }
             }
         };
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                String tokenAddress = Common.Jgw.SMART_CONTRACT;//智能合约地址
+//                Web3j web3j = Web3jFactory.build(new HttpService(Common.Jgw.URL));
+//                String methodHex = "0xa9059cbb"; //转账
+//                String addressHex = toAddress.replace("0x", "");
+//                //method + toAddress+amont
+//                String dataHex = methodHex + StringUtils.leftPad(addressHex, 64, '0') + StringUtils.leftPad(new BigInteger(amont, 10).toString(16), 64, '0');
+//
+//                web3j.ethGetTransactionCount(fromAddress)
+//                org.web3j.protocol.core.methods.request.Transaction etherTransaction = org.web3j.protocol.core.methods.request.Transaction
+//                        .createEthCallTransaction(toAddress, tokenAddress, dataHex);
+//                try {
+//                    EthSendTransaction r = web3j.ethSendTransaction(etherTransaction).send();
+//                    if (TextUtils.isEmpty(r.getTransactionHash())) {
+//                        handler.sendEmptyMessage(-1);
+//                        return;
+//                    }
+//
+//                    Message msg = handler.obtainMessage();
+//                    msg.what = 0;
+//                    msg.obj = r.getResult();
+//                    handler.sendMessage(msg);
+//                } catch (Exception e) {
+//                    handler.sendEmptyMessage(-1);
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
+
 
         new Thread(new Runnable() {
             @Override
@@ -173,6 +222,7 @@ public class JgwUtils {
                                 @Override
                                 public void call(OCEToken.TransferEventResponse transferEventResponse) {
                                     TransactionDisplay td = new TransactionDisplay(transferEventResponse._from, transferEventResponse._to, transferEventResponse._value);
+                                    td.setCoinType(Common.CoinTypeEnum.JGW);
                                     list.add(td);
                                     Message msg = handler.obtainMessage();
                                     msg.obj = list;

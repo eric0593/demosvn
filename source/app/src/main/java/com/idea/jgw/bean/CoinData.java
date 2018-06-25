@@ -1,5 +1,6 @@
 package com.idea.jgw.bean;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.google.gson.annotations.SerializedName;
 import com.idea.jgw.common.Common;
 
@@ -20,6 +21,7 @@ public class CoinData {
     private int id;
     private String name;
     @SerializedName("char")
+    @JSONField(name = "char")
     private String charX;
     private String face;
     private String unit;

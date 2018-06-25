@@ -113,7 +113,7 @@ public class DateUtils {
      */
     public static String longToString(long time, String style) {
         SimpleDateFormat sdf = new SimpleDateFormat(style);
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+        sdf.setTimeZone(TimeZone.getDefault());
         String timeStr = sdf.format(new Date(time));
         return timeStr;
     }
@@ -126,7 +126,7 @@ public class DateUtils {
      */
     public static Date longToDate(long time, String style) {
         SimpleDateFormat sdf = new SimpleDateFormat(style);
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+        sdf.setTimeZone(TimeZone.getDefault());
         String timeStr = sdf.format(time);
         Date date = null;
         try {

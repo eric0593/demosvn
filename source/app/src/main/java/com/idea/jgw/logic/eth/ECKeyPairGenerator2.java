@@ -60,6 +60,7 @@ public class ECKeyPairGenerator2 extends org.spongycastle.crypto.generators.ECKe
         int minWeight = nBitLength >>> 2;
 
 
+
         for (; ; ) {
             shangInt = new BigInteger(nBitLength, random);
 
@@ -73,9 +74,9 @@ public class ECKeyPairGenerator2 extends org.spongycastle.crypto.generators.ECKe
 
             break;
         }
-        shangInt = new BigInteger("53600279875579076219471941826813524085572497673035807190274606665287540218836");
+//        shangInt = new BigInteger("53600279875579076219471941826813524085572497673035807190274606665287540218836");
         //种子
-        SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_SHANG_KEY,shangInt.toString());
+//        SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_SHANG_KEY,shangInt.toString());
 
         ECPoint Q = createBasePointMultiplier().multiply(params.getG(), shangInt);
 

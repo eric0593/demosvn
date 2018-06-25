@@ -31,16 +31,18 @@ public class App extends Application {
     public static Stack<Activity> activityStack;//App所有页面堆栈
 
     //开关类
-    public static boolean debug = true;  //是否测试
+    public static boolean debug = false;  //是否测试
     public static String APP_KEY = "1ac3660a73e00";
     public static String APP_SECRET = "28051a43a5283acea68e0e13b0b4e76c";
 
 
+    //是否登录，默认false，即app被杀死后需要重新验证登录
+    public static boolean login = true;
     //钱包测试
     public static boolean isWalletDebug = false;
 
     //钱包测试，直接跳转到首页
-    public static boolean isIsWalletDebug2 = true;
+    public static boolean isIsWalletDebug2 = false;
 
     @Override
     public void onCreate() {
@@ -49,7 +51,7 @@ public class App extends Application {
         MyLog.setDebug(debug);
 
         //bug收集
-        CrashReport.initCrashReport(this, "5c69a04d04", debug);
+//        CrashReport.initCrashReport(this, "5c69a04d04", debug);
 
         BtcWalltUtils.init();
 

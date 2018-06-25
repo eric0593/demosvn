@@ -9,8 +9,8 @@ android {
         applicationId "com.idea.jgw"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -56,8 +56,9 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
-    compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:recyclerview-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
     testCompile 'junit:junit:4.12'
     compile 'com.alibaba:fastjson:1.2.47'
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
@@ -109,5 +110,18 @@ dependencies {
     //    }
     compile project(':okhttp-lib')
     compile files('libs/bugly_crash_release.jar')
+    //三方下拉刷新recyclerView
+    compile 'com.jcodecraeer:xrecyclerview:1.5.9'
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '26.1.0'
+            }
+        }
+    }
 }
 

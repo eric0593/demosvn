@@ -5,6 +5,8 @@ package com.idea.jgw.bean;
  */
 
 public class BaseResponse {
+    public static final int RESULT_OK = 200;
+    public static final int INVALID_SESSION = 1;
     private int code;
     private Object data;
 

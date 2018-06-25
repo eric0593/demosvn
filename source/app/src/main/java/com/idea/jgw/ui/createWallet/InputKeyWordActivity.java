@@ -53,15 +53,18 @@ import static com.idea.jgw.ui.main.MainActivity.CAMERA_CODE;
 import static com.idea.jgw.ui.main.MainActivity.CHANGE_NETWORK_STATE_CODE;
 import static com.idea.jgw.ui.main.MainActivity.CHANGE_WIFI_STATE_CODE;
 import static com.idea.jgw.ui.main.MainActivity.READ_EXTERNAL_STORAGE_CODE;
+import static com.idea.jgw.ui.main.MainActivity.READ_LOGS_CDOE;
 import static com.idea.jgw.ui.main.MainActivity.WRITE_EXTERNAL_STORAGE_CODE;
 
 @Route(path = RouterPath.INPUT_KEY_WORDS_ACTIVITY)
 @PermissionsRequestSync(
         permission = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_LOGS
         },
         value = {READ_EXTERNAL_STORAGE_CODE,
-                WRITE_EXTERNAL_STORAGE_CODE
+                WRITE_EXTERNAL_STORAGE_CODE,
+                READ_LOGS_CDOE
         })
 public class InputKeyWordActivity extends BaseActivity {
 
@@ -76,12 +79,12 @@ public class InputKeyWordActivity extends BaseActivity {
     @BindView(R.id.btn_load)
     Button btnLoad;
 
-    TLAppDelegate appDelegate;
+//    TLAppDelegate appDelegate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        appDelegate = TLAppDelegate.instance(App.getInstance());
+//        appDelegate = TLAppDelegate.instance(App.getInstance());
     }
 
     @Override
@@ -102,7 +105,7 @@ public class InputKeyWordActivity extends BaseActivity {
                 break;
             case R.id.btn_load:
 
-                initWallet();
+//                initWallet();
 
                 final String passphrase = etInputKeyWords.getText().toString().trim();
                 if (TextUtils.isEmpty(passphrase)) {
@@ -110,10 +113,12 @@ public class InputKeyWordActivity extends BaseActivity {
                     return;
                 } else {
 
-                    if (!TLHDWalletWrapper.phraseIsValid(passphrase)) {
+                    if (!BtcWalltUtils.phraseIsValid(InputKeyWordActivity.this,passphrase)) {
                         MToast.showLongToast(R.string.passphrase_err);
                     } else {
-                        if (BtcWalltUtils.hasSetupHDWallet()) {
+
+                        ArrayList<StorableWallet> storedwallets = new ArrayList<StorableWallet>(WalletStorage.getInstance(InputKeyWordActivity.this).get());
+                        if (storedwallets.size() > 0) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(InputKeyWordActivity.this);
                             builder.setIcon(R.mipmap.icon_logo);
                             builder.setMessage(R.string.replace_wallet);
@@ -171,11 +176,15 @@ public class InputKeyWordActivity extends BaseActivity {
 
 
     private void recoverWallet(final String mnemonicPassphrase) {
+
+        cretaeEthWallet(mnemonicPassphrase);
+        if(true)return;
+
         final Handler handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
-                appDelegate.transactionListener.reconnect();
-                appDelegate.stealthWebSocket.reconnect();
+//                appDelegate.transactionListener.reconnect();
+//                appDelegate.stealthWebSocket.reconnect();
 //                TLHUDWrapper.hideHUD();
 //                TLPrompts.promptForOK(RestoreWalletActivity.this , getString(R.string.your_wallet_is_now_restored), "", new TLPrompts.PromptOKCallback() {
 //                    @Override
@@ -184,7 +193,7 @@ public class InputKeyWordActivity extends BaseActivity {
 //                    }
 //                });
 
-                cretaeEthWallet();
+//                cretaeEthWallet();
             }
         };
 
@@ -198,12 +207,12 @@ public class InputKeyWordActivity extends BaseActivity {
             @Override
             public void run() {
                 Message message = Message.obtain();
-                appDelegate.saveWalletJSONEnabled = false;
-                appDelegate.recoverHDWallet(mnemonicPassphrase, false);
-                appDelegate.refreshHDWalletAccounts(true);
-                appDelegate.refreshApp(mnemonicPassphrase, false);
-                appDelegate.saveWalletJSONEnabled = true;
-                handleAfterRecoverWallet();
+//                appDelegate.saveWalletJSONEnabled = false;
+//                appDelegate.recoverHDWallet(mnemonicPassphrase, false);
+//                appDelegate.refreshHDWalletAccounts(true);
+//                appDelegate.refreshApp(mnemonicPassphrase, false);
+//                appDelegate.saveWalletJSONEnabled = true;
+//                handleAfterRecoverWallet();
                 message.obj = true;
                 handler.sendMessage(Message.obtain(message));
             }
@@ -212,13 +221,13 @@ public class InputKeyWordActivity extends BaseActivity {
 
 
     void handleAfterRecoverWallet() {
-        appDelegate.updateGodSend(TLWalletUtils.TLSendFromType.HDWallet, 0);
-        appDelegate.updateReceiveSelectedObject(TLWalletUtils.TLSendFromType.HDWallet, 0);
-        appDelegate.updateHistorySelectedObject(TLWalletUtils.TLSendFromType.HDWallet, 0);
-
-        appDelegate.saveWalletJson();
-
-        LocalBroadcastManager.getInstance(appDelegate.context).sendBroadcast(new Intent(TLNotificationEvents.EVENT_RESTORE_WALLET));
+//        appDelegate.updateGodSend(TLWalletUtils.TLSendFromType.HDWallet, 0);
+//        appDelegate.updateReceiveSelectedObject(TLWalletUtils.TLSendFromType.HDWallet, 0);
+//        appDelegate.updateHistorySelectedObject(TLWalletUtils.TLSendFromType.HDWallet, 0);
+//
+//        appDelegate.saveWalletJson();
+//
+//        LocalBroadcastManager.getInstance(appDelegate.context).sendBroadcast(new Intent(TLNotificationEvents.EVENT_RESTORE_WALLET));
     }
 
 
@@ -253,13 +262,16 @@ public class InputKeyWordActivity extends BaseActivity {
             case WRITE_EXTERNAL_STORAGE_CODE:
                 MToast.showLongToast(R.string.rquest_permission_write_storage);
                 break;
+            case READ_LOGS_CDOE:
+                MToast.showLongToast(R.string.rquest_permission_write_storage);
+                break;
             default:
                 break;
         }
     }
 
     @PermissionsRationale({READ_EXTERNAL_STORAGE_CODE, WRITE_EXTERNAL_STORAGE_CODE
-            , ACCESS_NETWORK_STATE_CODE, CHANGE_NETWORK_STATE_CODE, CHANGE_WIFI_STATE_CODE, CAMERA_CODE
+            , ACCESS_NETWORK_STATE_CODE, CHANGE_NETWORK_STATE_CODE, CHANGE_WIFI_STATE_CODE, CAMERA_CODE, READ_LOGS_CDOE
     })
     public void rationale(int code) {
         switch (code) {
@@ -281,13 +293,16 @@ public class InputKeyWordActivity extends BaseActivity {
             case CAMERA_CODE:
                 MToast.showLongToast(R.string.rquest_permission_camera);
                 break;
+            case READ_LOGS_CDOE:
+                MToast.showLongToast(R.string.rquest_permission_log);
+                break;
             default:
                 break;
         }
     }
 
 
-    private void cretaeEthWallet() {
+    private void cretaeEthWallet(String mnemonicPassphrase) {
 
         ArrayList<StorableWallet> storedwallets = new ArrayList<StorableWallet>(WalletStorage.getInstance(this).get());
 
@@ -302,8 +317,10 @@ public class InputKeyWordActivity extends BaseActivity {
         storedwallets = new ArrayList<StorableWallet>(WalletStorage.getInstance(this).get());
 
 
-        String passphrase = TLAppDelegate.instance().encryptedPreferences.getWalletPassphrase();
-        String masterHex = TLHDWalletWrapper.getMasterHex(passphrase);
+        String passphrase = mnemonicPassphrase;
+        String masterHex = BtcWalltUtils.getMasterHex(InputKeyWordActivity.this, passphrase);
+        if(TextUtils.isEmpty(masterHex))
+            masterHex = passphrase;
 
         if (storedwallets.isEmpty()) {
             EthWalltUtils.createWallet(this, null, Base58.encode(masterHex.getBytes()), new EthWalltUtils.CreateUalletCallback() {
@@ -323,7 +340,6 @@ public class InputKeyWordActivity extends BaseActivity {
                     ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
                     setResult(RESULT_OK);
                     finish();
-                    //                    testCreateBtcWallet();
                 }
             });
         } else {

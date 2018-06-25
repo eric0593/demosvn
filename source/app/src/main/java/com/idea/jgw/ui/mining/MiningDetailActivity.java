@@ -1,8 +1,10 @@
 package com.idea.jgw.ui.mining;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -44,6 +46,7 @@ import rx.schedulers.Schedulers;
 @Route(path = RouterPath.MINING_DETAIL_ACTIVITY)
 public class MiningDetailActivity extends BaseActivity implements BaseRecyclerAdapter.OnItemClickListener {
 
+    private static final int SEND_MINING = 11;
     MiningDetailAdapter miningDetailAdapter;
     @BindView(R.id.iv_of_banner)
     ImageView ivOfBanner;
@@ -63,10 +66,10 @@ public class MiningDetailActivity extends BaseActivity implements BaseRecyclerAd
     Button btnDigitalDescription;
     @BindView(R.id.btn_of_send)
     Button btnOfSend;
-    @BindView(R.id.rv_of_detail_asset)
-    RecyclerView rvOfDetailAsset;
+    @BindView(R.id.rv_of_detail_mining)
+    XRecyclerView rvOfDetailAsset;
 
-    float balance;//余额
+    double balance;//余额
     int coinType = 1;//0币种类型，1:btc ,2:eth ,3:8phc
     private Subscription miningSubscription;
     private Subscription transferMiningSubscription;
@@ -99,28 +102,62 @@ public class MiningDetailActivity extends BaseActivity implements BaseRecyclerAd
             coinType = getIntent().getIntExtra("coinType", 1);
         }
         if (getIntent().hasExtra("balance")) {
-            balance = getIntent().getFloatExtra("balance", 0);
+            balance = getIntent().getDoubleExtra("balance", 0);
         }
         tvDigitalValue.setText(String.valueOf(balance));
+        if(coinType == 1) {
+            ivDigitalLogo.setImageResource(R.mipmap.icon_btc);
+        } else if(coinType == 2) {
+            ivDigitalLogo.setImageResource(R.mipmap.icon_eth);
+        } else if(coinType == 3) {
+            ivDigitalLogo.setImageResource(R.mipmap.icon_oce);
+        }
+        rvOfDetailAsset.setLoadingListener(new XRecyclerView.LoadingListener() {
+            @Override
+            public void onRefresh() {
+                page = 0;
+                count = 0;
+                getMiningDetail(false);
+            }
 
-        getMiningDetail();
+            @Override
+            public void onLoadMore() {
+                getMiningDetail(false);
+            }
+        });
+        getMiningDetail(true);
     }
 
-    private void getMiningDetail() {
+    private void getMiningDetail(boolean showDialog) {
         String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
         miningSubscription = ServiceApi.getInstance().getApiService()
                 .miningList(coinType, token, page)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new RxSubscriber<BaseResponse>(this, getResources().getString(R.string.loading), true) {
+                .subscribe(new RxSubscriber<BaseResponse>(this, getResources().getString(R.string.loading), showDialog) {
                                @Override
                                protected void _onNext(BaseResponse baseResponse) {
-                                   if (baseResponse.getCode() == 200) {
+                                   if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
                                        Type type = new TypeToken<PageData<MiningCoinData>>(){}.getType();
                                        PageData<MiningCoinData> miningCoinDatas = JSON.parseObject(baseResponse.getData().toString(), type);
-                                       miningCoinDatas.getCount();
-                                       miningCoinDatas.getLimit();
-                                       miningDetailAdapter.replaceDatas(miningCoinDatas.getList());
-                                   } else if (baseResponse.getCode() == 0) {
+                                       List<MiningCoinData> miningCoinData = miningCoinDatas.getList();
+                                       if(page == 0) {
+                                           miningDetailAdapter.replaceDatas(miningCoinData);
+                                           rvOfDetailAsset.refreshComplete();
+                                       } else {
+                                           miningDetailAdapter.addDatas(miningCoinData);
+                                           rvOfDetailAsset.loadMoreComplete();
+                                       }
+                                       int totalCount = miningCoinDatas.getCount();
+                                       int size = miningCoinData.size();
+                                       count += size;
+                                       if(totalCount > count) {
+                                           rvOfDetailAsset.setNoMore(false);
+                                       } else {
+                                           rvOfDetailAsset.setNoMore(true);
+                                       }
+                                       page++;
+                                   } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                                       reLogin();
                                        MToast.showToast(baseResponse.getData().toString());
                                    }
                                }
@@ -154,8 +191,17 @@ public class MiningDetailActivity extends BaseActivity implements BaseRecyclerAd
             case R.id.btn_digital_description:
                 break;
             case R.id.btn_of_send:
-                ARouter.getInstance().build(RouterPath.SEND_MINING_COIN_ACTIVITY).navigation();
+                ARouter.getInstance().build(RouterPath.SEND_MINING_COIN_ACTIVITY).withInt("coinType", coinType).withDouble("balance", balance).navigation(this, SEND_MINING);
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SEND_MINING) {
+            }
         }
     }
 

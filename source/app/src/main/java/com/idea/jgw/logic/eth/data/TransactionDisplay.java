@@ -1,5 +1,7 @@
 package com.idea.jgw.logic.eth.data;
 
+import com.idea.jgw.common.Common;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -22,6 +24,7 @@ public class TransactionDisplay implements Comparable ,Serializable{
     private int gasUsed;
     private long gasprice;
     private boolean error;
+    private Common.CoinTypeEnum coinType;
 
     public TransactionDisplay(String fromAddress, String toAddress, BigInteger amount, int confirmationStatus, long date, String walletName, byte type, String txHash, String nounce, long block, int gasUsed, long gasprice, boolean error) {
         this.fromAddress = fromAddress;
@@ -44,6 +47,14 @@ public class TransactionDisplay implements Comparable ,Serializable{
         this.fromAddress = fromAddress;
         this.toAddress = toAddress;
         this.amount = amount;
+    }
+
+    public void setCoinType(Common.CoinTypeEnum coinType) {
+        this.coinType = coinType;
+    }
+
+    public Common.CoinTypeEnum getCoinType() {
+        return coinType;
     }
 
     public boolean isError() {

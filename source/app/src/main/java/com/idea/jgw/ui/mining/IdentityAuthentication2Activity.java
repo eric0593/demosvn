@@ -1,5 +1,7 @@
 package com.idea.jgw.ui.mining;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -23,9 +25,14 @@ import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.ui.user.UserInfoActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.CommonUtils;
+import com.idea.jgw.utils.common.DialogUtils;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.ShareKey;
 import com.idea.jgw.utils.glide.GlideApp;
+import com.joker.annotation.PermissionsCustomRationale;
+import com.joker.annotation.PermissionsGranted;
+import com.joker.annotation.PermissionsNonRationale;
+import com.joker.api.Permissions4M;
 import com.socks.okhttp.plus.listener.UploadListener;
 import com.socks.okhttp.plus.model.Progress;
 
@@ -49,6 +56,18 @@ public class IdentityAuthentication2Activity extends BaseActivity {
     public static final int DO_CAMERA_REQUEST_BACK = 103;
     //调用系统相册请求码，反面
     public static final int OPEN_SYS_ALBUMS_REQUEST_BACK = 104;
+    //调用系统相机权限请求码，正面
+    public static final int DO_CAMERA_PERMISSION_REQUEST = 105;
+    //调用系统相册权限请求码，正面
+    public static final int OPEN_SYS_ALBUMS_PERMISSION_REQUEST = 106;
+    //调用系统相机权限请求码，反面
+    public static final int DO_CAMERA_PERMISSION_REQUEST_BACK = 107;
+    //调用系统相册权限请求码，反面
+    public static final int OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK = 108;
+    //调用系统相机权SD卡限请求码，反面
+    public static final int DO_CAMERA_SD_PERMISSION_REQUEST_BACK = 109;
+    //调用系统相机权SD卡限请求码，正面
+    public static final int DO_CAMERA_SD_PERMISSION_REQUEST = 110;
 
     @BindView(R.id.btn_of_back)
     Button btnOfBack;
@@ -94,16 +113,16 @@ public class IdentityAuthentication2Activity extends BaseActivity {
                 finish();
                 break;
             case R.id.iv_front_id_card:
-                frontPhotoPath = CommonUtils.doCamra(this, "front.jpg", DO_CAMERA_REQUEST);
+                requestPermission(DO_CAMERA_PERMISSION_REQUEST, Manifest.permission.CAMERA);
                 break;
             case R.id.iv_back_id_card:
-                backPhotoPath = CommonUtils.doCamra(this, "back.jpg", DO_CAMERA_REQUEST_BACK);
+                requestPermission(DO_CAMERA_PERMISSION_REQUEST_BACK, Manifest.permission.CAMERA);
                 break;
             case R.id.tv_load_from_album_front:
-                frontPhotoPath = CommonUtils.openSysPick(this, "front.jpg", OPEN_SYS_ALBUMS_REQUEST);
+                requestPermission(OPEN_SYS_ALBUMS_PERMISSION_REQUEST, Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 break;
             case R.id.tv_load_from_album_back:
-                backPhotoPath = CommonUtils.openSysPick(this, "back.jpg", OPEN_SYS_ALBUMS_REQUEST_BACK);
+                requestPermission(OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK, Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 break;
             case R.id.btn_of_submit:
                 if(TextUtils.isEmpty(frontPhotoPath)) {
@@ -117,25 +136,115 @@ public class IdentityAuthentication2Activity extends BaseActivity {
         }
     }
 
+    @PermissionsCustomRationale({DO_CAMERA_PERMISSION_REQUEST, DO_CAMERA_PERMISSION_REQUEST_BACK, OPEN_SYS_ALBUMS_PERMISSION_REQUEST, OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK, DO_CAMERA_SD_PERMISSION_REQUEST, DO_CAMERA_SD_PERMISSION_REQUEST_BACK})
+    public void cameraCustomRationale(final int code) {
+        switch (code) {
+            case DO_CAMERA_SD_PERMISSION_REQUEST:
+            case DO_CAMERA_SD_PERMISSION_REQUEST_BACK:
+            case OPEN_SYS_ALBUMS_PERMISSION_REQUEST:
+            case OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK:
+                DialogUtils.showAlertDialog(this, "SD卡权限申请：\n我们需要您开启SD权限，一边访问上传头像", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestPermission(code, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    }
+                });
+                break;
+            case DO_CAMERA_PERMISSION_REQUEST:
+            case DO_CAMERA_PERMISSION_REQUEST_BACK:
+                DialogUtils.showAlertDialog(this, "相机权限申请：\n我们需要您开启相机信息权限", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestPermission(code, Manifest.permission.CAMERA);
+                    }
+                });
+                break;
+        }
+    }
+
+    @PermissionsNonRationale({DO_CAMERA_PERMISSION_REQUEST, DO_CAMERA_PERMISSION_REQUEST_BACK, OPEN_SYS_ALBUMS_PERMISSION_REQUEST, OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK, DO_CAMERA_SD_PERMISSION_REQUEST, DO_CAMERA_SD_PERMISSION_REQUEST_BACK})
+    public void non(int requestCode, final Intent intent) {
+        switch (requestCode) {
+            case DO_CAMERA_PERMISSION_REQUEST:
+            case DO_CAMERA_PERMISSION_REQUEST_BACK:
+                DialogUtils.showAlertDialog(this, "sd卡权限申请：\n我们需要您开启读SD卡权限，以便上传照片", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(intent);
+                    }
+                });
+                break;
+            case DO_CAMERA_SD_PERMISSION_REQUEST:
+            case DO_CAMERA_SD_PERMISSION_REQUEST_BACK:
+            case OPEN_SYS_ALBUMS_PERMISSION_REQUEST:
+            case OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK:
+                DialogUtils.showAlertDialog(this, "sd卡权限申请：\n我们需要您开启读SD卡权限，以便上传照片", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(intent);
+                    }
+                });
+                break;
+        }
+    }
+
+    @PermissionsGranted({DO_CAMERA_PERMISSION_REQUEST, DO_CAMERA_PERMISSION_REQUEST_BACK, OPEN_SYS_ALBUMS_PERMISSION_REQUEST, OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK, DO_CAMERA_SD_PERMISSION_REQUEST, DO_CAMERA_SD_PERMISSION_REQUEST_BACK})
+    public void granted(int requestCode) {
+        switch (requestCode) {
+            case DO_CAMERA_PERMISSION_REQUEST:
+                requestPermission(DO_CAMERA_SD_PERMISSION_REQUEST, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                break;
+            case DO_CAMERA_PERMISSION_REQUEST_BACK:
+                requestPermission(DO_CAMERA_SD_PERMISSION_REQUEST_BACK, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                break;
+            case DO_CAMERA_SD_PERMISSION_REQUEST:
+                frontPhotoPath = CommonUtils.doCamra(this, "front.jpg", DO_CAMERA_REQUEST);
+                break;
+            case DO_CAMERA_SD_PERMISSION_REQUEST_BACK:
+                backPhotoPath = CommonUtils.doCamra(this, "back.jpg", DO_CAMERA_REQUEST_BACK);
+                break;
+            case OPEN_SYS_ALBUMS_PERMISSION_REQUEST:
+                frontPhotoPath = CommonUtils.openSysPick(this, "front.jpg", OPEN_SYS_ALBUMS_REQUEST);
+                break;
+            case OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK:
+                backPhotoPath = CommonUtils.openSysPick(this, "back.jpg", OPEN_SYS_ALBUMS_REQUEST_BACK);
+                break;
+        }
+    }
+
     private void certification() {
-        File file1 = new File(frontPhotoPath);
-        File file2 = new File(backPhotoPath);
+        final File file1 = new File(frontPhotoPath);
+        final File file2 = new File(backPhotoPath);
+        LoadingDialog.showDialogForLoading(IdentityAuthentication2Activity.this);
         String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
         OkhttpApi.certification(token, name, idNumber, file1, file2, new UploadListener() {
             @Override
             public void onSuccess(String data) {
+                LoadingDialog.cancelDialogForLoading();
                 BaseResponse baseResponse = JSON.parseObject(data, BaseResponse.class);
                 MToast.showToast(baseResponse.getData().toString());
-                if(baseResponse.getCode() == 200) {
+                if(baseResponse.getCode() == BaseResponse.RESULT_OK) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(file1.exists()) {
+                                file1.delete();
+                            }
+                            if(file2.exists()) {
+                                file2.delete();
+                            }
+                        }
+                    }).start();
                     setResult(RESULT_OK);
                     finish();
-                } else if(baseResponse.getCode() == 0) {
+                } else if(baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
                     ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
                 }
             }
 
             @Override
             public void onFailure(Exception e) {
+                LoadingDialog.cancelDialogForLoading();
                 e.printStackTrace();
             }
 
@@ -145,12 +254,10 @@ public class IdentityAuthentication2Activity extends BaseActivity {
 
             @Override
             public void onUIStart() {
-                LoadingDialog.showDialogForLoading(IdentityAuthentication2Activity.this);
             }
 
             @Override
             public void onUIFinish() {
-                LoadingDialog.cancelDialogForLoading();
             }
         });
     }
@@ -160,12 +267,22 @@ public class IdentityAuthentication2Activity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case DO_CAMERA_REQUEST:
                 case OPEN_SYS_ALBUMS_REQUEST:
+                    if (data != null) {
+                        frontPhotoPath = CommonUtils.getRealPathFromUri(this, data.getData());
+                    } else {
+                        MToast.showToast("图片损坏，请重新选择");
+                    }
+                case DO_CAMERA_REQUEST:
                     GlideApp.with(this).load(frontPhotoPath).centerInside().into(ivFrontIdCard);
                     break;
-                case DO_CAMERA_REQUEST_BACK:
                 case OPEN_SYS_ALBUMS_REQUEST_BACK:
+                    if (data != null) {
+                        backPhotoPath = CommonUtils.getRealPathFromUri(this, data.getData());
+                    } else {
+                        MToast.showToast("图片损坏，请重新选择");
+                    }
+                case DO_CAMERA_REQUEST_BACK:
                     GlideApp.with(this).load(backPhotoPath).centerInside().into(ivBackIdCard);
                     break;
             }

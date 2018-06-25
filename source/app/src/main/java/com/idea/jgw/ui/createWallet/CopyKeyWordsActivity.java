@@ -13,6 +13,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
+import com.idea.jgw.logic.btc.BtcWalltUtils;
 import com.idea.jgw.logic.btc.model.TLAppDelegate;
 import com.idea.jgw.ui.BaseActivity;
 import com.zhy.view.flowlayout.FlowLayout;
@@ -57,7 +58,7 @@ public class CopyKeyWordsActivity extends BaseActivity {
     @Override
     public void initView() {
         tvOfTitle.setText(R.string.create_wallet);
-        String passphrase = TLAppDelegate.instance().encryptedPreferences.getWalletPassphrase();//获取助记词
+        String passphrase = BtcWalltUtils.getPassphrase();//获取助记词
         if(TextUtils.isEmpty(passphrase)){
             return;
         }else{

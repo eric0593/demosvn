@@ -205,6 +205,8 @@
     <string name="insufficient_funds_dust">余额不足。账户包含比特币的灰尘。您只能发送最多%1$s现在。</string>
     <string name="insufficient_funds_account_balance">余额不足。当需要%2$s的账户余额为%1$s。</string>
     <string name="cannot_create_transactions_with_outputs_less_then">无法创建输出小于%1$s的事务</string>
+    <string name="send_coin_success">发送成功，请等待网络认证</string>
+    <string name="send_coin_fail">发送失败，请重试</string>
 
 
     <!--  BTC End -->
@@ -220,6 +222,7 @@
     <string name="rquest_permission_change_network_state">为了同步数据，需要网络权限</string>
     <string name="rquest_permission_change_wifi_state">为了同步数据，需要网络权限</string>
     <string name="rquest_permission_camera">二维码扫描，需要拍照权限</string>
+    <string name="rquest_permission_log">错误收集，需要拍照权限</string>
 
 
     <string name="passphrase_err">助记词不对</string>
@@ -247,7 +250,23 @@
     <string name="hashrate_record">算力记录</string>
     <string name="share_to">分享到</string>
     <string name="feedback">意见反馈</string>
+    <string name="personal_info">个人信息</string>
 
+    <string name="quit_notice">连续两次返回退出！</string>
+    <string name="current_is_new">已是最新版本！</string>
+    <string name="app_update">App升级</string>
+    <string name="custom_service">用户协议</string>
+    <string name="download_failed">下载失败！</string>
+    <string name="feedback_banner">您的反馈是我们前进的方向</string>
+    <string name="feedback_input_hint">请输入您的问题或建议</string>
+    <string name="contact_way">联系方式</string>
+    <string name="contact_hint">电话/QQ/微信/邮箱</string>
+    <string name="eth">ETH</string>
+    <string name="jgw">JGW</string>
+    <string name="oce">OCE</string>
+    <string name="btc">BTC</string>
+
+    <string name="token_type_err">您选择的不是甲骨币</string>
     <string name="sample_date">2018-12-12</string>
 
 </resources>

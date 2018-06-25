@@ -87,4 +87,10 @@
         <attr name="chidTextSize" format="dimension"/>
     </declare-styleable>
 
+    <declare-styleable name="ColorProgressBar">
+        <attr name="firstColor" format="color"/>
+        <attr name="secondColor" format="color"/>
+        <attr name="circleWidth" format="dimension"/>
+    </declare-styleable>
+
 </resources>

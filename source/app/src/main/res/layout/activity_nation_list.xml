@@ -9,7 +9,7 @@
         android:id="@+id/rl_of_title"
         layout="@layout/layout_of_normal_title" />
 
-    <android.support.v7.widget.RecyclerView
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/rv_of_nation_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

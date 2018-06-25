@@ -121,11 +121,11 @@ public class ResetLoginPasswordActivity extends BaseActivity {
                 .subscribe(new RxSubscriber<BaseResponse>(this, getResources().getString(R.string.loading), true) {
                                @Override
                                protected void _onNext(BaseResponse baseResponse) {
-                                   if(baseResponse.getCode() == 200) {
+                                   if(baseResponse.getCode() == BaseResponse.RESULT_OK) {
                                        setResult(RESULT_OK);
                                        finish();
-                                   } else if(baseResponse.getCode() == 0) {
-                                       ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
+                                   } else if(baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                                       reLogin();
                                    }
                                    MToast.showToast(baseResponse.getData().toString());
                                }

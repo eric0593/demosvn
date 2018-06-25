@@ -31,6 +31,8 @@ public class InfoActivity extends BaseActivity {
     @BindView(R.id.tv_content)
     TextView tvContent;
 
+    int flag;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +46,12 @@ public class InfoActivity extends BaseActivity {
     @Override
     public void initView() {
         tvOfTitle.setText(R.string.about_us);
+        flag = getIntent().getIntExtra("flag", 0);
+        if(flag == 1) {
+            tvOfTitle.setText(R.string.custom_service);
+            tvContentTitle.setText(R.string.agreement_title);
+            tvContent.setText(R.string.agreement_content);
+        }
     }
 
     @OnClick({R.id.btn_of_back, R.id.tv_of_right})

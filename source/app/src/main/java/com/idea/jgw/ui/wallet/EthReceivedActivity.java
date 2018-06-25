@@ -36,6 +36,9 @@ public class EthReceivedActivity extends WalletAddressActivity {
             int index = addressNoPrefix.indexOf("0x");
             addressNoPrefix = addressNoPrefix.substring(index);
         }
+
+        final String address = "iban:"+addressNoPrefix+"?amount=0&token=eth";
+
         tvSendAddress.setText(addressNoPrefix);
 
         final int addressWeight = ivOfMyAddress.getMeasuredWidth();//图片的实际大小
@@ -43,7 +46,7 @@ public class EthReceivedActivity extends WalletAddressActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final Bitmap bitmap = CreateQRUtils.create2DCode(mCurAddress, addressWeight, adressHeight);
+                final Bitmap bitmap = CreateQRUtils.create2DCode(address, addressWeight, adressHeight);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

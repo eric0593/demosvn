@@ -7,7 +7,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.idea.jgw.R;
+import com.idea.jgw.bean.CaculateRecord;
+import com.idea.jgw.ui.BaseAdapter;
 import com.idea.jgw.ui.BaseRecyclerAdapter;
+import com.idea.jgw.utils.common.CommonUtils;
+import com.idea.jgw.utils.common.DateUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -16,7 +20,7 @@ import butterknife.ButterKnife;
  * Created by idea on 2018/5/16.
  */
 
-public class HashrateRecordAdapter extends BaseRecyclerAdapter<String> {
+public class HashrateRecordAdapter extends BaseAdapter<CaculateRecord> {
 
     @Override
     public RecyclerView.ViewHolder onCreate(ViewGroup parent, int viewType) {
@@ -26,7 +30,17 @@ public class HashrateRecordAdapter extends BaseRecyclerAdapter<String> {
     }
 
     @Override
-    public void onBind(RecyclerView.ViewHolder viewHolder, int realPosition, String data) {
+    public void onBind(RecyclerView.ViewHolder viewHolder, int realPosition, CaculateRecord data) {
+        ((DigitalCurrencyListHolder) viewHolder).tvOfNum.setText(String.valueOf(data.getNum()));
+        ((DigitalCurrencyListHolder) viewHolder).tvOfDate.setText(DateUtils.longToString(data.getTime()*1000, DateUtils.DATE_STYLE1));
+        int type = data.getTypeid();
+        if(type == 1) {
+            ((DigitalCurrencyListHolder) viewHolder).tvOfDigitalName.setText(R.string.complete_user_info);
+        } else if(type == 2) {
+            ((DigitalCurrencyListHolder) viewHolder).tvOfDigitalName.setText(R.string.auth);
+        } else if(type == 3) {
+            ((DigitalCurrencyListHolder) viewHolder).tvOfDigitalName.setText(R.string.invite_friends);
+        }
     }
 
     class DigitalCurrencyListHolder extends Holder {

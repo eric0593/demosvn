@@ -14,16 +14,16 @@ public class CoinMining {
      * receive_profit : 5986.27
      */
 
-    private int balance;
+    private double balance;
     private CoinData coin_info;
     private double profit;
     private double receive_profit;
 
-    public int getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 

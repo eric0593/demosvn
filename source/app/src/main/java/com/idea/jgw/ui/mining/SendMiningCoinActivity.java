@@ -54,6 +54,7 @@ public class SendMiningCoinActivity extends BaseActivity {
 
     private int coinType;
     private Subscription transferMiningSubscription;
+    private double balance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,22 @@ public class SendMiningCoinActivity extends BaseActivity {
 
     @Override
     public void initView() {
+
+        if (getIntent().hasExtra("coinType")) {
+            coinType = getIntent().getIntExtra("coinType", 1);
+        }
+        if (getIntent().hasExtra("balance")) {
+            balance = getIntent().getDoubleExtra("balance", 0);
+        }
+
         tvOfTitle.setText(R.string.send);
+        if(coinType == 1) {
+            ivDigitalLogo.setImageResource(R.mipmap.icon_btc);
+        } else if(coinType == 2) {
+            ivDigitalLogo.setImageResource(R.mipmap.icon_eth);
+        } else if(coinType == 3) {
+            ivDigitalLogo.setImageResource(R.mipmap.icon_oce);
+        }
     }
 
     @OnClick({R.id.btn_of_back, R.id.iv_of_delete, R.id.iv_of_scan_code, R.id.btn_of_send})
@@ -110,9 +126,10 @@ public class SendMiningCoinActivity extends BaseActivity {
                 .subscribe(new RxSubscriber<BaseResponse>(this, getResources().getString(R.string.loading), true) {
                                @Override
                                protected void _onNext(BaseResponse baseResponse) {
-                                   if (baseResponse.getCode() == 200) {
+                                   if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
                                        MToast.showToast(baseResponse.getData().toString());
-                                   } else if (baseResponse.getCode() == 0) {
+                                   } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                                       reLogin();
                                        MToast.showToast(baseResponse.getData().toString());
                                    }
                                }

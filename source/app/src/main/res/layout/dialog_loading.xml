@@ -9,10 +9,11 @@
     android:orientation="vertical"
     android:padding="10dp" >
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminateDrawable="@drawable/loading_dialog_progressbar" />
+    <ImageView
+        android:id="@+id/iv_loading"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/laod_frame"/>
 
     <TextView
         android:id="@+id/id_tv_loading_dialog_text"

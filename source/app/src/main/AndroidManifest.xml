@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
 
     <application
@@ -89,6 +90,7 @@
         <activity android:name=".ui.mining.HashrateRecordListActivity" />
         <activity android:name=".ui.user.FeedbackActivity" />
         <activity android:name=".ui.user.UpdateNicknameActivity"></activity>
+        <service android:name=".logic.eth.service.TransactionService" />
     </application>
 
 </manifest>

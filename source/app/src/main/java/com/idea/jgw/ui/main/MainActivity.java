@@ -3,6 +3,7 @@ package com.idea.jgw.ui.main;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -27,6 +28,7 @@ import com.idea.jgw.ui.main.fragment.MineFragment;
 import com.idea.jgw.ui.main.fragment.WalletFragment;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.MyLog;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 import org.bitcoinj.core.Base58;
 
@@ -48,6 +50,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     public static final int CHANGE_NETWORK_STATE_CODE = 456;
     public static final int CAMERA_CODE = 678;
     public static final int CHANGE_WIFI_STATE_CODE = 789;
+    public static final int READ_LOGS_CDOE = 890;
 
 
     @BindView(R.id.home_container)
@@ -72,6 +75,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        cretaeEthWallet();
+
     }
 
     @Override
@@ -116,60 +120,27 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     }
 
 
-
-
-    private void cretaeEthWallet() {
-
-        ArrayList<StorableWallet> storedwallets = new ArrayList<StorableWallet>(WalletStorage.getInstance(this).get());
-
-        for (StorableWallet s : storedwallets) {
-            EthWalltUtils.delWallet(MainActivity.this, s.getPubKey());
-        }
-//        File[] wallets = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Lunary/").listFiles();
-//        for(File f :wallets){
-//            f.delete();
-//        }
-
-        storedwallets = new ArrayList<StorableWallet>(WalletStorage.getInstance(this).get());
-
-
-
-        String masterHex = TLHDWalletWrapper.getMasterHex("xfsdfsdfwerewr34354354654654gdf");
-
-        if (storedwallets.isEmpty()) {
-            EthWalltUtils.createWallet(this, null,"xfsdfsdfwerewr34354354654654gdf", new EthWalltUtils.CreateUalletCallback() {
-                @Override
-                public void onFaild() {
-                    MyLog.e("创建钱包失败");
-                    MToast.showLongToast("创建钱包失败");
-                }
-
-                @Override
-                public void onSuccess(String address) {
-                    MyLog.e("etch:address___>>>" + address);
-                    final ArrayList<StorableWallet> storedwallets = new ArrayList<StorableWallet>(WalletStorage.getInstance(MainActivity.this).get());
-                    for (StorableWallet s : storedwallets) {
-                        MyLog.e(s.getPubKey());
-                    }
-
-                }
-            });
-        } else {
-            MToast.showLongToast("已经有钱包了");
-        }
-
-
-//
-//
-//        if (!TLUtils.haveInternetConnection(MainActivity.this)) {  //没有网络连接，提示网络无法连接
-////            TLToast.makeText(MainActivity.this, getString(R.string.no_internet_connection_description), TLToast.LENGTH_SHORT, TLToast.TYPE_ERROR);
-//        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    long lastBackTime;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastBackTime < 2 * 1000) {
+                finish();
+            } else {
+                MToast.showToast(R.string.quit_notice);
+                lastBackTime = currentTime;
+            }
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
 }
 

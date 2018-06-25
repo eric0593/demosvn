@@ -17,13 +17,18 @@ import com.idea.jgw.RouterPath;
 import com.idea.jgw.api.retrofit.ServiceApi;
 import com.idea.jgw.bean.BaseResponse;
 import com.idea.jgw.bean.LoginRequest;
+import com.idea.jgw.common.Common;
 import com.idea.jgw.logic.btc.BtcWalltUtils;
+import com.idea.jgw.logic.eth.interfaces.StorableWallet;
+import com.idea.jgw.logic.eth.utils.WalletStorage;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.CommonUtils;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.ShareKey;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -78,6 +83,10 @@ public class LoginActivity extends BaseActivity {
         btnOfBack.setVisibility(View.GONE);
         tvOfTitle.setText(R.string.login);
         CommonUtils.setTextPwdInputType(etOfPwd);
+        if(App.isWalletDebug){
+            etOfPhone.setText("18681591321");
+            etOfPwd.setText("baxxasn123");
+        }
     }
 
     @OnClick({R.id.btn_of_back, R.id.iBtn_of_delete, R.id.iBtn_of_show_pwd, R.id.tv_of_forget_pwd, R.id.tv_of_register, R.id.btn_of_update})
@@ -113,6 +122,9 @@ public class LoginActivity extends BaseActivity {
                     ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY)
                             .withString(EXTRA_USER,"18681591321")
                             .navigation();
+
+                    SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_ADDRESS_KEY, "0x339b66306381b81d9dc15771059a559e5ecb838e");
+
                     return;
                 }
 
@@ -144,15 +156,22 @@ public class LoginActivity extends BaseActivity {
                                     return Observable.create(new Observable.OnSubscribe<Boolean>(){
                                         @Override
                                         public void call(Subscriber<? super Boolean> subscriber) {
-                                            if (baseResponse.getCode() == 200) {
+                                            if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
                                                 SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_SESSION, baseResponse.getData().toString());
                                                 SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_LOGIN, true);
                                                 SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_PHONE, phone);
                                                 boolean hasWallet = BtcWalltUtils.hasSetupHDWallet();
-                                                subscriber.onNext(hasWallet);
+                                                List<StorableWallet> list = WalletStorage.getInstance(App.getInstance()).get();
+                                                boolean hasEthWallet = false;
+                                                if(list.size() > 0) {
+                                                    hasEthWallet = true;
+                                                }
+//                                                hasWallet |= hasEthWallet;
+//                                                subscriber.onNext(hasWallet);
+                                                subscriber.onNext(hasEthWallet);
                                                 subscriber.onCompleted();
 
-                                            } else if (baseResponse.getCode() == 0) {
+                                            } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
 //                                                MToast.showToast(baseResponse.getData().toString());
                                                 subscriber.onError(new Exception(baseResponse.getData().toString()));
                                             }

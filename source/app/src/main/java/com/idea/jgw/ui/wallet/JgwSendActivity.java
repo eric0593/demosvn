@@ -12,6 +12,7 @@ import com.idea.jgw.common.Common;
 import com.idea.jgw.logic.btc.interfaces.TLCallback;
 import com.idea.jgw.logic.btc.model.TLCoin;
 import com.idea.jgw.logic.eth.EthWalltUtils;
+import com.idea.jgw.logic.eth.IBAN;
 import com.idea.jgw.logic.eth.utils.WalletStorage;
 import com.idea.jgw.logic.jgw.JgwUtils;
 import com.idea.jgw.utils.SPreferencesHelper;
@@ -41,6 +42,7 @@ public class JgwSendActivity extends SendActivity {
         String amont = getIntent().getStringExtra(EXTRA_BALANCE_KEY);
         tvOfBalance.setText(TextUtils.isEmpty(amont) ? "0.00" : amont);
         tvLight.setText("jgw");
+        ivDigitalLogo.setImageResource(R.mipmap.icon_oce_small);
     }
 
 
@@ -59,14 +61,38 @@ public class JgwSendActivity extends SendActivity {
             switch (requestCode) {
                 case QrSanActivity.REQ_CODE:
                     String qrString = data.getExtras().getString(QrSanActivity.EXTRA_RESULT_QR);
-                    if (validAddress(qrString)) {
-                        String addressNoPrefix = Numeric.cleanHexPrefix(qrString);
-                        if (addressNoPrefix.contains("0x")) {
-                            int index = addressNoPrefix.indexOf("0x") + 2;
-                            addressNoPrefix = addressNoPrefix.substring(index);
+//                    if (validAddress(qrString)) {
+                        String address = data.getExtras().getString(QrSanActivity.EXTRA_RESULT_QR);
+                        if (address.contains("?") && address.contains("&") && address.contains("token")) {
+                            String iban = address.substring("iban:".length(), address.indexOf("?"));
+                            String amount = address.substring(address.indexOf("=") + 1, address.indexOf("&"));
+                            String tokenType = address.substring(address.indexOf("token") + 6);
+
+//                            if(!tokenType.equals("jgw")){
+//                                MToast.showLongToast(R.string.token_type_err);
+//                                return;
+//                            }
+
+                            address = IBAN.IBAN2Address(iban);
+
+                        } else if (validAddress(address)) {
+                            if(address.startsWith("iban:")){
+                                address = address.replace("iban:","");
+                            }
+                            if(IBAN.validateIBAN(address)){
+                                address = IBAN.IBAN2Address(address);
+                            }
+                            String addressNoPrefix = Numeric.cleanHexPrefix(address);
+                            if (addressNoPrefix.contains("0x")) {
+                                int index = addressNoPrefix.indexOf("0x") + 2;
+                                addressNoPrefix = addressNoPrefix.substring(index);
+                            }
+
                         }
-                        etReceivedAddress.setText(addressNoPrefix);
-                    }
+                        if(address.contains("iban:"))
+                    address.replace("iban:","");
+                    etReceivedAddress.setText(address);
+//                    }
                     break;
             }
         }
@@ -118,7 +144,7 @@ public class JgwSendActivity extends SendActivity {
             if (inputPsd.equals("123456")) {
                 try {
                     JgwUtils ju = new JgwUtils();
-                    ju.sendCoin(etReceivedAddress.getText().toString(), etSendAmount.getText().toString(), new TLCallback() {
+                    ju.sendCoin(address,etReceivedAddress.getText().toString(), etSendAmount.getText().toString(), new TLCallback() {
                         @Override
                         public void onSuccess(Object obj) {
                             MToast.showLongToast(R.string.jgw_send_coin_succes);

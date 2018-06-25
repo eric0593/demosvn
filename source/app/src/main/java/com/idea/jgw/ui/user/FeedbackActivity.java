@@ -1,23 +1,47 @@
 package com.idea.jgw.ui.user;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.alibaba.android.arouter.launcher.ARouter;
 import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
+import com.idea.jgw.api.retrofit.ServiceApi;
+import com.idea.jgw.bean.BaseResponse;
 import com.idea.jgw.ui.BaseActivity;
-import com.idea.jgw.ui.service.ScreenListenerService;
 import com.idea.jgw.utils.SPreferencesHelper;
+import com.idea.jgw.utils.baserx.RxSubscriber;
+import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.ShareKey;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 意见反馈
  */
 @Route(path = RouterPath.FEEDBACK_ACTIVITY2)
 public class FeedbackActivity extends BaseActivity {
+
+    @BindView(R.id.btn_of_back)
+    Button btnOfBack;
+    @BindView(R.id.tv_of_title)
+    TextView tvOfTitle;
+    @BindView(R.id.et_feedback_content)
+    EditText etFeedbackContent;
+    @BindView(R.id.et_feedback_contact)
+    EditText etFeedbackContact;
+    @BindView(R.id.btn_of_submit)
+    Button btnOfSubmit;
+    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,42 +50,63 @@ public class FeedbackActivity extends BaseActivity {
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_start;
+        return R.layout.activity_feedback;
     }
 
     @Override
     public void initView() {
+        tvOfTitle.setText(R.string.feedback);
+    }
 
-
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                String address = "0xaf2f883250e837f8b5e77afdb68519404b8fab82";
-//                EthWalltUtils.queryEthBalance(address);
-//            }
-//        }).start();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1*1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                boolean isLogin = (boolean) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_LOGIN, false);
-                if(!isLogin) {
-                    ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
-                } else {
-                    ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
-                }
-
-                boolean takeOnGesturePwd = (boolean) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_TAKE_ON_GESTURE_PWD, false);
-                if(takeOnGesturePwd) {
-                    startService(new Intent(FeedbackActivity.this, ScreenListenerService.class));
-                }
+    @OnClick({R.id.btn_of_back, R.id.btn_of_submit})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_of_back:
                 finish();
-            }
-        }).start();
+                break;
+            case R.id.btn_of_submit:
+                String content = etFeedbackContent.getText().toString().trim();
+                String contact = etFeedbackContact.getText().toString().trim();
+                String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
+                if(TextUtils.isEmpty(content)) {
+                    MToast.showToast(R.string.feedback);
+                } else if(TextUtils.isEmpty(contact)) {
+                    MToast.showToast(R.string.feedback);
+                } else if(TextUtils.isEmpty(token)) {
+                    MToast.showToast(R.string.session_is_invalid);
+                } else {
+                    feedback(content, contact, token);
+                }
+                break;
+        }
+    }
+
+    private void feedback(String content, String contact, String token) {
+        subscription = ServiceApi.getInstance().getApiService()
+                .feedback(token, content, contact)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscriber<BaseResponse>(this, getResources().getString(R.string.loading), true) {
+                               @Override
+                               protected void _onNext(BaseResponse baseResponse) {
+                                   if(baseResponse.getCode() == BaseResponse.RESULT_OK) {
+                                       finish();
+                                   } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                                       reLogin();
+                                   }
+                                   MToast.showToast(baseResponse.getData().toString());
+                               }
+
+                               @Override
+                               protected void _onError(String message) {
+                                   MToast.showToast(message);
+                               }
+                           }
+                );
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unSubscribe(subscription);
     }
 }

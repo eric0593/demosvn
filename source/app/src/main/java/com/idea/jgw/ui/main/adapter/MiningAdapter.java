@@ -37,7 +37,8 @@ public class MiningAdapter extends BaseRecyclerAdapter<CoinMining> {
         } else if(coinType == 3) {
             ((DigitalCurrencyListHolder)viewHolder).ivOfDigitalCurrency.setImageResource(R.mipmap.icon_oce);
         }
-        ((DigitalCurrencyListHolder)viewHolder).tvOfDigitalNumber.setText(String.valueOf(data.getProfit()));
+        ((DigitalCurrencyListHolder)viewHolder).tvOfDigitalNumber.setText(String.valueOf(data.getBalance()));
+        ((DigitalCurrencyListHolder)viewHolder).tvOfDigitalName.setText(String.valueOf(data.getCoin_info().getCharX()));
     }
 
     class DigitalCurrencyListHolder extends Holder {

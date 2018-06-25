@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.idea.jgw.App;
 import com.idea.jgw.R;
+import com.idea.jgw.common.Common;
 import com.idea.jgw.logic.eth.data.TransactionDisplay;
 import com.idea.jgw.logic.eth.utils.AddressNameConverter;
 import com.idea.jgw.logic.eth.utils.ExchangeCalculator;
@@ -72,7 +73,7 @@ public class TransferRecordListAdapter extends BaseRecyclerAdapter {
 
     SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
 
-    BigDecimal bd =  new BigDecimal(10).pow(18);
+    BigDecimal bd = new BigDecimal(10).pow(18);
     DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
 
 
@@ -101,6 +102,18 @@ public class TransferRecordListAdapter extends BaseRecyclerAdapter {
         BigDecimal amount = new BigDecimal(box.getAmountNative()).divide(bd);
         v.tvOfTransferValue.setText(df.format(amount.doubleValue()));
 
+        Common.CoinTypeEnum coinType = box.getCoinType();
+        switch (coinType) {
+            case JGW:
+                v.ivOfDigitalCurrency.setImageResource(R.mipmap.icon_oce_small);
+                break;
+            case ETH: v.ivOfDigitalCurrency.setImageResource(R.mipmap.icon_eth);
+                break;
+
+            case BTC:
+                v.ivOfDigitalCurrency.setImageResource(R.mipmap.icon_btc_small);
+                break;
+        }
 
 
         Log.e("", "onBind");

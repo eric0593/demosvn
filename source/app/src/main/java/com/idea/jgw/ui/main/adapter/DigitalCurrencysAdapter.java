@@ -14,6 +14,10 @@ import com.idea.jgw.bean.CoinData;
 import com.idea.jgw.common.Common;
 import com.idea.jgw.ui.BaseRecyclerAdapter;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -29,6 +33,9 @@ public class DigitalCurrencysAdapter extends BaseRecyclerAdapter<CoinData> {
         CoinDataListHolder holder = new CoinDataListHolder(view);
         return holder;
     }
+
+
+    DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
 
     @Override
     public void onBind(RecyclerView.ViewHolder viewHolder, int realPosition, CoinData data) {
@@ -60,7 +67,7 @@ public class DigitalCurrencysAdapter extends BaseRecyclerAdapter<CoinData> {
                 v.tvOfDigitalName.setText("JGW");
                 break;
         }
-        v.tvOfDigitalNumber.setText(TextUtils.isEmpty(data.getCount())?"0.0":data.getCount());
+        v.tvOfDigitalNumber.setText(TextUtils.isEmpty(data.getCount())?"0.0":df.format(new BigDecimal(data.getCount().replace(",", "")).doubleValue()));
         v.tvOfDigitalUnitPrice.setVisibility(View.INVISIBLE);
         v.tvOfDigitalTotalPrice.setVisibility(View.INVISIBLE);
 

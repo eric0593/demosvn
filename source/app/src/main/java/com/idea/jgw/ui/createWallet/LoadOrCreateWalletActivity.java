@@ -10,9 +10,11 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
+import com.idea.jgw.logic.btc.BtcWalltUtils;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.ui.main.MainActivity;
 import com.idea.jgw.utils.common.MToast;
+import com.idea.jgw.utils.common.MyLog;
 import com.joker.annotation.PermissionsDenied;
 import com.joker.annotation.PermissionsGranted;
 import com.joker.annotation.PermissionsRationale;
@@ -69,7 +71,7 @@ public class LoadOrCreateWalletActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.btn_of_create_wallet:
                 ARouter.getInstance().build(RouterPath.SET_TRANSACTION_PIN_ACTIVITY)
-                        .withString(EXTRA_USER,userPhone)
+                        .withString(EXTRA_USER, userPhone)
                         .navigation(this, CREATE_WALLET_REQUEST);
                 break;
             case R.id.btn_of_load_wallet:
@@ -146,7 +148,7 @@ public class LoadOrCreateWalletActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case LOAD_WALLET_REQUEST:
                 case CREATE_WALLET_REQUEST:

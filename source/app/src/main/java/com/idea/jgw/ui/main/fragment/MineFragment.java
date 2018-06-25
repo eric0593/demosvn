@@ -21,6 +21,7 @@ import com.idea.jgw.RouterPath;
 import com.idea.jgw.api.retrofit.ServiceApi;
 import com.idea.jgw.bean.BaseResponse;
 import com.idea.jgw.bean.UserInfo;
+import com.idea.jgw.ui.BaseFragment;
 import com.idea.jgw.ui.user.UserInfoActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
@@ -48,7 +49,7 @@ import static com.idea.jgw.api.OkhttpApi.UPDATE_PHOTO;
  * Created by idea on 2018/5/16.
  */
 
-public class MineFragment extends Fragment {
+public class MineFragment extends BaseFragment {
 
     private static final int UPDATE_INFO_REQUEST = 11;
 
@@ -80,19 +81,17 @@ public class MineFragment extends Fragment {
                 .subscribe(new RxSubscriber<BaseResponse>(getActivity(), getResources().getString(R.string.loading), true) {
                                @Override
                                protected void _onNext(BaseResponse baseResponse) {
-                                   if(baseResponse.getCode() == 200) {
+                                   if(baseResponse.getCode() == BaseResponse.RESULT_OK) {
                                        userInfo = JSON.parseObject(baseResponse.getData().toString(), UserInfo.class);
                                        tvOfName.setText(userInfo.getNickname());
                                        String phone = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_PHONE, "").toString();
                                        tvPhone.setText(CommonUtils.replace(phone, "****"));
-                                       Glide.with(MineFragment.this).load(BASE_HOST + userInfo.getFace()).apply(RequestOptions.circleCropTransform()).into(ivPhoto);
+                                       GlideApp.with(MineFragment.this).load(BASE_HOST + userInfo.getFace()).apply(RequestOptions.circleCropTransform()).placeholder(R.mipmap.icon_default_photo).into(ivPhoto);
                                        SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_INVITE_CODE, userInfo.getInvite_num());
                                        SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_INVITE_NUM, userInfo.getInvite_man_num());
                                        SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_INVITE_URL, userInfo.getInvite_url());
-                                   } else if(baseResponse.getCode() == 0) {
-                                       ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
-                                       App.finishAllActivity();
-                                       getActivity().finish();
+                                   } else if(baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                                       reLogin();
                                    } else {
                                        MToast.showToast(baseResponse.getData().toString());
                                    }

@@ -52,7 +52,7 @@
         android:layout_below="@id/tv_of_digital_number"
         android:textColor="#959699"
         android:textSize="12sp"
-        android:text="2323.0332 CNY"/>
+        android:text="0 CNY"/>
 
     <View
         android:layout_width="match_parent"

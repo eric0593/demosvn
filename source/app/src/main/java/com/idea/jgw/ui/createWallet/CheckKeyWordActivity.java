@@ -71,7 +71,7 @@ public class CheckKeyWordActivity extends BaseActivity implements BaseCallback {
     public void initView() {
         tvOfTitle.setText(R.string.set_transaction_pin);
 
-        passphrase = TLAppDelegate.instance().encryptedPreferences.getWalletPassphrase();//获取助记词
+        passphrase = BtcWalltUtils.getPassphrase();//获取助记词
         if (TextUtils.isEmpty(passphrase)) {
             return;
         } else {

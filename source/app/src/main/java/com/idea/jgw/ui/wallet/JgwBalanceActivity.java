@@ -51,18 +51,14 @@ public class JgwBalanceActivity extends BalanceActivity {
         rvOfTransferRecord.setAdapter(transferRecordListAdapter);
     }
 
-
-
     @Override
     public void initView() {
         super.initView();
 
+        tvOfTitle.setText(R.string.jgw);
+        ivOfLogo.setImageResource(R.mipmap.icon_oce);
+
         address = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.PREFERENCES_ADDRESS_KEY, "").toString();
-
-
-        if (App.isIsWalletDebug2)
-            address = "0xaf2f883250e837f8b5e77afdb68519404b8fab82";
-
         if (TextUtils.isEmpty(address)) {
             MToast.showLongToast(R.string.jgw_get_address_err);
             finish();
@@ -72,16 +68,17 @@ public class JgwBalanceActivity extends BalanceActivity {
 
 
         final JgwUtils ju = new JgwUtils();
-        ju.queryEthBalance(address, new TLCallback() {
+        ju.queryBalance(address, new TLCallback() {
             @Override
             public void onSuccess(Object obj) {
 
                 try {
-                    String str = obj.toString().substring(2);
-                    BigInteger bi = new BigInteger(new BigInteger(str,16).toString(10));
+                    String str = obj.toString();
+//                    BigInteger bi = new BigInteger(new BigInteger(str,16).toString(10));
+                    BigInteger bi = new BigInteger(str);
                     BigDecimal bd = new BigDecimal(10).pow(18);
                     DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
-                    df.setMaximumFractionDigits(18);
+//                    df.setMaximumFractionDigits(18);
                     BigDecimal amount = new BigDecimal(bi.toString(10)).divide(bd);
                     balance = df.format(amount.doubleValue());
                     MyLog.e("balance-->>" + obj.toString());

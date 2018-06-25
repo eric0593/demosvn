@@ -55,6 +55,7 @@ public class VerifyGesturePasswordActivity extends BaseActivity implements Locus
     @Override
     public void onComplete(String password) {
         if (gesturePwd.equals(password)) {
+            lpwdGesturePwd.setOnCompleteListener(null);
             finish();
         } else {
             tvVerifyGestureMsg.setText(R.string.gesture_security_error);

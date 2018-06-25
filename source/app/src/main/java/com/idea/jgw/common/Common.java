@@ -19,11 +19,13 @@ public class Common {
         /**
          * 请求的url
          */
-        public static final String URL = "http://120.132.120.253:8546";
+        public static final String URL = "https://api.myetherapi.com/eth";// " http://120.132.120.253:8546";
         /**
          * 智能合约地址
          */
-        public static final String SMART_CONTRACT = "0xa9c10d0cc920be80d0be5a9669ede8f007e8ffc2";
+        public static final String SMART_CONTRACT = "0x9f6e483ca730907583de27ad30596448a562b362";// "0x48a4e9f23a4abfbe1a7b598b4ac2675f5206baed";//
+
+
 
     }
 
@@ -72,6 +74,21 @@ public class Common {
     }
 
     public static final class Eth {
+
+
+
+        /**
+         * 请求的url
+         */
+        public static final String URL = "http://10.0.2.2:8555";//"http://api.myetherapi.com/eth";// " http://120.132.120.253:8546";
+        /**
+         * 智能合约地址
+         */
+        public static final String SMART_CONTRACT = "0x9f6e483ca730907583de27ad30596448a562b362";// "0x48a4e9f23a4abfbe1a7b598b4ac2675f5206baed";//
+
+
+
+
         /**
          * 种子
          */

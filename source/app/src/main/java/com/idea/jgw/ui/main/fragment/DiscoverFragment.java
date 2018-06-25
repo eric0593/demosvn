@@ -1,6 +1,5 @@
 package com.idea.jgw.ui.main.fragment;
 
-import android.app.Fragment;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -25,14 +24,13 @@ import com.idea.jgw.api.retrofit.ServiceApi;
 import com.idea.jgw.bean.BaseResponse;
 import com.idea.jgw.bean.CoinMining;
 import com.idea.jgw.bean.AllMiningData;
+import com.idea.jgw.ui.BaseFragment;
 import com.idea.jgw.ui.BaseRecyclerAdapter;
 import com.idea.jgw.ui.main.adapter.MiningAdapter;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
-import com.idea.jgw.utils.common.GsonUtils;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.ShareKey;
-import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.idea.jgw.view.FloatView;
 
 import java.util.ArrayList;
@@ -50,7 +48,7 @@ import rx.schedulers.Schedulers;
  * Created by idea on 2018/5/16.
  */
 
-public class DiscoverFragment extends Fragment implements BaseRecyclerAdapter.OnItemClickListener<CoinMining> {
+public class DiscoverFragment extends BaseFragment implements BaseRecyclerAdapter.OnItemClickListener<CoinMining> {
 
     MiningAdapter miningAdapter;
     MediaPlayer mMediaPlayer;
@@ -67,7 +65,7 @@ public class DiscoverFragment extends Fragment implements BaseRecyclerAdapter.On
     TextView tvMiningIncomeLabel;
     @BindView(R.id.btn_add_hashrate)
     Button btnAddHashrate;
-    @BindView(R.id.rv_of_detail_asset)
+    @BindView(R.id.rv_of_detail_mining)
     RecyclerView rvOfDetailAsset;
     @BindView(R.id.fv_of_mining)
     FloatView fvOfMining;
@@ -105,6 +103,7 @@ public class DiscoverFragment extends Fragment implements BaseRecyclerAdapter.On
             }
         });
 
+        tvHashrate.setText(String.format(getString(R.string.sample_hashrate), 0));
 
         getMiningData();
         return view;
@@ -120,7 +119,7 @@ public class DiscoverFragment extends Fragment implements BaseRecyclerAdapter.On
                 .subscribe(new RxSubscriber<BaseResponse>(getActivity(), getResources().getString(R.string.loading), true) {
                                @Override
                                protected void _onNext(BaseResponse baseResponse) {
-                                   if (baseResponse.getCode() == 200) {
+                                   if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
 //                                       allMiningData = GsonUtils.parseJson(baseResponse.getData().toString(), AllMiningData.class);
                                        allMiningData = JSON.parseObject(baseResponse.getData().toString(), AllMiningData.class);
                                        tvHashrate.setText(String.format(getString(R.string.sample_hashrate), allMiningData.getCalculation()));
@@ -136,10 +135,8 @@ public class DiscoverFragment extends Fragment implements BaseRecyclerAdapter.On
                                            list.add(data);
                                        }
                                        fvOfMining.setList(list);
-                                   } else if(baseResponse.getCode() == 0) {
-                                       ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
-                                       App.finishAllActivity();
-                                       getActivity().finish();
+                                   } else if(baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                                       reLogin();
                                        MToast.showToast(baseResponse.getData().toString());
                                    } else {
                                        MToast.showToast(baseResponse.getData().toString());
@@ -154,7 +151,7 @@ public class DiscoverFragment extends Fragment implements BaseRecyclerAdapter.On
                 );
     }
 
-    private void receiveMiningData(final int type, double value) {
+    private void receiveMiningData(final int type, final double value) {
         String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
         receiveMiningSubscription = ServiceApi.getInstance().getApiService()
                 .receiveMiningData(type, String.valueOf(value), token)
@@ -162,10 +159,19 @@ public class DiscoverFragment extends Fragment implements BaseRecyclerAdapter.On
                 .subscribe(new RxSubscriber<BaseResponse>(getActivity(), getResources().getString(R.string.loading), true) {
                                @Override
                                protected void _onNext(BaseResponse baseResponse) {
-                                   if (baseResponse.getCode() == 200) {
-                                       fvOfMining.removeAt(type-1);
+                                   if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
+                                       fvOfMining.removeAt(type);
+                                       for(CoinMining coinMining : miningAdapter.getmDatas()) {
+                                           if(coinMining.getCoin_info().getId() == type) {
+                                               double profit = coinMining.getBalance() + value;
+                                               coinMining.setBalance(profit);
+                                               break;
+                                           }
+                                       }
+                                       miningAdapter.notifyDataSetChanged();
                                        MToast.showToast(baseResponse.getData().toString());
-                                   } else if (baseResponse.getCode() == 0) {
+                                   } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                                       reLogin();
                                        MToast.showToast(baseResponse.getData().toString());
                                    }
                                }
@@ -191,8 +197,8 @@ public class DiscoverFragment extends Fragment implements BaseRecyclerAdapter.On
     @Override
     public void onItemClick(int position, CoinMining data) {
         int coinType = data.getCoin_info().getId();
-        float balance = data.getBalance();
-        ARouter.getInstance().build(RouterPath.MINING_DETAIL_ACTIVITY).withInt("coinType", coinType).withFloat("balance", balance).navigation();
+        double balance = data.getBalance();
+        ARouter.getInstance().build(RouterPath.MINING_DETAIL_ACTIVITY).withInt("coinType", coinType).withDouble("balance", balance).navigation();
     }
 
 //    public List getTestDatas(int size) {

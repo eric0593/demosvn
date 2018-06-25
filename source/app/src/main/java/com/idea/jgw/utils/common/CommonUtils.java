@@ -46,7 +46,9 @@ import java.net.NetworkInterface;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -85,7 +87,8 @@ public class CommonUtils {
         // 判断获得的SD卡路径是否为null
         if (sdCarPath != null) {
             String hldPath = sdCarPath + "/HldImage/";
-            filePath = hldPath + fileName;
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            filePath = hldPath + fileName + "_" + timeStamp;
             // 创建文件夹，名称为HldImage，不会重复创建
             File file = new File(hldPath);
             if (!file.exists() && !file.isDirectory())
@@ -112,7 +115,9 @@ public class CommonUtils {
      * @param activity
      * @param filePath
      */
-    public static void cropImageUri(Activity activity, String filePath, int requestCode) {
+    public static String cropImageUri(Activity activity, String filePath, int requestCode) {
+        String cropFile = "cropFile.jpg";
+        String cropPath;
         String sdCarPath = getSDPath(activity);
         // 判断sd卡是否存在
         if (sdCarPath != null) {
@@ -121,6 +126,7 @@ public class CommonUtils {
             File file = new File(hldPath);
             if (!file.exists() && !file.isDirectory())
                 file.mkdir();
+            cropPath = hldPath + cropFile;
             // 调用系统截图
             Intent intent = new Intent("com.android.camera.action.CROP");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -135,12 +141,15 @@ public class CommonUtils {
 //			intent.putExtra("outputX", 720);
             intent.putExtra("outputX", 900);
             intent.putExtra("outputY", 900);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(filePath)));
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(cropPath)));
             intent.putExtra("return-data", false);
             intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
             intent.putExtra("noFaceDetection", true); // no face detection
             activity.startActivityForResult(intent, requestCode);
+        } else {
+            cropPath = null;
         }
+        return cropPath;
     }
 
     /**
@@ -169,7 +178,7 @@ public class CommonUtils {
             intent.putExtra("outputX", 900);
             intent.putExtra("outputY", 900);
             intent.putExtra("scale", true);
-//			intent.putExtra("return-data", false);
+			intent.putExtra("return-data", false);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(filePath)));
             intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
             intent.putExtra("noFaceDetection", false); // no face detection

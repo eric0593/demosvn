@@ -79,6 +79,7 @@ public class UpdateNicknameActivity extends BaseActivity {
                 if(TextUtils.isEmpty(nickname)) {
                     MToast.showToast(R.string.nickename_is_null);
                 } else if(TextUtils.isEmpty(token)) {
+                    App.finishAllActivity();
                     ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
                     MToast.showToast(R.string.session_is_invalid);
                 } else {
@@ -96,11 +97,13 @@ public class UpdateNicknameActivity extends BaseActivity {
                 .subscribe(new RxSubscriber<BaseResponse>(this, getResources().getString(R.string.loading), true) {
                                @Override
                                protected void _onNext(BaseResponse baseResponse) {
-                                   if(baseResponse.getCode() == 200) {
+                                   if(baseResponse.getCode() == BaseResponse.RESULT_OK) {
                                        Intent intent = new Intent();
                                        intent.putExtra("nickname", nickname);
                                        setResult(RESULT_OK,intent);
                                        finish();
+                                   } else if(baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                                       reLogin();
                                    }
                                    MToast.showToast(baseResponse.getData().toString());
                                }

@@ -112,6 +112,7 @@ public class RegisterActivity extends BaseActivity implements BaseCallback {
                 ARouter.getInstance().build(RouterPath.NATION_CODE_ACTIVITY).navigation(this, GET_NATION_CODE);
                 break;
             case R.id.tv_of_agreement:
+                ARouter.getInstance().build(RouterPath.SHOW_ACTIVITY).withInt("flag", 1).navigation();
                 break;
             case R.id.tv_of_customer_service:
                 showCustomerServiceDialog();
@@ -162,7 +163,7 @@ public class RegisterActivity extends BaseActivity implements BaseCallback {
                 .subscribe(new RxSubscriber<BaseResponse>(this, getResources().getString(R.string.loading), true) {
                                @Override
                                protected void _onNext(BaseResponse baseResponse) {
-                                   if(baseResponse.getCode() == 200) {
+                                   if(baseResponse.getCode() == BaseResponse.RESULT_OK) {
                                        getSecurityCodeWait();
                                    }
                                    MToast.showToast(baseResponse.getData().toString());

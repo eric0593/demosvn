@@ -79,8 +79,15 @@ public class FloatView extends RelativeLayout {
             floatview.setBackgroundResource(0);
             floatview.setText(String.valueOf(mFloat.get(i).getValue()));
             floatview.setGravity(Gravity.CENTER);
-            floatview.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.icon_oce_small, 0, 0);
-            floatview.setTag(i);
+            int resid = R.mipmap.icon_oce_small;
+            int type = mFloat.get(i).getType();
+            if(type == 1) {
+                resid = R.mipmap.icon_btc_small;
+            } else if(type == 2) {
+                resid = R.mipmap.icon_eth;
+            }
+            floatview.setCompoundDrawablesWithIntrinsicBounds(0, resid, 0, 0);
+            floatview.setTag(type);
             floatview.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             floatview.setOnClickListener(new OnClickListener() {
                 @Override
@@ -146,7 +153,12 @@ public class FloatView extends RelativeLayout {
         //设置接口回调
 
 //        remove(view);
-        mListener.itemClick(mFloat.get((int)view.getTag()));
+        int type = Integer.parseInt(view.getTag().toString());
+        for (FloatViewData viewData : mFloat) {
+            if(viewData.getType() == type) {
+                mListener.itemClick(viewData);
+            }
+        }
     }
 
     public void remove(View view) {
@@ -154,9 +166,9 @@ public class FloatView extends RelativeLayout {
         animRemoveView(view);
     }
 
-    public void removeAt(int position) {
+    public void removeAt(int type) {
         for(View view:mViews) {
-            if((int)view.getTag() == position) {
+            if((int)view.getTag() == type) {
                 mViews.remove(view);
                 animRemoveView(view);
                 break;

@@ -9,6 +9,7 @@ import com.google.zxing.qrcode.CreateQRUtils;
 import com.idea.jgw.App;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.common.Common;
+import com.idea.jgw.logic.eth.IBAN;
 import com.idea.jgw.utils.SPreferencesHelper;
 
 import org.web3j.utils.Numeric;
@@ -36,7 +37,11 @@ public class JgwReceivedActivity extends WalletAddressActivity {
             int index = addressNoPrefix.indexOf("0x");
             addressNoPrefix = addressNoPrefix.substring(index);
         }
-        addressNoPrefix = addressNoPrefix + "&type=jgw";
+//        addressNoPrefix = addressNoPrefix + "&token=jgw";
+
+        final String address =  "iban:"+IBAN.getIBAN("0x"+addressNoPrefix)+"?amount=0&token=oce";
+
+
         tvSendAddress.setText(addressNoPrefix);
 
         final int addressWeight = ivOfMyAddress.getMeasuredWidth();//图片的实际大小
@@ -45,7 +50,7 @@ public class JgwReceivedActivity extends WalletAddressActivity {
             @Override
             public void run() {
 
-                final Bitmap bitmap = CreateQRUtils.create2DCode(tvSendAddress.getText().toString(), addressWeight, adressHeight);
+                final Bitmap bitmap = CreateQRUtils.create2DCode(address, addressWeight, adressHeight);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

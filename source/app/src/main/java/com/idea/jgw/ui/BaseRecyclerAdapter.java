@@ -24,7 +24,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
 
     private View mHeaderView;
 
-    private OnItemClickListener mListener;
+    protected OnItemClickListener mListener;
 
     public void setOnItemClickListener(OnItemClickListener li) {
         mListener = li;

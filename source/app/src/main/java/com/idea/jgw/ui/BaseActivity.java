@@ -20,10 +20,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.idea.jgw.App;
 import com.idea.jgw.R;
+import com.idea.jgw.RouterPath;
 import com.idea.jgw.ui.service.ScreenListenerService;
 import com.idea.jgw.utils.common.MyLog;
+import com.joker.api.Permissions4M;
 
 
 import java.io.File;
@@ -143,6 +146,31 @@ public abstract class BaseActivity extends SupportActivity {
         bmp.recycle();
 
         return filename;
+    }
+
+    public void reLogin() {
+        ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
+        App.finishAllActivity();
+        finish();
+    }
+
+    public void requestPermission(int requestCode, String permission) {
+        Permissions4M.get(this)
+                // 是否强制弹出权限申请对话框，建议设置为 true，默认为 true
+                .requestForce(true)
+                // 是否支持 5.0 权限申请，默认为 false
+                .requestUnderM(true)
+                // 权限，单权限申请仅只能填入一个
+//                .requestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .requestPermissions(permission)
+                // 权限码
+                .requestCodes(requestCode)
+                // 如果需要使用 @PermissionNonRationale 注解的话，建议添加如下一行
+                // 返回的 intent 是跳转至**系统设置页面**
+                .requestPageType(Permissions4M.PageType.MANAGER_PAGE)
+                // 返回的 intent 是跳转至**手机管家页面**
+                // .requestPageType(Permissions4M.PageType.ANDROID_SETTING_PAGE)
+                .request();
     }
 
 }

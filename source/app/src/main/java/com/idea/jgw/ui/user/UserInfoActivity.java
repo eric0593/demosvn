@@ -3,13 +3,8 @@ package com.idea.jgw.ui.user;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,7 +14,6 @@ import android.widget.TextView;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.alibaba.fastjson.JSON;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.idea.jgw.App;
 import com.idea.jgw.R;
@@ -31,40 +25,28 @@ import com.idea.jgw.bean.UserInfo;
 import com.idea.jgw.dialog.ChoosePhotoDialog;
 import com.idea.jgw.dialog.LoadingDialog;
 import com.idea.jgw.ui.BaseActivity;
-import com.idea.jgw.ui.main.fragment.MineFragment;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.CommonUtils;
 import com.idea.jgw.utils.common.DialogUtils;
 import com.idea.jgw.utils.common.MToast;
-import com.idea.jgw.utils.common.MyLog;
 import com.idea.jgw.utils.common.ShareKey;
-import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.idea.jgw.utils.glide.GlideApp;
 import com.joker.annotation.PermissionsCustomRationale;
 import com.joker.annotation.PermissionsDenied;
 import com.joker.annotation.PermissionsGranted;
 import com.joker.annotation.PermissionsNonRationale;
 import com.joker.api.Permissions4M;
-import com.socks.okhttp.plus.OkHttpProxy;
 import com.socks.okhttp.plus.listener.UploadListener;
 import com.socks.okhttp.plus.model.Progress;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -121,6 +103,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
 
     @Override
     public void initView() {
+        tvOfTitle.setText(R.string.personal_info);
         if (getIntent().hasExtra("userInfo")) {
             userInfo = getIntent().getParcelableExtra("userInfo");
         }
@@ -128,7 +111,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
             nickname = userInfo.getNickname();
             tvNickname.setText(nickname);
             face = userInfo.getFace();
-            Glide.with(this).load(BASE_HOST + face).apply(RequestOptions.circleCropTransform()).into(ivPhoto);
+            GlideApp.with(this).load(BASE_HOST + face).apply(RequestOptions.circleCropTransform()).into(ivPhoto);
         }
         tvPhone.setText(SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_PHONE, "").toString());
     }
@@ -181,25 +164,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
     @PermissionsGranted(CAMERA_CODE)
     public void cameraGranted() {
 
-        requestStoragePermission(TAKEPHOTO_STORAGE_CODE);
-    }
-
-    private void requestStoragePermission(int requestCode) {
-        Permissions4M.get(this)
-                // 是否强制弹出权限申请对话框，建议设置为 true，默认为 true
-                .requestForce(true)
-                // 是否支持 5.0 权限申请，默认为 false
-                .requestUnderM(true)
-                // 权限，单权限申请仅只能填入一个
-                .requestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                // 权限码
-                .requestCodes(requestCode)
-                // 如果需要使用 @PermissionNonRationale 注解的话，建议添加如下一行
-                // 返回的 intent 是跳转至**系统设置页面**
-                .requestPageType(Permissions4M.PageType.MANAGER_PAGE)
-                // 返回的 intent 是跳转至**手机管家页面**
-                // .requestPageType(Permissions4M.PageType.ANDROID_SETTING_PAGE)
-                .request();
+        requestPermission(TAKEPHOTO_STORAGE_CODE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     public void showPhotoChooseDialog() {
@@ -227,11 +192,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
                 DialogUtils.showAlertDialog(this, "SD卡权限申请：\n我们需要您开启SD权限，一边访问上传头像", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Permissions4M.get(UserInfoActivity.this)
-                                .requestOnRationale()
-                                .requestPermissions(Manifest.permission.CAMERA)
-                                .requestCodes(code)
-                                .request();
+                        requestPermission(code, Manifest.permission_group.STORAGE);
                     }
                 });
                 break;
@@ -239,11 +200,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
                 DialogUtils.showAlertDialog(this, "相机权限申请：\n我们需要您开启相机信息权限", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Permissions4M.get(UserInfoActivity.this)
-                                .requestOnRationale()
-                                .requestPermissions(Manifest.permission.CAMERA)
-                                .requestCodes(CAMERA_CODE)
-                                .request();
+                        requestPermission(CAMERA_CODE, Manifest.permission.CAMERA);
                     }
                 });
                 break;
@@ -278,7 +235,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
     public void choose(int which) {
         switch (which) {
             case ChoosePhotoDialog.ALBUM:
-                requestStoragePermission(ABLUM_STORAGE_CODE);
+                requestPermission(ABLUM_STORAGE_CODE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 break;
             case ChoosePhotoDialog.CANCEL:
                 choosePhotoDialog.dismiss();
@@ -291,7 +248,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
 
     @PermissionsGranted(TAKEPHOTO_STORAGE_CODE)
     public void takePhoto() {
-        userPhotoPath = CommonUtils.doCamra(this, "userPhotoPath.jpg", DO_CAMERA_REQUEST);
+        userPhotoPath = CommonUtils.doCamra(this, "temp.jpg", DO_CAMERA_REQUEST);
         choosePhotoDialog.dismiss();
     }
 
@@ -308,15 +265,13 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
             String resultKey = "";
             switch (requestCode) {
                 case DO_CAMERA_REQUEST:
-                    CommonUtils.cropImageUri(this, userPhotoPath, SYS_CROP_REQUEST);
+                    userPhotoPath = CommonUtils.cropImageUri(this, userPhotoPath, SYS_CROP_REQUEST);
                     break;
                 case SYS_CROP_REQUEST:
                     updateUserPhoto(userPhotoPath);
                     break;
                 case OPEN_SYS_ALBUMS_REQUEST:
                     if (data != null) {
-                        MyLog.e("data.getData()" + data.getData());
-                        MyLog.e(data.getData().toString());
                         userPhotoPath = CommonUtils.getRealPathFromUri(this, data.getData());
                         updateUserPhoto(userPhotoPath);
                     } else {
@@ -334,13 +289,14 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
     }
 
     public void updateUserPhoto2(final String fileName) {
-        File file = new File(Environment.getExternalStorageDirectory(), "HldImage/userPhotoPath.jpg");
-        Map<String, Object> map = new HashMap<>();
-        map.put("token", "6fd95490e77cdf77c9c8162641d2cb6c");
+        final File file = new File(fileName);
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("token", "6fd95490e77cdf77c9c8162641d2cb6c");
         RequestBody body1 = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         MultipartBody.Part part = MultipartBody.Part.createFormData("avatarByte", file.getName(), body1);
         String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
-        ServiceApi.getInstance().getApiService().updatePhoto(token, part)
+        RequestBody tokenBody = RequestBody.create(MediaType.parse("text/plain"), token);
+        ServiceApi.getInstance().getApiService().updatePhoto(tokenBody, part)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscriber<BaseResponse>(this, getResources().getString(R.string.loading), true) {
                                @Override
@@ -363,7 +319,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
      */
     public void updateUserPhoto(final String fileName) {
 //        updateUserPhoto2(fileName);
-        File file = new File(fileName);
+        final File file = new File(fileName);
 //        File file = new File(Environment.getExternalStorageDirectory(), "HldImage/userPhotoPath.jpg");
 
         String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
@@ -371,9 +327,14 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
             @Override
             public void onSuccess(String data) {
                 BaseResponse baseResponse = JSON.parseObject(data, BaseResponse.class);
-                if (baseResponse.getCode() == 200) {
+                if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
                     face = baseResponse.getData().toString();
-                    Glide.with(UserInfoActivity.this).load(BASE_HOST + face).apply(RequestOptions.circleCropTransform()).into(ivPhoto);
+                    GlideApp.with(UserInfoActivity.this).load(BASE_HOST + face).apply(RequestOptions.circleCropTransform()).placeholder(R.mipmap.icon_default_photo).into(ivPhoto);
+                    if(file.exists()) {
+                        file.delete();
+                    }
+                } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                    reLogin();
                 }
             }
 
@@ -408,7 +369,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Glide.with(UserInfoActivity.this).load(userPhotoPath).into((ImageView) view);
+                GlideApp.with(UserInfoActivity.this).load(userPhotoPath).into((ImageView) view);
             }
         });
     }
