@@ -83,8 +83,13 @@ public class WalletAddressActivity extends BaseActivity implements View.OnClickL
                 finish();
                 break;
             case R.id.share_address:
-                share(this);
+                checkStoragePermission();
                 break;
         }
+    }
+
+    @Override
+    public void storageGranted() {
+        share(this);
     }
 }

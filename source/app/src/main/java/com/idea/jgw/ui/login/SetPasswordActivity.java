@@ -126,13 +126,11 @@ public class SetPasswordActivity extends BaseActivity {
             @Override
             protected void _onNext(BaseResponse baseResponse) {
                 if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
-                    MToast.showToast(baseResponse.getData().toString());
-
                     login();
                 } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
                     reLogin();
-                    MToast.showToast(baseResponse.getData().toString());
                 }
+                MToast.showToast(baseResponse.getData().toString());
             }
 
             @Override

@@ -1,18 +1,6 @@
 package com.idea.jgw.ui.mining;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.content.FileProvider;
-import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,14 +13,7 @@ import com.idea.jgw.RouterPath;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.ShareKey;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.joker.api.Permissions4M;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -78,9 +59,14 @@ public class ShareActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_of_share:
-                share(this);
+                checkStoragePermission();
                 break;
         }
+    }
+
+    @Override
+    public void storageGranted() {
+        share(this);
     }
 
 }

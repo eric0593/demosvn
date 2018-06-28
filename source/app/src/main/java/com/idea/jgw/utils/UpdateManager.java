@@ -200,11 +200,11 @@ public class UpdateManager {
 							// 下载完成
                             msg.obj = fileName;
                             msg.what = DOWNLOAD_FINISH;
-                            mHandler.sendMessage(msg);
+							mHandler.sendMessage(msg);
 							break;
 						} else {
                             msg.what = DOWNLOAD;
-                            mHandler.sendMessage(msg);
+							mHandler.sendMessage(msg);
                         }
 						// 写入文件
 						fos.write(buf, 0, numread);
@@ -214,19 +214,22 @@ public class UpdateManager {
 				}
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
-                msg = Message.obtain();
-				msg.what = DOWNLOAD_FAILED;
-				msg.obj = e;
+				sendFailedMsg(e);
 			} catch (IOException e) {
 				e.printStackTrace();
-				msg = Message.obtain();
-				msg.what = DOWNLOAD_FAILED;
-                msg.obj = e;
+				sendFailedMsg(e);
 			}
 			// 取消下载对话框显示
 			mDownloadDialog.dismiss();
-			mHandler.sendMessage(msg);
 		}
+	}
+
+	public void sendFailedMsg(IOException e) {
+		Message msg;
+		msg = Message.obtain();
+		msg.what = DOWNLOAD_FAILED;
+		msg.obj = e;
+		mHandler.sendMessage(msg);
 	}
 
 	public interface DownloadListener {

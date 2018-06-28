@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.idea.jgw.App;
 import com.idea.jgw.common.Common;
@@ -14,25 +13,19 @@ import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.MyLog;
 
 import org.apache.commons.lang3.StringUtils;
-import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
-import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.EthCall;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 
 import java.io.File;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import rx.functions.Action1;
@@ -158,7 +151,7 @@ public class JgwUtils {
                     String fileName = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.FILE_NAME, "").toString();
                     File file = new File(filePath, fileName);
                     Credentials credentials = WalletUtils.loadCredentials(password, file.getPath());
-                    OCEToken load = OCEToken.load(tokenAddress, web3j, credentials,
+                    LTEToken load = LTEToken.load(tokenAddress, web3j, credentials,
                             web3j.ethGasPrice().send().getGasPrice(), //price
                             new BigInteger("1000000") //limiet
                     );
@@ -213,14 +206,14 @@ public class JgwUtils {
                 try {
 
                     credentials = WalletUtils.loadCredentials(password, file.getPath());
-                    OCEToken load = OCEToken.load(tokenAddress, build, credentials, new BigInteger("18000000000"),
+                    LTEToken load = LTEToken.load(tokenAddress, build, credentials, new BigInteger("18000000000"),
                             new BigInteger("1000000"));
 
 //                    inal Action1<? super T> onNext
                     load.transferEventObservable(DefaultBlockParameterName.EARLIEST, DefaultBlockParameterName.LATEST)
-                            .forEach(new Action1<OCEToken.TransferEventResponse>() {
+                            .forEach(new Action1<LTEToken.TransferEventResponse>() {
                                 @Override
-                                public void call(OCEToken.TransferEventResponse transferEventResponse) {
+                                public void call(LTEToken.TransferEventResponse transferEventResponse) {
                                     TransactionDisplay td = new TransactionDisplay(transferEventResponse._from, transferEventResponse._to, transferEventResponse._value);
                                     td.setCoinType(Common.CoinTypeEnum.JGW);
                                     list.add(td);

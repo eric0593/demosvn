@@ -80,7 +80,7 @@
     <string name="hint_of_input_phone">请输入手机号</string>
     <string name="hint_of_input_security">请输验证码</string>
     <string name="hint_of_input_pwd">请输登录密码</string>
-    <string name="hint_of_set_pwd">请输密码在6-16位之间</string>
+    <string name="hint_of_set_pwd">请输入密码在6-16位之间</string>
     <string name="hint_of_invite_code">请输入邀请码(选填)</string>
     <string name="hint_of_send_amount">请输发送金额</string>
     <string name="received_address_hint">请输入接收地址</string>
@@ -268,5 +268,16 @@
 
     <string name="token_type_err">您选择的不是甲骨币</string>
     <string name="sample_date">2018-12-12</string>
+    <string name="feedback_content_is_null">意见反馈内容不能为空！</string>
+    <string name="why_need_storage">sd卡权限申请：\n我们需要您开启读SD卡权限，以便上传照片</string>
+    <string name="why_need_camera">相机权限申请：\n我们需要您开启相机拍照</string>
+    <string name="why_need_phone_state">相机权限申请：\n我们需要您获取手机信息，用于确认身份</string>
+    <string name="why_need_albums">相机权限申请：\n我们需要您开启相册，访问照片，文件</string>
+    <string name="storage_permission_fail">sd卡权限申请失败！</string>
+    <string name="camera_permission_fail">相机权限申请失败！</string>
+    <string name="phone_state_permission_fail">手机信息权限申请失败！</string>
+    <string name="albums_state_permission_fail">相册权限申请失败！</string>
+    <string name="file_not_exists">找不到该文件！</string>
+    <string name="cny">CNY</string>
 
 </resources>

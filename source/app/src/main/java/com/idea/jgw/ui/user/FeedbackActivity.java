@@ -69,9 +69,9 @@ public class FeedbackActivity extends BaseActivity {
                 String contact = etFeedbackContact.getText().toString().trim();
                 String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
                 if(TextUtils.isEmpty(content)) {
-                    MToast.showToast(R.string.feedback);
-                } else if(TextUtils.isEmpty(contact)) {
-                    MToast.showToast(R.string.feedback);
+                    MToast.showToast(R.string.feedback_content_is_null);
+//                } else if(TextUtils.isEmpty(contact)) {
+//                    MToast.showToast(R.string.feedback);
                 } else if(TextUtils.isEmpty(token)) {
                     MToast.showToast(R.string.session_is_invalid);
                 } else {

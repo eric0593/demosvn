@@ -48,6 +48,7 @@ public class AboutUsActivity extends BaseActivity {
 
     private static final int PHONE_STATE = 1;
     private static final int INSTALL_PACKAGE = 2;
+    private static final int EXTERNAL_STORAGE = 3;
     @BindView(R.id.btn_of_back)
     Button btnOfBack;
     @BindView(R.id.tv_of_title)
@@ -83,7 +84,7 @@ public class AboutUsActivity extends BaseActivity {
                 ARouter.getInstance().build(RouterPath.SHOW_ACTIVITY).withInt("contentType", InfoActivity.UPDATE_LOG).navigation();
                 break;
             case R.id.ll_update:
-                requestPermission(PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
+                requestPermission(EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
                 break;
         }
     }
@@ -128,12 +129,12 @@ public class AboutUsActivity extends BaseActivity {
 
                                                     @Override
                                                     public int onProgress(int progress) {
-                                                        return 0;
+                                                        return progress;
                                                     }
                                                 });
                                                 updateManager.downloadApk(info.mPackageUrl, apkPath);
                                             }
-                                        }, true);
+                                        });
                                     }
                                 } else {
                                         MToast.showToast(R.string.current_is_new);
@@ -180,17 +181,7 @@ public class AboutUsActivity extends BaseActivity {
         return str;
     }
 
-    AlertDialog alertDialog;
-
-    public void showAlertDialog(String title, String str, DialogInterface.OnClickListener negativeListener, DialogInterface.OnClickListener positiveListener, boolean showForground) {
-        if (alertDialog != null) {
-            if(showForground) {
-                alertDialog.dismiss();
-            }
-            if (alertDialog.isShowing()) {
-                return;
-            }
-        }
+    public void showAlertDialog(String title, String str, DialogInterface.OnClickListener negativeListener, DialogInterface.OnClickListener positiveListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 //        builder.setNegativeButton(R.string.string_of_cancel, new DialogInterface.OnClickListener() {
 //            @Override
@@ -198,7 +189,7 @@ public class AboutUsActivity extends BaseActivity {
 //                dialog.dismiss();
 //            }
 //        });
-        alertDialog = builder.create();
+        AlertDialog alertDialog = builder.create();
         if(!TextUtils.isEmpty(title)) {
             alertDialog.setTitle(title);
         } else {
@@ -214,11 +205,16 @@ public class AboutUsActivity extends BaseActivity {
         alertDialog.show();
     }
 
-    @PermissionsGranted({PHONE_STATE, INSTALL_PACKAGE})
+//    @PermissionsGranted({PHONE_STATE, INSTALL_PACKAGE, EXTERNAL_STORAGE})
+    @Override
     public void granted(int requestCode) {
+        super.granted(requestCode);
         switch (requestCode) {
             case PHONE_STATE:
                 checkAndUpdate(CommonUtils.getAppName(App.getInstance()));
+                break;
+            case EXTERNAL_STORAGE:
+                requestPermission(PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
                 break;
             case INSTALL_PACKAGE:
                 //安装apk
@@ -262,47 +258,85 @@ public class AboutUsActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    @PermissionsCustomRationale({PHONE_STATE, INSTALL_PACKAGE})
+//    @PermissionsCustomRationale({PHONE_STATE, EXTERNAL_STORAGE, INSTALL_PACKAGE})
+    @Override
     public void customRationale(int requestCode) {
+        super.customRationale(requestCode);
         switch (requestCode) {
             case PHONE_STATE:
                 DialogUtils.showAlertDialog(this, "PHONE_STATE权限申请：\n我们需要您开启读PHONE_STATE权限", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        requestPermission(PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
+                        requestPermissionOnRationale(PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
+                    }
+                });
+                break;
+            case EXTERNAL_STORAGE:
+                DialogUtils.showAlertDialog(this, "SD权限申请：\n我们需要您开启读SD权限", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestPermissionOnRationale(EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
                     }
                 });
                 break;
             case INSTALL_PACKAGE:
-                checkAndUpdate(CommonUtils.getAppName(App.getInstance()));
                 DialogUtils.showAlertDialog(this, "安装权限申请：\n我们需要您开启读安装权限，用以更新app", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        requestPermission(PHONE_STATE, Manifest.permission.INSTALL_PACKAGES);
+                        requestPermissionOnRationale(PHONE_STATE, Manifest.permission.INSTALL_PACKAGES);
                     }
                 });
                 break;
         }
     }
 
-    @PermissionsNonRationale({PHONE_STATE, INSTALL_PACKAGE})
+//    @PermissionsNonRationale({PHONE_STATE, EXTERNAL_STORAGE, INSTALL_PACKAGE})
+    @Override
     public void non(int requestCode, final Intent intent) {
+        super.non(requestCode, intent);
         switch (requestCode) {
             case PHONE_STATE:
-                DialogUtils.showAlertDialog(this, "PHONE_STATE权限申请：\n我们需要您开启读PHONE_STATE权限", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(intent);
-                    }
-                });
+                showExplain(intent, "PHONE_STATE权限申请：\n我们需要您开启读PHONE_STATE权限");
+//                DialogUtils.showAlertDialog(this, "PHONE_STATE权限申请：\n我们需要您开启读PHONE_STATE权限", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        startActivity(intent);
+//                    }
+//                });
+                break;
+            case EXTERNAL_STORAGE:
+                showExplain(intent, getString(R.string.why_need_storage));
+//                DialogUtils.showAlertDialog(this, "SD权限申请：\n我们需要您开启读SD权限", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        startActivity(intent);
+//                    }
+//                });
                 break;
             case INSTALL_PACKAGE:
-                DialogUtils.showAlertDialog(this, "安装权限申请：\n我们需要您开启读安装权限，用以更新app", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(intent);
-                    }
-                });
+                showExplain(intent, "安装权限申请：\n我们需要您开启安装应用权限，用以更新app");
+//                DialogUtils.showAlertDialog(this, "安装权限申请：\n我们需要您开启读安装权限，用以更新app", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        startActivity(intent);
+//                    }
+//                });
+                break;
+        }
+    }
+
+    @Override
+    public void denied(int requestCode) {
+        super.denied(requestCode);
+        switch (requestCode) {
+            case PHONE_STATE:
+                MToast.showToast(R.string.phone_state_permission_fail);
+                break;
+            case EXTERNAL_STORAGE:
+                MToast.showToast(R.string.storage_permission_fail);
+                break;
+            case INSTALL_PACKAGE:
+                MToast.showToast("INSTALL_PACKAGE_permission_fail");
                 break;
         }
     }

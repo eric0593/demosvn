@@ -63,7 +63,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
     public static final int OPEN_SYS_ALBUMS_REQUEST = 101;
     //调用系统截图请求码
     public static final int SYS_CROP_REQUEST = 102;
-    private static final int CAMERA_CODE = 11;
+    private static final int CAMERA_CODE_REQUEST = 11;
     private static final int ABLUM_STORAGE_CODE = 12; //相册访问sd权限
     private static final int TAKEPHOTO_STORAGE_CODE = 13; //拍照访问sd权限
     private static final int EXTERNAL_STORAGE_CODE = 14; //拍照访问sd权限
@@ -143,30 +143,6 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
         super.finish();
     }
 
-    private void requestCameraPermission() {
-        Permissions4M.get(this)
-                // 是否强制弹出权限申请对话框，建议设置为 true，默认为 true
-                .requestForce(true)
-                // 是否支持 5.0 权限申请，默认为 false
-                .requestUnderM(true)
-                // 权限，单权限申请仅只能填入一个
-                .requestPermissions(Manifest.permission.CAMERA)
-                // 权限码
-                .requestCodes(CAMERA_CODE)
-                // 如果需要使用 @PermissionNonRationale 注解的话，建议添加如下一行
-                // 返回的 intent 是跳转至**系统设置页面**
-                .requestPageType(Permissions4M.PageType.MANAGER_PAGE)
-                // 返回的 intent 是跳转至**手机管家页面**
-                // .requestPageType(Permissions4M.PageType.ANDROID_SETTING_PAGE)
-                .request();
-    }
-
-    @PermissionsGranted(CAMERA_CODE)
-    public void cameraGranted() {
-
-        requestPermission(TAKEPHOTO_STORAGE_CODE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-    }
-
     public void showPhotoChooseDialog() {
         if (choosePhotoDialog == null) {
             choosePhotoDialog = new ChoosePhotoDialog(this, this);
@@ -174,85 +150,84 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
         choosePhotoDialog.show();
     }
 
-    @PermissionsDenied(CAMERA_CODE)
-    public void cameraDenied() {
-        MToast.showToast("相机权限授权失败！");
-    }
+//    @PermissionsCustomRationale({TAKEPHOTO_STORAGE_CODE, ABLUM_STORAGE_CODE, CAMERA_CODE_REQUEST})
+//    public void customRationale(final int code) {
+//        switch (code) {
+//            case TAKEPHOTO_STORAGE_CODE:
+//            case ABLUM_STORAGE_CODE:
+//                DialogUtils.showAlertDialog(this, "SD卡权限申请：\n我们需要您开启SD权限，一边访问上传头像", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        requestPermission(code, Manifest.permission.READ_EXTERNAL_STORAGE);
+//                    }
+//                });
+//                break;
+//            case CAMERA_CODE_REQUEST:
+//                DialogUtils.showAlertDialog(this, "相机权限申请：\n我们需要您开启相机信息权限", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        requestPermission(CAMERA_CODE_REQUEST, Manifest.permission.CAMERA);
+//                    }
+//                });
+//                break;
+//        }
+//    }
 
-    @PermissionsDenied(EXTERNAL_STORAGE_CODE)
-    public void storageDenied() {
-        MToast.showToast("SD卡权限授权失败！");
-    }
-
-    @PermissionsCustomRationale({TAKEPHOTO_STORAGE_CODE, ABLUM_STORAGE_CODE, CAMERA_CODE})
-    public void cameraCustomRationale(final int code) {
-        switch (code) {
-            case TAKEPHOTO_STORAGE_CODE:
-            case ABLUM_STORAGE_CODE:
-                DialogUtils.showAlertDialog(this, "SD卡权限申请：\n我们需要您开启SD权限，一边访问上传头像", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestPermission(code, Manifest.permission_group.STORAGE);
-                    }
-                });
-                break;
-            case CAMERA_CODE:
-                DialogUtils.showAlertDialog(this, "相机权限申请：\n我们需要您开启相机信息权限", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestPermission(CAMERA_CODE, Manifest.permission.CAMERA);
-                    }
-                });
-                break;
-        }
-    }
-
-    @PermissionsNonRationale({TAKEPHOTO_STORAGE_CODE, ABLUM_STORAGE_CODE, CAMERA_CODE})
-    public void non(int code, final Intent intent) {
-        switch (code) {
-            case TAKEPHOTO_STORAGE_CODE:
-            case ABLUM_STORAGE_CODE:
-                DialogUtils.showAlertDialog(this, "sd卡权限申请：\n我们需要您开启读SD卡权限，以便上传照片", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(intent);
-                    }
-                });
-                break;
-            case CAMERA_CODE:
-                DialogUtils.showAlertDialog(this, "读取相机权限申请：\n我们需要您开启读取相机权限", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(intent);
-
-                    }
-                });
-                break;
-        }
-    }
+//    @PermissionsNonRationale({TAKEPHOTO_STORAGE_CODE, ABLUM_STORAGE_CODE, CAMERA_CODE_REQUEST})
+//    public void non(int code, final Intent intent) {
+//        switch (code) {
+//            case TAKEPHOTO_STORAGE_CODE:
+//            case ABLUM_STORAGE_CODE:
+//                DialogUtils.showAlertDialog(this, "sd卡权限申请：\n我们需要您开启读SD卡权限，以便上传照片", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        startActivity(intent);
+//                    }
+//                });
+//                break;
+//            case CAMERA_CODE_REQUEST:
+//                DialogUtils.showAlertDialog(this, "读取相机权限申请：\n我们需要您开启读取相机权限", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        startActivity(intent);
+//
+//                    }
+//                });
+//                break;
+//        }
+//    }
 
     @Override
     public void choose(int which) {
         switch (which) {
             case ChoosePhotoDialog.ALBUM:
-                requestPermission(ABLUM_STORAGE_CODE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                checkStoragePermission();
                 break;
             case ChoosePhotoDialog.CANCEL:
                 choosePhotoDialog.dismiss();
                 break;
             case ChoosePhotoDialog.TAKE_PHOTO:
-                requestCameraPermission();
+//                requestCameraPermission();
+                checkCameraPermission();
                 break;
         }
     }
 
-    @PermissionsGranted(TAKEPHOTO_STORAGE_CODE)
+    @Override
+    public void storageGranted() {
+        pickPhoto();
+    }
+
+    @Override
+    public void cameraGranted() {
+        takePhoto();
+    }
+
     public void takePhoto() {
         userPhotoPath = CommonUtils.doCamra(this, "temp.jpg", DO_CAMERA_REQUEST);
         choosePhotoDialog.dismiss();
     }
 
-    @PermissionsGranted(ABLUM_STORAGE_CODE)
     public void pickPhoto() {
         userPhotoPath = CommonUtils.openSysPick(this, "userPhotoPath.jpg", OPEN_SYS_ALBUMS_REQUEST);
         choosePhotoDialog.dismiss();
@@ -372,13 +347,6 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
                 GlideApp.with(UserInfoActivity.this).load(userPhotoPath).into((ImageView) view);
             }
         });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[]
-            grantResults) {
-        Permissions4M.onRequestPermissionsResult(this, requestCode, grantResults);
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 }

@@ -36,7 +36,7 @@
             android:layout_marginTop="15dp"
             android:textColor="#ffffff"
             android:textSize="16sp"
-            android:text="@string/sample_phone1"/>
+            android:text=""/>
         
     </RelativeLayout>
     

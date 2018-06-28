@@ -35,62 +35,63 @@
         </provider>
 
         <activity
-            android:name=".ui.login.StartActivity" >
+            android:name=".ui.login.StartActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.login.LoginActivity" />
-        <activity android:name=".ui.login.GetVerificationCodeActivity" />
-        <activity android:name=".ui.login.ResetLoginPasswordActivity" />
-        <activity android:name=".ui.login.NationCodeListActivity" />
-        <activity android:name=".ui.login.SetPasswordActivity" />
-        <activity android:name=".ui.login.RegisterActivity" />
+        <activity android:name=".ui.login.LoginActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.login.GetVerificationCodeActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.login.ResetLoginPasswordActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.login.NationCodeListActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.login.SetPasswordActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.login.RegisterActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
         <activity
-            android:name=".ui.main.MainActivity" />
-        <activity android:name=".ui.createWallet.LoadOrCreateWalletActivity" />
-        <activity android:name=".ui.createWallet.WalletCreateSuccessActivity" />
-        <activity android:name=".ui.createWallet.SetTransactionPinActivity" />
-        <activity android:name=".ui.createWallet.CopyKeyWordsActivity" />
-        <activity android:name=".ui.createWallet.InputKeyWordActivity" />
-        <activity android:name=".ui.createWallet.CheckKeyWordActivity" />
-        <activity android:name=".ui.mining.IdentityAuthenticationActivity" />
-        <activity android:name=".ui.mining.MiningDetailActivity" />
-        <activity android:name=".ui.mining.MiningHashrateActivity" />
-        <activity android:name=".ui.mining.SendMiningCoinActivity" />
+            android:name=".ui.main.MainActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.createWallet.LoadOrCreateWalletActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.createWallet.WalletCreateSuccessActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.createWallet.SetTransactionPinActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.createWallet.CopyKeyWordsActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.createWallet.InputKeyWordActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.createWallet.CheckKeyWordActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.mining.IdentityAuthenticationActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.mining.MiningDetailActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.mining.MiningHashrateActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.mining.SendMiningCoinActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
         <activity
             android:name=".ui.mining.VerifyGesturePasswordActivity"
-            android:launchMode="singleInstance" />
-        <activity android:name=".ui.mining.ShareActivity" />
-        <activity android:name=".ui.user.AboutUsActivity" />
-        <activity android:name=".ui.user.GesturePasswordActivity" />
-        <activity android:name=".ui.user.HelpActivity" />
-        <activity android:name=".ui.user.InfoActivity" />
-        <activity android:name=".ui.user.UserInfoActivity" />
-        <activity android:name=".ui.user.SecurityManagerActivity" />
-        <activity android:name=".ui.mining.IdentityAuthentication2Activity" />
+            android:launchMode="singleInstance" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.mining.ShareActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.user.AboutUsActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.user.GesturePasswordActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.user.HelpActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.user.InfoActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.user.UserInfoActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.user.SecurityManagerActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.mining.IdentityAuthentication2Activity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
 
-        <service android:name=".ui.service.ScreenListenerService" />
+        <service android:name=".ui.service.ScreenListenerService" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
 
-        <activity android:name=".ui.wallet.BtcBalanceActivity" />
-        <activity android:name=".ui.wallet.BtcReceivedActivity" />
-        <activity android:name=".ui.wallet.BtcSendActivity" />
-        <activity android:name=".ui.wallet.EthBalanceActivity" />
-        <activity android:name=".ui.wallet.EthReceivedActivity" />
-        <activity android:name=".ui.wallet.EthSendActivity" />
-        <activity android:name=".ui.wallet.JgwBalanceActivity" />
-        <activity android:name=".ui.wallet.JgwReceivedActivity" />
-        <activity android:name=".ui.wallet.JgwSendActivity" />
-        <activity android:name=".ui.wallet.TransactionDetailActivity" />
-        <activity android:name=".ui.wallet.SendActivity" />
-        <activity android:name=".ui.wallet.WalletAddressActivity" />
-        <activity android:name=".ui.wallet.QrSanActivity" />
-        <activity android:name=".ui.mining.HashrateRecordListActivity" />
-        <activity android:name=".ui.user.FeedbackActivity" />
-        <activity android:name=".ui.user.UpdateNicknameActivity"></activity>
-        <service android:name=".logic.eth.service.TransactionService" />
+        <activity android:name=".ui.wallet.BtcBalanceActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.wallet.BtcReceivedActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.wallet.BtcSendActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.wallet.EthBalanceActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.wallet.EthReceivedActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.wallet.EthSendActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.wallet.JgwBalanceActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.wallet.JgwReceivedActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.wallet.JgwSendActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.wallet.TransactionDetailActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.wallet.SendActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.wallet.WalletAddressActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.wallet.QrSanActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.mining.HashrateRecordListActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.user.FeedbackActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.user.UpdateNicknameActivity" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"></activity>
+        <service android:name=".logic.eth.service.TransactionService" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
     </application>
 
 </manifest>

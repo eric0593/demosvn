@@ -13,6 +13,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.idea.jgw.App;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.utils.SPreferencesHelper;
+import com.idea.jgw.utils.common.MyLog;
 import com.idea.jgw.utils.common.ShareKey;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
 
@@ -39,7 +40,9 @@ public class ScreenListenerService extends Service {
     };
 
     private void verifyGesturePwd() {
-        if(!TextUtils.isEmpty((String) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_GESTURE_PWD, ""))) {
+        boolean gestureTakeoff = (boolean) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_TAKE_ON_GESTURE_PWD, false);
+        boolean hasActivity = !App.activityStack.empty();
+        if(!TextUtils.isEmpty((String) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_GESTURE_PWD, "")) && gestureTakeoff && App.login && hasActivity) {
             ARouter.getInstance().build(RouterPath.VERIFY_GESTURE_PASSWORD_ACTIVITY).navigation();
         }
     }

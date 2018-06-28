@@ -136,59 +136,66 @@ public class IdentityAuthentication2Activity extends BaseActivity {
         }
     }
 
-    @PermissionsCustomRationale({DO_CAMERA_PERMISSION_REQUEST, DO_CAMERA_PERMISSION_REQUEST_BACK, OPEN_SYS_ALBUMS_PERMISSION_REQUEST, OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK, DO_CAMERA_SD_PERMISSION_REQUEST, DO_CAMERA_SD_PERMISSION_REQUEST_BACK})
-    public void cameraCustomRationale(final int code) {
+//    @PermissionsCustomRationale({DO_CAMERA_PERMISSION_REQUEST, DO_CAMERA_PERMISSION_REQUEST_BACK, OPEN_SYS_ALBUMS_PERMISSION_REQUEST, OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK, DO_CAMERA_SD_PERMISSION_REQUEST, DO_CAMERA_SD_PERMISSION_REQUEST_BACK})
+    @Override
+    public void customRationale(final int code) {
         switch (code) {
             case DO_CAMERA_SD_PERMISSION_REQUEST:
             case DO_CAMERA_SD_PERMISSION_REQUEST_BACK:
             case OPEN_SYS_ALBUMS_PERMISSION_REQUEST:
             case OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK:
-                DialogUtils.showAlertDialog(this, "SD卡权限申请：\n我们需要您开启SD权限，一边访问上传头像", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestPermission(code, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    }
-                });
+                showPremissionRequest(code, Manifest.permission.WRITE_EXTERNAL_STORAGE, getString(R.string.why_need_storage));
+//                DialogUtils.showAlertDialog(this, "SD卡权限申请：\n我们需要您开启SD权限，一边访问上传头像", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        requestPermission(code, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//                    }
+//                });
                 break;
             case DO_CAMERA_PERMISSION_REQUEST:
             case DO_CAMERA_PERMISSION_REQUEST_BACK:
-                DialogUtils.showAlertDialog(this, "相机权限申请：\n我们需要您开启相机信息权限", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestPermission(code, Manifest.permission.CAMERA);
-                    }
-                });
+                showPremissionRequest(code, Manifest.permission.CAMERA, getString(R.string.why_need_camera));
+//                DialogUtils.showAlertDialog(this, "相机权限申请：\n我们需要您开启相机信息权限", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        requestPermission(code, Manifest.permission.CAMERA);
+//                    }
+//                });
                 break;
         }
     }
 
-    @PermissionsNonRationale({DO_CAMERA_PERMISSION_REQUEST, DO_CAMERA_PERMISSION_REQUEST_BACK, OPEN_SYS_ALBUMS_PERMISSION_REQUEST, OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK, DO_CAMERA_SD_PERMISSION_REQUEST, DO_CAMERA_SD_PERMISSION_REQUEST_BACK})
+//    @PermissionsNonRationale({DO_CAMERA_PERMISSION_REQUEST, DO_CAMERA_PERMISSION_REQUEST_BACK, OPEN_SYS_ALBUMS_PERMISSION_REQUEST, OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK, DO_CAMERA_SD_PERMISSION_REQUEST, DO_CAMERA_SD_PERMISSION_REQUEST_BACK})
+    @Override
     public void non(int requestCode, final Intent intent) {
         switch (requestCode) {
             case DO_CAMERA_PERMISSION_REQUEST:
             case DO_CAMERA_PERMISSION_REQUEST_BACK:
-                DialogUtils.showAlertDialog(this, "sd卡权限申请：\n我们需要您开启读SD卡权限，以便上传照片", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(intent);
-                    }
-                });
+                showExplain(intent, getString(R.string.why_need_storage));
+//                DialogUtils.showAlertDialog(this, "sd卡权限申请：\n我们需要您开启读SD卡权限，以便上传照片", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        startActivity(intent);
+//                    }
+//                });
                 break;
             case DO_CAMERA_SD_PERMISSION_REQUEST:
             case DO_CAMERA_SD_PERMISSION_REQUEST_BACK:
             case OPEN_SYS_ALBUMS_PERMISSION_REQUEST:
             case OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK:
-                DialogUtils.showAlertDialog(this, "sd卡权限申请：\n我们需要您开启读SD卡权限，以便上传照片", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(intent);
-                    }
-                });
+                showExplain(intent, getString(R.string.why_need_storage));
+//                DialogUtils.showAlertDialog(this, "sd卡权限申请：\n我们需要您开启读SD卡权限，以便上传照片", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        startActivity(intent);
+//                    }
+//                });
                 break;
         }
     }
 
-    @PermissionsGranted({DO_CAMERA_PERMISSION_REQUEST, DO_CAMERA_PERMISSION_REQUEST_BACK, OPEN_SYS_ALBUMS_PERMISSION_REQUEST, OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK, DO_CAMERA_SD_PERMISSION_REQUEST, DO_CAMERA_SD_PERMISSION_REQUEST_BACK})
+//    @PermissionsGranted({DO_CAMERA_PERMISSION_REQUEST, DO_CAMERA_PERMISSION_REQUEST_BACK, OPEN_SYS_ALBUMS_PERMISSION_REQUEST, OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK, DO_CAMERA_SD_PERMISSION_REQUEST, DO_CAMERA_SD_PERMISSION_REQUEST_BACK})
+    @Override
     public void granted(int requestCode) {
         switch (requestCode) {
             case DO_CAMERA_PERMISSION_REQUEST:
@@ -208,6 +215,22 @@ public class IdentityAuthentication2Activity extends BaseActivity {
                 break;
             case OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK:
                 backPhotoPath = CommonUtils.openSysPick(this, "back.jpg", OPEN_SYS_ALBUMS_REQUEST_BACK);
+                break;
+        }
+    }
+
+    @Override
+    public void denied(int requestCode) {
+        switch (requestCode) {
+            case DO_CAMERA_PERMISSION_REQUEST:
+            case DO_CAMERA_PERMISSION_REQUEST_BACK:
+                MToast.showToast(R.string.camera_permission_fail);
+                break;
+            case DO_CAMERA_SD_PERMISSION_REQUEST:
+            case DO_CAMERA_SD_PERMISSION_REQUEST_BACK:
+            case OPEN_SYS_ALBUMS_PERMISSION_REQUEST:
+            case OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK:
+                MToast.showToast(R.string.storage_permission_fail);
                 break;
         }
     }
@@ -271,7 +294,7 @@ public class IdentityAuthentication2Activity extends BaseActivity {
                     if (data != null) {
                         frontPhotoPath = CommonUtils.getRealPathFromUri(this, data.getData());
                     } else {
-                        MToast.showToast("图片损坏，请重新选择");
+                        MToast.showToast(R.string.file_not_exists);
                     }
                 case DO_CAMERA_REQUEST:
                     GlideApp.with(this).load(frontPhotoPath).centerInside().into(ivFrontIdCard);
@@ -280,7 +303,7 @@ public class IdentityAuthentication2Activity extends BaseActivity {
                     if (data != null) {
                         backPhotoPath = CommonUtils.getRealPathFromUri(this, data.getData());
                     } else {
-                        MToast.showToast("图片损坏，请重新选择");
+                        MToast.showToast(R.string.file_not_exists);
                     }
                 case DO_CAMERA_REQUEST_BACK:
                     GlideApp.with(this).load(backPhotoPath).centerInside().into(ivBackIdCard);

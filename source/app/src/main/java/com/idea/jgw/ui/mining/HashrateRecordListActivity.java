@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -114,22 +115,33 @@ public class HashrateRecordListActivity extends BaseActivity implements BaseRecy
                                        Type type = new TypeToken<PageData<CaculateRecord>>(){}.getType();
                                        PageData<CaculateRecord> caculateRecordPageData = JSON.parseObject(baseResponse.getData().toString(), type);
                                        List<CaculateRecord> caculateRecords = caculateRecordPageData.getList();
+                                       int totalCount = 0;
                                        if(page == 0) {
-                                           hashrateRecordAdapter.replaceDatas(caculateRecords);
+                                           if(caculateRecords != null) {
+                                               hashrateRecordAdapter.replaceDatas(caculateRecords);
+                                           } else {
+                                               hashrateRecordAdapter.getmDatas().clear();
+                                               hashrateRecordAdapter.notifyDataSetChanged();
+                                           }
                                            rvOfNationList.refreshComplete();
                                        } else {
-                                           hashrateRecordAdapter.addDatas(caculateRecords);
+                                           if(caculateRecords != null) {
+                                               hashrateRecordAdapter.addDatas(caculateRecords);
+                                           }
                                            rvOfNationList.loadMoreComplete();
                                        }
-                                       int totalCount = caculateRecordPageData.getCount();
-                                       int size = caculateRecords.size();
-                                       count += size;
+                                       if(caculateRecords != null) {
+                                           totalCount = caculateRecordPageData.getCount();
+                                           int size = caculateRecords.size();
+                                           count += size;
+                                       }
+                                       page++;
                                        if(totalCount > count) {
                                            rvOfNationList.setNoMore(false);
                                        } else {
                                            rvOfNationList.setNoMore(true);
+                                           rvOfNationList.getFootView().setVisibility(View.GONE);
                                        }
-                                       page++;
                                    } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
                                        reLogin();
                                        MToast.showToast(baseResponse.getData().toString());

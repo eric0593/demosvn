@@ -97,6 +97,7 @@ public class MiningDetailActivity extends BaseActivity implements BaseRecyclerAd
     @Override
     public void initView() {
         tvOfTitle.setText(R.string.mining_detail);
+        tvCnyValue.setText(0 + getString(R.string.cny));
 
         if (getIntent().hasExtra("coinType")) {
             coinType = getIntent().getIntExtra("coinType", 1);
@@ -141,19 +142,25 @@ public class MiningDetailActivity extends BaseActivity implements BaseRecyclerAd
                                        PageData<MiningCoinData> miningCoinDatas = JSON.parseObject(baseResponse.getData().toString(), type);
                                        List<MiningCoinData> miningCoinData = miningCoinDatas.getList();
                                        if(page == 0) {
+                                           if(miningCoinData != null)
                                            miningDetailAdapter.replaceDatas(miningCoinData);
                                            rvOfDetailAsset.refreshComplete();
                                        } else {
+                                           if(miningCoinData != null)
                                            miningDetailAdapter.addDatas(miningCoinData);
                                            rvOfDetailAsset.loadMoreComplete();
                                        }
-                                       int totalCount = miningCoinDatas.getCount();
-                                       int size = miningCoinData.size();
-                                       count += size;
+                                       int totalCount = 0;
+                                       if(miningCoinData != null) {
+                                           totalCount = miningCoinDatas.getCount();
+                                           int size = miningCoinData.size();
+                                           count += size;
+                                       }
                                        if(totalCount > count) {
                                            rvOfDetailAsset.setNoMore(false);
                                        } else {
                                            rvOfDetailAsset.setNoMore(true);
+                                           rvOfDetailAsset.getFootView().setVisibility(View.GONE);
                                        }
                                        page++;
                                    } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
