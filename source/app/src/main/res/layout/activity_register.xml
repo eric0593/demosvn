@@ -140,7 +140,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:hint="@string/hint_of_invite_code"
-            android:inputType="textPassword"
             android:layout_weight="1"/>
 
     </LinearLayout>

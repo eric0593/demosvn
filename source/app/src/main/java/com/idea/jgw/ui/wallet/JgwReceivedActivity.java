@@ -3,13 +3,16 @@ package com.idea.jgw.ui.wallet;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.TypedValue;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.google.zxing.qrcode.CreateQRUtils;
+import com.google.zxing.qrcode.QRCodeUtil;
 import com.idea.jgw.App;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.common.Common;
 import com.idea.jgw.logic.eth.IBAN;
+import com.idea.jgw.utils.DisplayUtils;
 import com.idea.jgw.utils.SPreferencesHelper;
 
 import org.web3j.utils.Numeric;
@@ -44,19 +47,21 @@ public class JgwReceivedActivity extends WalletAddressActivity {
 
         tvSendAddress.setText(addressNoPrefix);
 
-        final int addressWeight = ivOfMyAddress.getMeasuredWidth();//图片的实际大小
-        final int adressHeight = ivOfMyAddress.getMeasuredHeight();
         new Thread(new Runnable() {
             @Override
             public void run() {
+                int height = DisplayUtils.dp2px(JgwReceivedActivity.this,162);
+                try{
+                    final Bitmap bitmap = QRCodeUtil.createQRImage(address, height, height,null);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ivOfMyAddress.setImageBitmap(bitmap);
+                        }
+                    });
+                }catch (Exception e ){
 
-                final Bitmap bitmap = CreateQRUtils.create2DCode(address, addressWeight, adressHeight);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ivOfMyAddress.setImageBitmap(bitmap);
-                    }
-                });
+                }
             }
         }).start();
     }

@@ -136,7 +136,8 @@ public class SetTransactionPinActivity extends BaseActivity implements PayPsdInp
             MToast.showLongToast("已经有钱包了");
         }
 
-        EthWalltUtils.createEthWallet(SetTransactionPinActivity.this, new EthWalltUtils.CreateUalletCallback() {
+        String  s = BtcWalltUtils.getPassphrase();
+        EthWalltUtils.createEthWallet2(SetTransactionPinActivity.this,s, new EthWalltUtils.CreateUalletCallback() {
             @Override
             public void onSuccess(String address) {
                 ARouter.getInstance().build(RouterPath.WALLET_CREATE_SUCCESS_ACTIVITY).navigation();

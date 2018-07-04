@@ -27,9 +27,10 @@ import com.idea.jgw.logic.eth.service.TransactionService;
 import com.idea.jgw.logic.eth.utils.AddressNameConverter;
 import com.idea.jgw.logic.eth.utils.ExchangeCalculator;
 import com.idea.jgw.logic.eth.utils.KeyStoreUtils;
+import com.idea.jgw.logic.eth.utils.MyMnemonicUtils;
 import com.idea.jgw.logic.eth.utils.ResponseParser;
+import com.idea.jgw.logic.eth.utils.SecureRandomUtils;
 import com.idea.jgw.logic.eth.utils.WalletStorage;
-import com.idea.jgw.ui.createWallet.SetTransactionPinActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.MyLog;
@@ -40,10 +41,13 @@ import org.bitcoinj.core.Base58;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
+import org.web3j.crypto.Bip39Wallet;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Hash;
 import org.web3j.crypto.Keys;
+import org.web3j.crypto.MnemonicUtils;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.crypto.Wallet;
@@ -89,6 +93,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static org.web3j.crypto.Keys.ADDRESS_LENGTH_IN_HEX;
+import static org.web3j.crypto.WalletUtils.generateWalletFile;
 
 /**
  * 以太钱包工具类
@@ -157,6 +162,12 @@ public class EthWalltUtils extends WalletUtils {
 
         if (true) return;
 
+
+        //===============================================================================================================
+        //===============================================================================================================
+        //-------------------------------------------------下面的暂时不用。----------------------------------------------
+        //===============================================================================================================
+        //===============================================================================================================
 
 //        EtherscanAPI.getInstance().getNonceForAddress(fromAddress, new Callback() {
 //            @Override
@@ -258,6 +269,80 @@ public class EthWalltUtils extends WalletUtils {
     }
 
 
+    /**
+     * 创建钱包
+     *
+     * @param context
+     * @param passphrase 助记词 （用BtcWalltUtils.getPassphrase()生成）
+     * @param callback   回调
+     */
+    public static void createEthWallet2(Context context, String passphrase, CreateUalletCallback callback) {
+        String masterHex = BtcWalltUtils.getMasterHex(context, passphrase);
+        if (null == masterHex) {
+            masterHex = passphrase;
+        }
+        String pwd = Base58.encode(masterHex.getBytes());
+        File file = new File(context.getFilesDir(), "");
+        try {
+            Bip39Wallet wallet = generateBip39Wallet(passphrase, pwd, file);
+            String mnemonic = wallet.getMnemonic();
+            String filename = wallet.getFilename();
+            int lastIndex = filename.lastIndexOf("--") + 2;
+            filename = filename.substring(lastIndex, filename.length() - 5);
+
+
+            WalletStorage.getInstance(context).add(new FullWallet("0x" + filename, filename), context);
+            AddressNameConverter.getInstance(context).put("0x" + filename, "Wallet " + ("0x" + filename).substring(0, 6), context);
+            SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_ADDRESS_KEY, filename);
+            SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_PWD_KEY, pwd);
+            SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.FILE_DIR, file.getPath());
+            SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.FILE_NAME, wallet.getFilename());
+
+            if (null != callback) {
+                callback.onSuccess(filename);
+            }
+        } catch (Exception e) {
+            if (null != callback) {
+                callback.onFaild();
+            }
+        }
+    }
+
+
+    static SecureRandom secureRandom = SecureRandomUtils.secureRandom();
+
+    public static Bip39Wallet generateBip39Wallet(String mnemonic, String password, File destinationDirectory) throws CipherException, IOException {
+        byte[] initialEntropy = new byte[16];
+        secureRandom.nextBytes(initialEntropy);
+//        String mnemonic = generateMnemonic(initialEntropy); //直接传过来
+        byte[] seed = MyMnemonicUtils.generateSeed(mnemonic, password);
+        ECKeyPair privateKey = ECKeyPair.create(Hash.sha256(seed));
+        String walletFile = generateWalletFile(password, privateKey, destinationDirectory, false);
+        return new Bip39Wallet(walletFile, mnemonic);
+    }
+
+    public static String generateMnemonic(byte[] initialEntropy) {
+        MyMnemonicUtils.validateInitialEntropy(initialEntropy);
+        int ent = initialEntropy.length * 8;
+        int checksumLength = ent / 32;
+        byte checksum = MyMnemonicUtils.calculateChecksum(initialEntropy);
+        boolean[] bits = MyMnemonicUtils.convertToBits(initialEntropy, checksum);
+        int iterations = (ent + checksumLength) / 11;
+        StringBuilder mnemonicBuilder = new StringBuilder();
+
+        for (int i = 0; i < iterations; ++i) {
+            int index = MyMnemonicUtils.toInt(MyMnemonicUtils.nextElevenBits(bits, i));
+            mnemonicBuilder.append((String) MyMnemonicUtils.WORD_LIST.get(index));
+            boolean notLastIteration = i < iterations - 1;
+            if (notLastIteration) {
+                mnemonicBuilder.append(" ");
+            }
+        }
+
+        return mnemonicBuilder.toString();
+    }
+
+
     public static void createEthWallet(Context context, CreateUalletCallback callback) {
 
         ArrayList<StorableWallet> storedwallets = new ArrayList<StorableWallet>(WalletStorage.getInstance(context).get());
@@ -324,8 +409,7 @@ public class EthWalltUtils extends WalletUtils {
     }
 
 
-
-    public static String parseBalance(String balance, int comma)   {
+    public static String parseBalance(String balance, int comma) {
         if (balance.equals("0")) return "0";
         return new BigDecimal(balance).divide(new BigDecimal(1000000000000000000d), comma, BigDecimal.ROUND_UP).toPlainString();
     }
@@ -336,10 +420,10 @@ public class EthWalltUtils extends WalletUtils {
      * @param address  地址
      * @param callback 回调
      */
-    public static final void getCurAvailable(final Activity ac,  String address, final TLCallback callback) {
+    public static final void getCurAvailable(final Activity ac, String address, final TLCallback callback) {
 
-        if(!address.contains("0x")){
-            address = "0x"+address;
+        if (!address.contains("0x")) {
+            address = "0x" + address;
         }
 
         final Handler handler = new Handler(Looper.getMainLooper()) {
@@ -359,7 +443,7 @@ public class EthWalltUtils extends WalletUtils {
 //            @Override
 //            public void run() {
 
-                final Message msg = handler.obtainMessage();
+        final Message msg = handler.obtainMessage();
 //                try {
 //                    Web3j web3j = Web3jFactory.build(new HttpService(Common.Eth.URL));
 //                    Request<?, EthGetBalance> ethGetBalanceRequest = web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST);
@@ -370,39 +454,39 @@ public class EthWalltUtils extends WalletUtils {
 //                    MyLog.e("balance--getCurAvailable>>>?" + balance.toString());
 //                } catch (Exception e) {
 //                    e.printStackTrace();
-                    //另外一种方式
-                    try {
-                        EtherscanAPI.getInstance().getBalance(address, new Callback() {
-                            @Override
-                            public void onFailure(Call call, IOException e) {
-                                msg.what = -1;
-                            }
+        //另外一种方式
+        try {
+            EtherscanAPI.getInstance().getBalance(address, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    msg.what = -1;
+                }
 
-                            @Override
-                            public void onResponse(final Call call, final Response response) throws IOException {
+                @Override
+                public void onResponse(final Call call, final Response response) throws IOException {
 //                                callback.onResponse(call, response);
 //                                {"status":"1","message":"OK","result":"0"}
-                               try{
-                                   msg.what = 0;
-                                   msg.obj =new JSONObject( response.body().string()).optString("result");
-                                   handler.sendMessage(msg);
-                               }catch (Exception e){
-                                   msg.what = -1;
-                                   handler.sendMessage(msg);
-                               }
-
-                            }
-                        });
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        if (null != callback) {
-
-                        }
+                    try {
+                        msg.what = 0;
+                        msg.obj = new JSONObject(response.body().string()).optString("result");
+                        handler.sendMessage(msg);
+                    } catch (Exception e) {
                         msg.what = -1;
                         handler.sendMessage(msg);
-                    }finally {
-
                     }
+
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            if (null != callback) {
+
+            }
+            msg.what = -1;
+            handler.sendMessage(msg);
+        } finally {
+
+        }
 
 //                } finally {
 //                    handler.sendMessage(msg);

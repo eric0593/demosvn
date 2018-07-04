@@ -119,7 +119,7 @@ public class IBAN {
 	public static String IBAN2Address(String iban) {
 		String base36 = iban.substring(4);
 		StringBuilder base16 = new StringBuilder(new BigInteger(base36, 36).toString(16));
-		while (base16.length() < 20) {
+		while (base16.length() < 40) {
 			base16.insert(0, "0");
 		}
 		return "0x" + base16.toString().toLowerCase();

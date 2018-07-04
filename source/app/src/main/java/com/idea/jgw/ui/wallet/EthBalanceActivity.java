@@ -47,6 +47,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import jnr.ffi.annotations.TypeDefinition;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -68,6 +69,8 @@ public class EthBalanceActivity extends BalanceActivity {
     private long unconfirmed_addedTime;
     protected TransactionDisplay unconfirmed;
 
+    public static final String EXTRA_AMOUNT = "EthBalanceActivity_EXTRA_AMOUNT";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,18 +84,10 @@ public class EthBalanceActivity extends BalanceActivity {
         ivOfLogo.setImageResource(R.mipmap.icon_eth);
 
 
-//        if (App.isWalletDebug) {
-//
-//            try {
-//                Web3j web3j = Web3jFactory.build(new HttpService(Common.Eth.URL));
-//                Request<?, EthGetBalance> ethGetBalanceRequest = web3j.ethGetBalance("0x339b66306381b81d9dc15771059a559e5ecb838e", DefaultBlockParameterName.LATEST);
-//                BigInteger balance = ethGetBalanceRequest.sendAsync().get().getBalance();
-//                MyLog.e("balance--getCurAvailable>>>?" + balance.toString());
-//            } catch (Exception e) {
-//
-//            }
-//        }
 
+        String balance = getIntent().getStringExtra(EXTRA_AMOUNT);
+        if (!TextUtils.isEmpty(balance))
+            tvOfUsableBalanceValue.setText(balance);
 
         String ethAddress = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.PREFERENCES_ADDRESS_KEY, "").toString();
         //钱包为空
@@ -103,6 +98,9 @@ public class EthBalanceActivity extends BalanceActivity {
             //获取交易记录
             getTransactionRecord(false);
 
+            //
+            //这里需要优化下
+            //当 String balance = getIntent().getStringExtra(EXTRA_AMOUNT);不为空时，不需要再去请求数据
             //获取姨太的金额
             getEthBanlance(ethAddress);
         }
@@ -130,6 +128,8 @@ public class EthBalanceActivity extends BalanceActivity {
 //                    df.setMaximumFractionDigits(18);
                         BigDecimal amount = new BigDecimal(bi.toString(10)).divide(bd);
                         String balance = df.format(amount.doubleValue());
+
+                        mCurAvailable = amount;
 
                         tvOfUsableBalanceValue.setText(balance);
                     }

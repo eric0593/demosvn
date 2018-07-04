@@ -42,6 +42,10 @@ public class JgwBalanceActivity extends BalanceActivity {
     JgwTransferRecordListAdapter  transferRecordListAdapter;
     protected List<TransactionDisplay> wallets = new ArrayList<>();
 
+    public static final String EXTRA_AMOUNT = "JgwBalanceActivity_EXTRA_AMOUNT";
+
+    final JgwUtils ju = new JgwUtils();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +62,14 @@ public class JgwBalanceActivity extends BalanceActivity {
         tvOfTitle.setText(R.string.jgw);
         ivOfLogo.setImageResource(R.mipmap.icon_oce);
 
+
+        balance= getIntent().getStringExtra(JgwBalanceActivity.EXTRA_AMOUNT);
+        if(TextUtils.isEmpty(balance)){
+            getBalance();
+        }else{
+            tvOfUsableBalanceValue.setText(balance);
+        }
+
         address = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.PREFERENCES_ADDRESS_KEY, "").toString();
         if (TextUtils.isEmpty(address)) {
             MToast.showLongToast(R.string.jgw_get_address_err);
@@ -65,9 +77,39 @@ public class JgwBalanceActivity extends BalanceActivity {
             return;
         }
 
+        getTX();
+    }
 
 
-        final JgwUtils ju = new JgwUtils();
+    private void getTX(){
+        ju.queryTX(address,new TLCallback() {
+            @Override
+            public void onSuccess(Object obj) {
+                if(null == obj)
+                    return;
+                wallets = (     List<TransactionDisplay> )obj;
+                transferRecordListAdapter.replaceData(wallets);
+            }
+
+            @Override
+            public void onFail(Integer status, String error) {
+
+            }
+
+            @Override
+            public void onSetHex(String hex) {
+
+            }
+
+            @Override
+            public void onAmountMoveFromAccount(TLCoin amountMovedFromAccount) {
+
+            }
+        });
+    }
+
+    private void getBalance(){
+
         ju.queryBalance(address, new TLCallback() {
             @Override
             public void onSuccess(Object obj) {
@@ -105,32 +147,6 @@ public class JgwBalanceActivity extends BalanceActivity {
             }
         });
 
-
-
-        ju.queryTX(new TLCallback() {
-            @Override
-            public void onSuccess(Object obj) {
-                if(null == obj)
-                    return;
-                wallets = (     List<TransactionDisplay> )obj;
-                transferRecordListAdapter.replaceData(wallets);
-            }
-
-            @Override
-            public void onFail(Integer status, String error) {
-
-            }
-
-            @Override
-            public void onSetHex(String hex) {
-
-            }
-
-            @Override
-            public void onAmountMoveFromAccount(TLCoin amountMovedFromAccount) {
-
-            }
-        });
     }
 
     @Override
@@ -151,12 +167,12 @@ public class JgwBalanceActivity extends BalanceActivity {
 
     @Override
     public void onItemClick(int position, Object data) {
-//        TransactionDisplay td = (TransactionDisplay)data;
-//        ARouter.getInstance().build(RouterPath.TRANSACTION_DETAIL_ACTIVITY)
-////                .withObject(EXTRA_DETAIL_OBJECT,data)
-//                .withSerializable(TransactionDetailActivity.EXTRA_DETAIL_OBJECT,td)
-//                .withInt(TransactionDetailActivity.EXTRA_COIN_TYPE,Common.CoinTypeEnum.JGW.getIndex())
-//                .navigation();
+        TransactionDisplay td = (TransactionDisplay)data;
+        ARouter.getInstance().build(RouterPath.TRANSACTION_DETAIL_ACTIVITY)
+//                .withObject(EXTRA_DETAIL_OBJECT,data)
+                .withSerializable(TransactionDetailActivity.EXTRA_DETAIL_OBJECT,td)
+                .withInt(TransactionDetailActivity.EXTRA_COIN_TYPE,Common.CoinTypeEnum.JGW.getIndex())
+                .navigation();
     }
 
 }

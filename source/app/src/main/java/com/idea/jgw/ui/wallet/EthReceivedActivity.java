@@ -7,7 +7,10 @@ import android.text.TextUtils;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.google.zxing.qrcode.CreateQRUtils;
+import com.google.zxing.qrcode.QRCodeUtil;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.idea.jgw.RouterPath;
+import com.idea.jgw.utils.DisplayUtils;
 
 import org.web3j.utils.Numeric;
 
@@ -41,18 +44,21 @@ public class EthReceivedActivity extends WalletAddressActivity {
 
         tvSendAddress.setText(addressNoPrefix);
 
-        final int addressWeight = ivOfMyAddress.getMeasuredWidth();//图片的实际大小
-        final int adressHeight = ivOfMyAddress.getMeasuredHeight();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final Bitmap bitmap = CreateQRUtils.create2DCode(address, addressWeight, adressHeight);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ivOfMyAddress.setImageBitmap(bitmap);
-                    }
-                });
+                int height = DisplayUtils.dp2px(EthReceivedActivity.this,162);
+                try{
+                    final Bitmap bitmap = QRCodeUtil.createQRImage(address, height, height,null);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ivOfMyAddress.setImageBitmap(bitmap);
+                        }
+                    });
+                }catch (Exception e ){
+
+                }
             }
         }).start();
     }

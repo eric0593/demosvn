@@ -203,6 +203,38 @@ public class EtherscanAPI {
     }
 
 
+    /**
+     * 获取交易记录（代币的）
+     * @param tokenAddres 智能合约地址
+     * @param ethAddress 姨太的地址
+     * @param b
+     * @throws IOException
+     */
+    public void getTransaction(String tokenAddres,String ethAddress,Callback b) throws IOException{
+        String url ="https://api.etherscan.io/api?module=logs&action=getLogs&fromBlock=earliest&toBlock=latest&address="+ tokenAddres;
+        url = url +"&topic2="+getTopic2(ethAddress);
+        url = url + "&apikey=" + token;
+        get(url,b);
+    }
+
+    private String getTopic2(String ethAddress){
+        ethAddress = ethAddress.replace("0x", "");
+        if (ethAddress.length() == 64) {
+//            ethAddress = "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+//                    + ethAddress;
+            ethAddress = "0x"+ethAddress;
+        } else {
+            StringBuilder sb = new StringBuilder();
+            sb.append("0x");
+            for (int i = 0; i < 64 - ethAddress.length(); i++) {
+                sb.append("0");
+            }
+            sb.append(ethAddress);
+            ethAddress = sb.toString();
+        }
+        return ethAddress;
+    }
+
     private EtherscanAPI() {
         token = new Key(APIKey.API_KEY).toString();
     }

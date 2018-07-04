@@ -94,7 +94,8 @@ public abstract class BaseActivity extends SupportActivity implements ListenerWr
         long currentTime = System.currentTimeMillis();
         if(currentTime - lastTouchTime > 1000) {
             lastTouchTime = currentTime;
-            sendBroadcast(new Intent(ScreenListenerService.ACTION_TOUCH_SCREEN));
+//            sendBroadcast(new Intent(ScreenListenerService.ACTION_TOUCH_SCREEN));
+            startService(new Intent(this, ScreenListenerService.class));
             MyLog.e("dispatchTouchEvent ======");
         }
         return super.dispatchTouchEvent(ev);
@@ -162,7 +163,7 @@ public abstract class BaseActivity extends SupportActivity implements ListenerWr
     }
 
     public void reLogin() {
-        SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_LOGIN, true);
+        SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_LOGIN, false);
         ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
         App.finishAllActivity();
         finish();

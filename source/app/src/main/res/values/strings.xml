@@ -233,6 +233,7 @@
     <string name="jgw_query_balance_coin_eror">获取甲骨币余额失败</string>
     <string name="jgw_get_address_err">获取甲骨文地址失败</string>
     <string name="jgw_send_coin_succes">发送甲骨文成功</string>
+    <string name="jgw_send_coin_fair_not_have_eth">发送甲骨文失败,没有足够的ETH,用于转账手续费！ </string>
     <string name="jgw_send_coin_fair">发送甲骨文失败</string>
     <string name="id_number_is_null">身份证号码不能为空！</string>
     <string name="name_is_null">姓名不能为空！</string>
@@ -251,6 +252,7 @@
     <string name="share_to">分享到</string>
     <string name="feedback">意见反馈</string>
     <string name="personal_info">个人信息</string>
+    <string name="recover_faild">恢复钱包失败</string>
 
     <string name="quit_notice">连续两次返回退出！</string>
     <string name="current_is_new">已是最新版本！</string>

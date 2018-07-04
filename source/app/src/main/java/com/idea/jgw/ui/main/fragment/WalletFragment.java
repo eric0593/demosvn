@@ -16,6 +16,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
+import com.idea.jgw.bean.Coin;
 import com.idea.jgw.bean.CoinData;
 import com.idea.jgw.common.Common;
 import com.idea.jgw.logic.btc.interfaces.TLCallback;
@@ -25,6 +26,9 @@ import com.idea.jgw.logic.jgw.JgwUtils;
 import com.idea.jgw.ui.main.MainActivity;
 import com.idea.jgw.ui.BaseRecyclerAdapter;
 import com.idea.jgw.ui.main.adapter.DigitalCurrencysAdapter;
+import com.idea.jgw.ui.wallet.BalanceActivity;
+import com.idea.jgw.ui.wallet.EthBalanceActivity;
+import com.idea.jgw.ui.wallet.JgwBalanceActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.MyLog;
 
@@ -126,12 +130,12 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
                 break;
             case ETH:
                 ARouter.getInstance().build(RouterPath.BALANCE_ETH_ACTIITY)
-//                    .withSerializable(BalanceActivity.EXTRA_COIN_TYPE, Coin.CoinType.ETH)
+                        .withSerializable(EthBalanceActivity.EXTRA_AMOUNT, data.getCount())
                         .navigation();
                 break;
             case JGW:
                 ARouter.getInstance().build(RouterPath.BALANCE_JGW_ACTIITY)
-//                    .withSerializable(BalanceActivity.EXTRA_COIN_TYPE, Coin.CoinType.JGW)
+                    .withSerializable(JgwBalanceActivity.EXTRA_AMOUNT, data.getCount())
                         .navigation();
                 break;
         }

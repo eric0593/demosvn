@@ -159,6 +159,7 @@ public class SetPasswordActivity extends BaseActivity {
             @Override
             protected void _onNext(BaseResponse baseResponse) {
                 if(baseResponse.getCode() == BaseResponse.RESULT_OK) {
+                    App.login = true;
                     SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_SESSION, baseResponse.getData().toString());
                     SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_LOGIN, true);
                     ARouter.getInstance().build(RouterPath.LOAD_OR_CREATE_WALLET_ACTIVITY).navigation();

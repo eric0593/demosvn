@@ -138,7 +138,7 @@ public class LoginActivity extends BaseActivity {
 
               final  String phone = etOfPhone.getText().toString().trim();
                 String pwd = etOfPwd.getText().toString().trim();
-                if(TextUtils.isEmpty(pwd)) {
+                if(TextUtils.isEmpty(phone)) {
                     MToast.showToast(R.string.phone_is_null);
                 } else if(TextUtils.isEmpty(pwd)) {
                     MToast.showToast(R.string.verify_code_is_null);
@@ -157,6 +157,7 @@ public class LoginActivity extends BaseActivity {
                                         @Override
                                         public void call(Subscriber<? super Boolean> subscriber) {
                                             if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
+                                                App.login = true;
                                                 SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_SESSION, baseResponse.getData().toString());
                                                 SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_LOGIN, true);
                                                 SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_PHONE, phone);
@@ -171,7 +172,7 @@ public class LoginActivity extends BaseActivity {
                                                 subscriber.onNext(hasEthWallet);
                                                 subscriber.onCompleted();
 
-                                            } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                                            } else {
 //                                                MToast.showToast(baseResponse.getData().toString());
                                                 subscriber.onError(new Exception(baseResponse.getData().toString()));
                                             }

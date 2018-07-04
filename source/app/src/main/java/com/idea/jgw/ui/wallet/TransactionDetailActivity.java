@@ -90,39 +90,42 @@ public class TransactionDetailActivity extends BaseActivity {
     public void initView() {
         tvOfTitle.setText(R.string.transaction_detail);
 
+        TransactionDisplay td = (TransactionDisplay) getIntent().getSerializableExtra(EXTRA_DETAIL_OBJECT);
         //根据货币类型做处理
         coinType = getIntent().getIntExtra(EXTRA_COIN_TYPE, -1);
         if (coinType == Common.CoinTypeEnum.BTC.getIndex()) {
             ivCoinLogo.setImageResource(R.mipmap.icon_btc);
         } else if (coinType == Common.CoinTypeEnum.ETH.getIndex()) {
             ivCoinLogo.setImageResource(R.mipmap.icon_eth);
-            BigDecimal bd = new BigDecimal(10).pow(18);
-            DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
-            df.setMaximumFractionDigits(18);
-
-            TransactionDisplay td = (TransactionDisplay) getIntent().getSerializableExtra(EXTRA_DETAIL_OBJECT);
-            tvTransactionId.setText(getResources().getString(R.string.transaction_id) + ":" + td.getTxHash());
-            tvChainNumber.setText(getResources().getString(R.string.chain_number) + ":" + td.getBlock());
-            tvSendTime.setText(sdf.format(new Date(td.getDate())));
-            BigDecimal gas = new BigDecimal(td.getGasUsed() * td.getGasprice()).divide(bd);
-            tvCommission.setText(getResources().getString(R.string.commission) + ":" + df.format(gas.doubleValue()));
-            BigDecimal amount = new BigDecimal(td.getAmountNative()).divide(bd);
-            tvTransactionNumber.setText(df.format(amount.doubleValue()));
-            // amount > 0 表示接收，< 0表示发送
-            if (td.getAmount() > 0) {
-                tvSendLabel.setText(R.string.received);
-                tvSendAddress.setText(td.getToAddress());
-                tvReceivedAddress.setText(td.getFromAddress());
-            }else{
-                tvSendLabel.setText(R.string.send);
-                tvReceivedAddress.setText(td.getToAddress());
-                tvSendAddress.setText(td.getFromAddress());
-            }
+            setDataToValue(td);
         } else if (coinType == Common.CoinTypeEnum.JGW.getIndex()) {
             ivCoinLogo.setImageResource(R.mipmap.icon_oce);
-//            String address = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.PREFERENCES_ADDRESS_KEY, "").toString();
-            TransactionDisplay td = (TransactionDisplay) getIntent().getSerializableExtra(EXTRA_DETAIL_OBJECT);
+            setDataToValue(td);
 
+        }
+    }
+
+    private void setDataToValue(TransactionDisplay td){
+        BigDecimal bd = new BigDecimal(10).pow(18);
+        DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
+        df.setMaximumFractionDigits(18);
+
+        tvTransactionId.setText(getResources().getString(R.string.transaction_id) + ":" + td.getTxHash());
+        tvChainNumber.setText(getResources().getString(R.string.chain_number) + ":" + td.getBlock());
+        tvSendTime.setText(sdf.format(new Date(td.getDate())));
+        BigDecimal gas = new BigDecimal(td.getGasUsed() * td.getGasprice()).divide(bd);
+        tvCommission.setText(getResources().getString(R.string.commission) + ":" + df.format(gas.doubleValue()));
+        BigDecimal amount = new BigDecimal(td.getAmountNative()).divide(bd);
+        tvTransactionNumber.setText(df.format(amount.doubleValue()));
+        // amount > 0 表示接收，< 0表示发送
+        if (td.getAmount() > 0) {
+            tvSendLabel.setText(R.string.received);
+            tvSendAddress.setText(td.getToAddress());
+            tvReceivedAddress.setText(td.getFromAddress());
+        }else{
+            tvSendLabel.setText(R.string.send);
+            tvReceivedAddress.setText(td.getToAddress());
+            tvSendAddress.setText(td.getFromAddress());
         }
     }
 

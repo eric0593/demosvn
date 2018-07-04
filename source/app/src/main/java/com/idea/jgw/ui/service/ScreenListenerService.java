@@ -12,7 +12,9 @@ import android.text.TextUtils;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.idea.jgw.App;
 import com.idea.jgw.RouterPath;
+import com.idea.jgw.ui.user.GesturePasswordActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
+import com.idea.jgw.utils.common.CommonUtils;
 import com.idea.jgw.utils.common.MyLog;
 import com.idea.jgw.utils.common.ShareKey;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
@@ -26,10 +28,15 @@ public class ScreenListenerService extends Service {
     static final int LOCK_SECOND = 1 * 60;
     int lockScreenSecond = LOCK_SECOND;
     Thread lockScreenThread;
+    boolean running;
 
     BroadcastReceiver screenBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(TextUtils.isEmpty(action)) {
+                return;
+            }
             if(intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
                 verifyGesturePwd();
             } else if(intent.getAction().equals(ACTION_TOUCH_SCREEN)) {
@@ -42,7 +49,9 @@ public class ScreenListenerService extends Service {
     private void verifyGesturePwd() {
         boolean gestureTakeoff = (boolean) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_TAKE_ON_GESTURE_PWD, false);
         boolean hasActivity = !App.activityStack.empty();
-        if(!TextUtils.isEmpty((String) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_GESTURE_PWD, "")) && gestureTakeoff && App.login && hasActivity) {
+        boolean frontActivity = CommonUtils.isFrontActivity(App.getInstance(), GesturePasswordActivity.class.getName());
+        boolean frontApp = CommonUtils.isForeground(App.getInstance());
+        if(!TextUtils.isEmpty((String) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_GESTURE_PWD, "")) && gestureTakeoff && App.login && hasActivity && frontApp && !frontActivity) {
             ARouter.getInstance().build(RouterPath.VERIFY_GESTURE_PASSWORD_ACTIVITY).navigation();
         }
     }
@@ -56,23 +65,27 @@ public class ScreenListenerService extends Service {
         filter.addAction(ACTION_TOUCH_SCREEN);
         registerReceiver(screenBroadcastReceiver, filter);
 
-        startLockCountDown();
+//        startLockCountDown();
     }
 
     private void startLockCountDown() {
+        lockScreenSecond = LOCK_SECOND;
         if(lockScreenThread == null || !lockScreenThread.isAlive()) {
+            running = true;
             lockScreenThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    while (lockScreenSecond > 0) {
+                    while (running) {
                         try {
                             Thread.sleep(1* 1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                         lockScreenSecond--;
+                        if (lockScreenSecond == 0) {
+                            verifyGesturePwd();
+                        }
                     }
-                    verifyGesturePwd();
                 }
             });
             lockScreenThread.start();
@@ -82,11 +95,14 @@ public class ScreenListenerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        running = false;
         unregisterReceiver(screenBroadcastReceiver);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        startLockCountDown();
         return super.onStartCommand(intent, flags, startId);
     }
 

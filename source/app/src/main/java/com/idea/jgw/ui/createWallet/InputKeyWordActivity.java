@@ -117,7 +117,7 @@ public class InputKeyWordActivity extends BaseActivity {
                         MToast.showLongToast(R.string.passphrase_err);
                     } else {
 
-                        ArrayList<StorableWallet> storedwallets = new ArrayList<StorableWallet>(WalletStorage.getInstance(InputKeyWordActivity.this).get());
+                        final ArrayList<StorableWallet> storedwallets = new ArrayList<StorableWallet>(WalletStorage.getInstance(InputKeyWordActivity.this).get());
                         if (storedwallets.size() > 0) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(InputKeyWordActivity.this);
                             builder.setIcon(R.mipmap.icon_logo);
@@ -125,6 +125,11 @@ public class InputKeyWordActivity extends BaseActivity {
                             builder.setPositiveButton(getResources().getString(R.string.load),
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int whichButton) {
+                                            try{
+                                                EthWalltUtils.delWallet(InputKeyWordActivity.this,storedwallets.get(0).getPubKey());
+                                            }catch (Exception e){
+
+                                            }
                                             MToast.showLongToast(R.string.recover_wallet_wait);
                                             recoverWallet(passphrase);
                                             dialog.cancel();
@@ -176,47 +181,29 @@ public class InputKeyWordActivity extends BaseActivity {
 
 
     private void recoverWallet(final String mnemonicPassphrase) {
-
-        cretaeEthWallet(mnemonicPassphrase);
-        if(true)return;
-
-        final Handler handler = new Handler(Looper.getMainLooper()) {
+        EthWalltUtils.createEthWallet2(InputKeyWordActivity.this, mnemonicPassphrase, new EthWalltUtils.CreateUalletCallback() {
             @Override
-            public void handleMessage(Message msg) {
-//                appDelegate.transactionListener.reconnect();
-//                appDelegate.stealthWebSocket.reconnect();
-//                TLHUDWrapper.hideHUD();
-//                TLPrompts.promptForOK(RestoreWalletActivity.this , getString(R.string.your_wallet_is_now_restored), "", new TLPrompts.PromptOKCallback() {
-//                    @Override
-//                    public void onSuccess() {
-//                        finish();
-//                    }
-//                });
-
-//                cretaeEthWallet();
+            public void onSuccess(String address) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+                });
             }
-        };
 
-//        TLHUDWrapper.showHUD(RestoreWalletActivity.this, getString(R.string.restoring_wallet));
-        View view = getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-        new Thread(new Runnable() {
             @Override
-            public void run() {
-                Message message = Message.obtain();
-//                appDelegate.saveWalletJSONEnabled = false;
-//                appDelegate.recoverHDWallet(mnemonicPassphrase, false);
-//                appDelegate.refreshHDWalletAccounts(true);
-//                appDelegate.refreshApp(mnemonicPassphrase, false);
-//                appDelegate.saveWalletJSONEnabled = true;
-//                handleAfterRecoverWallet();
-                message.obj = true;
-                handler.sendMessage(Message.obtain(message));
+            public void onFaild() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MToast.showLongToast(R.string.recover_faild);
+                    }
+                });
             }
-        }).start();
+        });
     }
 
 

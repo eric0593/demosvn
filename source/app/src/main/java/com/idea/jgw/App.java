@@ -37,7 +37,7 @@ public class App extends Application {
 
 
     //是否已登录状态，默认false，即app被杀死后需要重新验证登录
-    public static boolean login = true;
+    public static boolean login = false;
     //钱包测试
     public static boolean isWalletDebug = false;
 

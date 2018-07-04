@@ -83,7 +83,7 @@ public class CommonUtils {
      */
     public static String doCamra(Activity activity, String fileName, int requestCode) {
         String filePath = null;
-        String sdCarPath = getSDPath(activity);
+        String sdCarPath = getDiskFilePath(activity);
         // 判断获得的SD卡路径是否为null
         if (sdCarPath != null) {
             String hldPath = sdCarPath + "/HldImage/";
@@ -118,7 +118,7 @@ public class CommonUtils {
     public static String cropImageUri(Activity activity, String filePath, int requestCode) {
         String cropFile = "cropFile.jpg";
         String cropPath;
-        String sdCarPath = getSDPath(activity);
+        String sdCarPath = getDiskFilePath(activity);
         // 判断sd卡是否存在
         if (sdCarPath != null) {
             String hldPath = sdCarPath + "/HldImage/";
@@ -160,7 +160,7 @@ public class CommonUtils {
      */
     public static String openSysPick(Activity activity, String fileName, int requestCode) {
         String filePath = null;
-        String sdCarPath = getSDPath(activity);
+        String sdCarPath = getDiskFilePath(activity);
         // 判断sd卡是否存在
         if (sdCarPath != null) {
             String hldPath = sdCarPath + "/HldImage/";
@@ -454,6 +454,22 @@ public class CommonUtils {
         return false;
     }
 
+    //当前应用是否处于前台
+    public static boolean isForeground(Context context) {
+        if (context != null) {
+            ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            List<ActivityManager.RunningAppProcessInfo> processes = activityManager.getRunningAppProcesses();
+            for (ActivityManager.RunningAppProcessInfo processInfo: processes) {
+                if (processInfo.processName.equals(context.getPackageName())) {
+                    if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * <p>获取当前app版本号</p>
      *
@@ -548,6 +564,19 @@ public class CommonUtils {
             } else {
                 cachePath = context.getExternalFilesDir(fileName).getPath();
             }
+        } else {
+            //获取内部存储的缓存路径
+            cachePath = context.getFilesDir().getPath();
+        }
+        return cachePath;
+    }
+
+    public static String getDiskFilePath(Context context) {
+        String cachePath;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                || !Environment.isExternalStorageRemovable()) {
+            //获取外部存储的缓存路径
+            cachePath = context.getFilesDir().getPath();
         } else {
             //获取内部存储的缓存路径
             cachePath = context.getFilesDir().getPath();

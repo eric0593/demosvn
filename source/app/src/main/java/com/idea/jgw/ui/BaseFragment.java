@@ -15,7 +15,7 @@ import com.idea.jgw.utils.common.ShareKey;
 public class BaseFragment extends Fragment{
 
     public void reLogin() {
-        SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_LOGIN, true);
+        SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_LOGIN, false);
         ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
         App.finishAllActivity();
         getActivity().finish();

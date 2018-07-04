@@ -140,7 +140,6 @@ public class JgwSendActivity extends SendActivity {
     public void onPaswordInputFinished(String inputPsd) {
         super.onPaswordInputFinished(inputPsd);
 
-        if (App.debug) {
             if (inputPsd.equals("123456")) {
                 try {
                     JgwUtils ju = new JgwUtils();
@@ -152,7 +151,11 @@ public class JgwSendActivity extends SendActivity {
 
                         @Override
                         public void onFail(Integer status, String error) {
-                            MToast.showLongToast(R.string.jgw_send_coin_fair);
+                            if(status ==-2){
+                                MToast.showLongToast(R.string.jgw_send_coin_fair_not_have_eth);
+                            }else{
+                                MToast.showLongToast(R.string.jgw_send_coin_fair);
+                            }
                         }
 
                         @Override
@@ -172,7 +175,6 @@ public class JgwSendActivity extends SendActivity {
             } else {
                 MToast.showLongToast(getResources().getString(R.string.password_wrong));
             }
-        }
     }
 
 }
