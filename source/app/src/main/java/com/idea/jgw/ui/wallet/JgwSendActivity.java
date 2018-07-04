@@ -17,6 +17,7 @@ import com.idea.jgw.logic.eth.utils.WalletStorage;
 import com.idea.jgw.logic.jgw.JgwUtils;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.MToast;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.utils.Numeric;
@@ -136,11 +137,12 @@ public class JgwSendActivity extends SendActivity {
         return true;
     }
 
+
     @Override
     public void onPaswordInputFinished(String inputPsd) {
         super.onPaswordInputFinished(inputPsd);
-
-            if (inputPsd.equals("123456")) {
+             String    paymentPwd =new SharedPreferenceManager().getPaymentPwd();
+            if (inputPsd.equals(paymentPwd) ){
                 try {
                     JgwUtils ju = new JgwUtils();
                     ju.sendCoin(address,etReceivedAddress.getText().toString(), etSendAmount.getText().toString(), new TLCallback() {

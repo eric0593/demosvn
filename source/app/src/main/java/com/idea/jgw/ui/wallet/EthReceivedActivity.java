@@ -3,12 +3,9 @@ package com.idea.jgw.ui.wallet;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.google.zxing.qrcode.CreateQRUtils;
 import com.google.zxing.qrcode.QRCodeUtil;
-import com.google.zxing.qrcode.QRCodeWriter;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.utils.DisplayUtils;
 

@@ -18,6 +18,7 @@ public class SharedPreferenceManager {
     private boolean takeOnGesturePwd; //session
     private boolean login; //session
     private String passphrase ;//助记词
+    private String paymentPwd;//支付密码
 
     public static SharedPreferenceManager getInstance() {
         if (instance == null) {
@@ -34,6 +35,17 @@ public class SharedPreferenceManager {
         takeOnGesturePwd = sp.getBoolean(Key.KEY_OF_TAKE_ON_GESTURE_PWD, false);
         login = sp.getBoolean(Key.KEY_OF_LOGIN, false);
         passphrase = sp.getString(Key.KEY_PASSPHRASE,"");
+        paymentPwd = sp.getString(Key.KEY_PAYMENT_PWD,"");
+    }
+
+
+    public String getPaymentPwd() {
+        return paymentPwd;
+    }
+
+    public void setPaymentPwd(String paymentPwd) {
+        this.paymentPwd = paymentPwd;
+        sp.edit().putString(Key.KEY_PAYMENT_PWD, session).apply();
     }
 
     public String getSession() {
@@ -53,6 +65,9 @@ public class SharedPreferenceManager {
         this.createWallet = createWallet;
         sp.edit().putBoolean(Key.KEY_OF_CREATE_WALLET, createWallet).apply();
     }
+
+
+
 
     public boolean isTakeOnGesturePwd() {
         return takeOnGesturePwd;
@@ -97,6 +112,7 @@ public class SharedPreferenceManager {
         static final String KEY_OF_GESTURE_PWD = "gesture_pwd"; //手式密码
         static final String KEY_OF_LOGIN = "login"; //是否已登录
         static final String KEY_PASSPHRASE = "key_passphrase"; //助记词
+        static final String KEY_PAYMENT_PWD ="key_payment_key";//支付密码
     }
 
 }

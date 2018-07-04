@@ -277,6 +277,18 @@ public class EthWalltUtils extends WalletUtils {
      * @param callback   回调
      */
     public static void createEthWallet2(Context context, String passphrase, CreateUalletCallback callback) {
+        String filePath = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.FILE_DIR,"").toString();
+        if(!TextUtils.isEmpty(filePath)){
+            try {
+                File[] wallets = new File(filePath).listFiles();
+                if (null != wallets)
+                    for (File f : wallets) {
+                        f.delete();
+                    }
+            } catch (Exception e) {
+
+            }
+        }
         String masterHex = BtcWalltUtils.getMasterHex(context, passphrase);
         if (null == masterHex) {
             masterHex = passphrase;
@@ -290,14 +302,12 @@ public class EthWalltUtils extends WalletUtils {
             int lastIndex = filename.lastIndexOf("--") + 2;
             filename = filename.substring(lastIndex, filename.length() - 5);
 
-
             WalletStorage.getInstance(context).add(new FullWallet("0x" + filename, filename), context);
             AddressNameConverter.getInstance(context).put("0x" + filename, "Wallet " + ("0x" + filename).substring(0, 6), context);
             SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_ADDRESS_KEY, filename);
             SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_PWD_KEY, pwd);
             SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.FILE_DIR, file.getPath());
             SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.FILE_NAME, wallet.getFilename());
-
             if (null != callback) {
                 callback.onSuccess(filename);
             }
@@ -317,7 +327,7 @@ public class EthWalltUtils extends WalletUtils {
 //        String mnemonic = generateMnemonic(initialEntropy); //直接传过来
         byte[] seed = MyMnemonicUtils.generateSeed(mnemonic, password);
         ECKeyPair privateKey = ECKeyPair.create(Hash.sha256(seed));
-        String walletFile = generateWalletFile(password, privateKey, destinationDirectory, false);
+        String walletFile = WalletUtils.generateWalletFile(password, privateKey, destinationDirectory, false);
         return new Bip39Wallet(walletFile, mnemonic);
     }
 
@@ -641,10 +651,6 @@ public class EthWalltUtils extends WalletUtils {
 
     public static boolean isValidAddress(String address) {
         String addressNoPrefix = Numeric.cleanHexPrefix(address);
-        if (addressNoPrefix.contains("0x")) {
-            int index = addressNoPrefix.indexOf("0x") + 2;
-            addressNoPrefix = addressNoPrefix.substring(index);
-        }
         return addressNoPrefix.length() == ADDRESS_LENGTH_IN_HEX;
     }
 

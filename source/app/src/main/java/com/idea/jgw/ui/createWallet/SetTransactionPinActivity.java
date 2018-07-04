@@ -32,6 +32,7 @@ import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.MyLog;
 import com.idea.jgw.utils.common.ShareKey;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.idea.jgw.view.PayPsdInputView;
 
 import org.bitcoinj.core.Base58;
@@ -70,18 +71,6 @@ public class SetTransactionPinActivity extends BaseActivity implements PayPsdInp
         super.onCreate(savedInstanceState);
         pivOfPassword.setOnPasswordListener(this);
         userPhone = getIntent().getStringExtra(EXTRA_USER);
-
-
-//        if (App.isWalletDebug)
-//            if (BtcWalltUtils.hasSetupHDWallet()) {
-//                MToast.showLongToast("有钱包");
-//            } else {
-//                MToast.showLongToast("mei 钱包");
-//            }
-//
-
-//        List<String> code = mc.toMnemonic(HEX.decode(entropy));
-
     }
 
     @Override
@@ -111,7 +100,9 @@ public class SetTransactionPinActivity extends BaseActivity implements PayPsdInp
             tvOfCreateStep.setText(R.string.ensure_transaction_pin);
             pivOfPassword.cleanPsd();
         } else if (pwd.equals(inputPsd)) {
-//            testCreateBtcWallet();
+
+            SharedPreferenceManager sp = new SharedPreferenceManager();
+            sp.setPaymentPwd(pwd);
             cretaeEthWallet();
         } else {
             MToast.showToast(R.string.input_not_equal);
@@ -120,14 +111,6 @@ public class SetTransactionPinActivity extends BaseActivity implements PayPsdInp
             pwd = "";
         }
     }
-
-
-    //创建比特钱包（必须在以太创建成功后才能调用）
-    private void testCreateBtcWallet() {
-
-        String getPassphrase = BtcWalltUtils.getPassphrase();
-    }
-
 
     private void cretaeEthWallet() {
 

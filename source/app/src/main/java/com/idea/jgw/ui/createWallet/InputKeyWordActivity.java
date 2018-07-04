@@ -155,31 +155,6 @@ public class InputKeyWordActivity extends BaseActivity {
     }
 
 
-    private void initWallet() {
-        BtcWalltUtils.createwWallet(InputKeyWordActivity.this, new TLCallback() {
-
-            @Override
-            public void onAmountMoveFromAccount(TLCoin amountMovedFromAccount) {
-
-            }
-
-            @Override
-            public void onSuccess(Object obj) {
-            }
-
-            @Override
-            public void onSetHex(String hex) {
-
-            }
-
-            @Override
-            public void onFail(Integer status, String error) {
-                //这个没起作用的
-            }
-        });
-    }
-
-
     private void recoverWallet(final String mnemonicPassphrase) {
         EthWalltUtils.createEthWallet2(InputKeyWordActivity.this, mnemonicPassphrase, new EthWalltUtils.CreateUalletCallback() {
             @Override
@@ -222,6 +197,7 @@ public class InputKeyWordActivity extends BaseActivity {
 
     @PermissionsGranted({READ_EXTERNAL_STORAGE_CODE, WRITE_EXTERNAL_STORAGE_CODE
     })
+    @Override
     public void granted(int code) {
         switch (code) {
             case READ_EXTERNAL_STORAGE_CODE:
@@ -241,6 +217,7 @@ public class InputKeyWordActivity extends BaseActivity {
 
     @PermissionsDenied({READ_EXTERNAL_STORAGE_CODE, WRITE_EXTERNAL_STORAGE_CODE
     })
+    @Override
     public void denied(int code) {
         switch (code) {
             case READ_EXTERNAL_STORAGE_CODE:
@@ -289,57 +266,6 @@ public class InputKeyWordActivity extends BaseActivity {
     }
 
 
-    private void cretaeEthWallet(String mnemonicPassphrase) {
-
-        ArrayList<StorableWallet> storedwallets = new ArrayList<StorableWallet>(WalletStorage.getInstance(this).get());
-
-        for (StorableWallet s : storedwallets) {
-            EthWalltUtils.delWallet(InputKeyWordActivity.this, s.getPubKey());
-        }
-//        File[] wallets = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Lunary/").listFiles();
-//        for(File f :wallets){
-//            f.delete();
-//        }
-
-        storedwallets = new ArrayList<StorableWallet>(WalletStorage.getInstance(this).get());
-
-
-        String passphrase = mnemonicPassphrase;
-        String masterHex = BtcWalltUtils.getMasterHex(InputKeyWordActivity.this, passphrase);
-        if(TextUtils.isEmpty(masterHex))
-            masterHex = passphrase;
-
-        if (storedwallets.isEmpty()) {
-            EthWalltUtils.createWallet(this, null, Base58.encode(masterHex.getBytes()), new EthWalltUtils.CreateUalletCallback() {
-                @Override
-                public void onFaild() {
-                    MyLog.e("创建钱包失败");
-                    MToast.showLongToast("创建钱包失败");
-                }
-
-                @Override
-                public void onSuccess(String address) {
-                    MyLog.e("etch:address___>>>" + address);
-                    final ArrayList<StorableWallet> storedwallets = new ArrayList<StorableWallet>(WalletStorage.getInstance(InputKeyWordActivity.this).get());
-                    for (StorableWallet s : storedwallets) {
-                        MyLog.e(s.getPubKey());
-                    }
-                    ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
-                    setResult(RESULT_OK);
-                    finish();
-                }
-            });
-        } else {
-            MToast.showLongToast("已经有钱包了");
-        }
-
-
-//
-//
-//        if (!TLUtils.haveInternetConnection(MainActivity.this)) {  //没有网络连接，提示网络无法连接
-////            TLToast.makeText(MainActivity.this, getString(R.string.no_internet_connection_description), TLToast.LENGTH_SHORT, TLToast.TYPE_ERROR);
-//        }
-    }
 
 
 }
