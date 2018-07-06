@@ -28,6 +28,7 @@ import com.idea.jgw.utils.common.CommonUtils;
 import com.idea.jgw.utils.common.DialogUtils;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.ShareKey;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.idea.jgw.utils.glide.GlideApp;
 import com.joker.annotation.PermissionsCustomRationale;
 import com.joker.annotation.PermissionsGranted;
@@ -239,7 +240,7 @@ public class IdentityAuthentication2Activity extends BaseActivity {
         final File file1 = new File(frontPhotoPath);
         final File file2 = new File(backPhotoPath);
         LoadingDialog.showDialogForLoading(IdentityAuthentication2Activity.this);
-        String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
+        String token = SharedPreferenceManager.getInstance().getSession();
         OkhttpApi.certification(token, name, idNumber, file1, file2, new UploadListener() {
             @Override
             public void onSuccess(String data) {

@@ -58,7 +58,7 @@ public class GesturePasswordActivity extends BaseActivity implements LocusPassWo
         tvOfTitle.setText(R.string.set_gesture_security);
         lpwdGesturePwd.setOnCompleteListener(this);
 
-        gesturePwd = (String) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_GESTURE_PWD, "");
+        gesturePwd = SharedPreferenceManager.getInstance().getGesturePwd();
         if(TextUtils.isEmpty(gesturePwd)) {
             step = SET_GESTURE_PWD;
             tvGestureMsg.setText(R.string.draw_gesture_security);
@@ -87,7 +87,7 @@ public class GesturePasswordActivity extends BaseActivity implements LocusPassWo
                 break;
             case ENSURE_GESTURE_PWD:
                 if (gesturePwd.equals(password)) {
-                    SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_GESTURE_PWD, gesturePwd);
+                    SharedPreferenceManager.getInstance().setGesturePwd(gesturePwd);
                     MToast.showToast(R.string.set_gesture_security_success);
                     finish();
                 } else {

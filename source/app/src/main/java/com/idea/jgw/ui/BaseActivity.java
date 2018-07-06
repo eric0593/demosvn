@@ -31,6 +31,7 @@ import com.idea.jgw.utils.common.DialogUtils;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.MyLog;
 import com.idea.jgw.utils.common.ShareKey;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.joker.api.Permissions4M;
 import com.joker.api.wrapper.ListenerWrapper;
 
@@ -163,7 +164,7 @@ public abstract class BaseActivity extends SupportActivity implements ListenerWr
     }
 
     public void reLogin() {
-        SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_LOGIN, false);
+        SharedPreferenceManager.getInstance().setLogin(false);
         ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
         App.finishAllActivity();
         finish();

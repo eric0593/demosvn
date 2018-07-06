@@ -1,6 +1,7 @@
 package com.idea.jgw.ui.login;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -225,7 +226,9 @@ public class RegisterActivity extends BaseActivity implements BaseCallback {
             int resultCode = Integer.parseInt(parameters[1].toString().trim());
             if (requestCode == CUSTOMER_SERVICE) {
                 if (resultCode == ChooseDialog.SELECTED_OK) {
-                    MToast.showToast("call service!");
+                    String jaw_service="4000888888";
+                    Intent dialIntent =  new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" +jaw_service));//跳转到拨号界面，同时传递电话号码
+                    startActivity(dialIntent);
                 }
             }
         }

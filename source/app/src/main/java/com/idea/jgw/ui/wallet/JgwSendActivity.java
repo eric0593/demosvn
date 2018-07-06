@@ -141,7 +141,7 @@ public class JgwSendActivity extends SendActivity {
     @Override
     public void onPaswordInputFinished(String inputPsd) {
         super.onPaswordInputFinished(inputPsd);
-             String    paymentPwd =new SharedPreferenceManager().getPaymentPwd();
+             String paymentPwd =SharedPreferenceManager.getInstance().getPaymentPwd();
             if (inputPsd.equals(paymentPwd) ){
                 try {
                     JgwUtils ju = new JgwUtils();

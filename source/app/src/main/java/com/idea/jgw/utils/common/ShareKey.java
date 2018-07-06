@@ -15,4 +15,5 @@ public class ShareKey {
     public static final String KEY_OF_INVITE_CODE = "invite_code"; //phone
     public static final String KEY_OF_INVITE_NUM = "invite_num"; //phone
     public static final String KEY_OF_HASHRATE = "hashrate"; //算力
+    public static final String KEY_OF_PAYMENT_PWD = "payment_pwd"; //pwd
 }

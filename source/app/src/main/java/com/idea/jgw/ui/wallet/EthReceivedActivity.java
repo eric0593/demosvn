@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.google.zxing.qrcode.QRCodeUtil;
 import com.idea.jgw.RouterPath;
+import com.idea.jgw.logic.eth.IBAN;
 import com.idea.jgw.utils.DisplayUtils;
 
 import org.web3j.utils.Numeric;
@@ -37,13 +38,14 @@ public class EthReceivedActivity extends WalletAddressActivity {
             addressNoPrefix = addressNoPrefix.substring(index);
         }
 
-        final String address = "iban:"+addressNoPrefix+"?amount=0&token=eth";
 
+        final String tempAddressNoPrefix = addressNoPrefix;
         tvSendAddress.setText(addressNoPrefix);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
+                final String address = "iban:"+ IBAN.getIBAN("0x"+tempAddressNoPrefix)+"?amount=0&token=eth";
                 int height = DisplayUtils.dp2px(EthReceivedActivity.this,162);
                 try{
                     final Bitmap bitmap = QRCodeUtil.createQRImage(address, height, height,null);

@@ -18,6 +18,7 @@ import com.idea.jgw.RouterPath;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.ShareKey;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -62,9 +63,9 @@ public class MiningHashrateActivity extends BaseActivity {
     @Override
     public void initView() {
         tvOfTitle.setText(R.string.add_hashrate);
-        String shareToFriends = getString(R.string.share_to_friends) + "+" + SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_INVITE_NUM, 0);
+        String shareToFriends = getString(R.string.share_to_friends) + "+" + SharedPreferenceManager.getInstance().getInvite_num();
         setSpannableString(shareToFriends, tvShareToFriends);
-        tvCurrentHashrate.setText(String.valueOf(SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_HASHRATE, 0)));
+        tvCurrentHashrate.setText(String.valueOf(SharedPreferenceManager.getInstance().getHashrate()));
     }
 
     private void setSpannableString(String shareToFriends, TextView textView) {

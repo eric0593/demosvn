@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -130,7 +131,7 @@ public class MiningDetailActivity extends BaseActivity implements BaseRecyclerAd
     }
 
     private void getMiningDetail(boolean showDialog) {
-        String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
+        String token = SharedPreferenceManager.getInstance().getSession();
         miningSubscription = ServiceApi.getInstance().getApiService()
                 .miningList(coinType, token, page)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())

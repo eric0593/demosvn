@@ -74,7 +74,7 @@ public class MineFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
+        String token = SharedPreferenceManager.getInstance().getSession();
         getInfoSubscription = ServiceApi.getInstance().getApiService()
                 .getinfo(token)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -84,12 +84,12 @@ public class MineFragment extends BaseFragment {
                                    if(baseResponse.getCode() == BaseResponse.RESULT_OK) {
                                        userInfo = JSON.parseObject(baseResponse.getData().toString(), UserInfo.class);
                                        tvOfName.setText(userInfo.getNickname());
-                                       String phone = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_PHONE, "").toString();
+                                       String phone = SharedPreferenceManager.getInstance().getPhone();
                                        tvPhone.setText(CommonUtils.replace(phone, "****"));
                                        GlideApp.with(MineFragment.this).load(BASE_HOST + userInfo.getFace()).apply(RequestOptions.circleCropTransform()).placeholder(R.mipmap.icon_default_photo).into(ivPhoto);
-                                       SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_INVITE_CODE, userInfo.getInvite_num());
-                                       SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_INVITE_NUM, userInfo.getInvite_man_num());
-                                       SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_INVITE_URL, userInfo.getInvite_url());
+                                       SharedPreferenceManager.getInstance().setInvite_code(userInfo.getInvite_num());
+                                       SharedPreferenceManager.getInstance().setInvite_num(userInfo.getInvite_man_num());
+                                       SharedPreferenceManager.getInstance().setInvite_url(userInfo.getInvite_url());
                                    } else if(baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
                                        reLogin();
                                    } else {

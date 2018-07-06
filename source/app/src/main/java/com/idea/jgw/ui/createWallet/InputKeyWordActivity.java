@@ -2,46 +2,29 @@ package com.idea.jgw.ui.createWallet;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
-import android.view.TextureView;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.logic.btc.BtcWalltUtils;
-import com.idea.jgw.logic.btc.interfaces.TLCallback;
-import com.idea.jgw.logic.btc.model.TLAppDelegate;
-import com.idea.jgw.logic.btc.model.TLCoin;
-import com.idea.jgw.logic.btc.model.TLHDWalletWrapper;
-import com.idea.jgw.logic.btc.model.TLNotificationEvents;
-import com.idea.jgw.logic.btc.utils.TLWalletUtils;
 import com.idea.jgw.logic.eth.EthWalltUtils;
 import com.idea.jgw.logic.eth.interfaces.StorableWallet;
 import com.idea.jgw.logic.eth.utils.WalletStorage;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.utils.common.MToast;
-import com.idea.jgw.utils.common.MyLog;
 import com.joker.annotation.PermissionsDenied;
 import com.joker.annotation.PermissionsGranted;
 import com.joker.annotation.PermissionsRationale;
 import com.joker.annotation.PermissionsRequestSync;
-
-import org.bitcoinj.core.Base58;
 
 import java.util.ArrayList;
 
@@ -67,6 +50,9 @@ import static com.idea.jgw.ui.main.MainActivity.WRITE_EXTERNAL_STORAGE_CODE;
                 READ_LOGS_CDOE
         })
 public class InputKeyWordActivity extends BaseActivity {
+
+    public static final String PASSPHRASE = "passphrase";
+    private static final int RECOVER_WALLET_REQUEST = 11;
 
     @BindView(R.id.btn_of_back)
     Button btnOfBack;
@@ -130,8 +116,7 @@ public class InputKeyWordActivity extends BaseActivity {
                                             }catch (Exception e){
 
                                             }
-                                            MToast.showLongToast(R.string.recover_wallet_wait);
-                                            recoverWallet(passphrase);
+                                            navigationToSetPwd(passphrase);
                                             dialog.cancel();
                                         }
                                     });
@@ -143,8 +128,7 @@ public class InputKeyWordActivity extends BaseActivity {
                                     });
                             builder.create().show();
                         } else {
-                            recoverWallet(passphrase);
-                            MToast.showLongToast(R.string.recover_wallet_wait);
+                            navigationToSetPwd(passphrase);
                         }
                     }
                 }
@@ -154,31 +138,8 @@ public class InputKeyWordActivity extends BaseActivity {
         }
     }
 
-
-    private void recoverWallet(final String mnemonicPassphrase) {
-        EthWalltUtils.createEthWallet2(InputKeyWordActivity.this, mnemonicPassphrase, new EthWalltUtils.CreateUalletCallback() {
-            @Override
-            public void onSuccess(String address) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
-                        setResult(RESULT_OK);
-                        finish();
-                    }
-                });
-            }
-
-            @Override
-            public void onFaild() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        MToast.showLongToast(R.string.recover_faild);
-                    }
-                });
-            }
-        });
+    public void navigationToSetPwd(String passphrase) {
+        ARouter.getInstance().build(RouterPath.SET_TRANSACTION_PIN_ACTIVITY).withString(PASSPHRASE, passphrase).navigation(InputKeyWordActivity.this, RECOVER_WALLET_REQUEST);
     }
 
 
@@ -265,6 +226,18 @@ public class InputKeyWordActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case RECOVER_WALLET_REQUEST:
+                    setResult(RESULT_OK);
+                    finish();
+                    break;
+            }
+        }
+    }
 
 
 

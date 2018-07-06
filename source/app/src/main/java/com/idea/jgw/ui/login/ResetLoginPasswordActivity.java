@@ -23,6 +23,7 @@ import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.CommonUtils;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.ShareKey;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -99,7 +100,7 @@ public class ResetLoginPasswordActivity extends BaseActivity {
             case R.id.btn_of_reset_now:
                 String newPwd1 = etOfPwd.getText().toString().trim();
                 String newPwd2 = etOfPwd2.getText().toString().trim();
-                String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
+                String token = SharedPreferenceManager.getInstance().getSession();
                 if(TextUtils.isEmpty(newPwd1)) {
                     MToast.showToast(R.string.pwd_code_is_null);
                 } else if(TextUtils.isEmpty(newPwd2) || !newPwd1.equals(newPwd2)) {

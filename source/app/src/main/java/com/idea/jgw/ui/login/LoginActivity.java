@@ -27,6 +27,7 @@ import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.CommonUtils;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.ShareKey;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 import java.util.List;
 
@@ -158,9 +159,9 @@ public class LoginActivity extends BaseActivity {
                                         public void call(Subscriber<? super Boolean> subscriber) {
                                             if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
                                                 App.login = true;
-                                                SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_SESSION, baseResponse.getData().toString());
-                                                SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_LOGIN, true);
-                                                SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_PHONE, phone);
+                                                SharedPreferenceManager.getInstance().setSession(baseResponse.getData().toString());
+                                                SharedPreferenceManager.getInstance().setLogin(true);
+                                                SharedPreferenceManager.getInstance().setPhone(phone);
                                                 boolean hasWallet = BtcWalltUtils.hasSetupHDWallet();
                                                 List<StorableWallet> list = WalletStorage.getInstance(App.getInstance()).get();
                                                 boolean hasEthWallet = false;

@@ -47,11 +47,12 @@ public class ScreenListenerService extends Service {
     };
 
     private void verifyGesturePwd() {
-        boolean gestureTakeoff = (boolean) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_TAKE_ON_GESTURE_PWD, false);
+        boolean gestureTakeoff = SharedPreferenceManager.getInstance().isTakeOnGesturePwd();
         boolean hasActivity = !App.activityStack.empty();
         boolean frontActivity = CommonUtils.isFrontActivity(App.getInstance(), GesturePasswordActivity.class.getName());
         boolean frontApp = CommonUtils.isForeground(App.getInstance());
-        if(!TextUtils.isEmpty((String) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_GESTURE_PWD, "")) && gestureTakeoff && App.login && hasActivity && frontApp && !frontActivity) {
+        String gesturePwd = SharedPreferenceManager.getInstance().getGesturePwd();
+        if(!TextUtils.isEmpty(gesturePwd) && gestureTakeoff && App.login && hasActivity && frontApp && !frontActivity) {
             ARouter.getInstance().build(RouterPath.VERIFY_GESTURE_PASSWORD_ACTIVITY).navigation();
         }
     }

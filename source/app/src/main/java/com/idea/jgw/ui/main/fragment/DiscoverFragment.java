@@ -31,6 +31,7 @@ import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.ShareKey;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.idea.jgw.view.FloatView;
 
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public class DiscoverFragment extends BaseFragment implements BaseRecyclerAdapte
     }
 
     private void getMiningData() {
-        String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
+        String token = SharedPreferenceManager.getInstance().getSession();
 //        String imei = CommonUtils.getIMEI(App.getInstance());
         String imei = "qwe"; //设备号暂时使用qwe
         miningSubscription = ServiceApi.getInstance().getApiService()
@@ -123,7 +124,7 @@ public class DiscoverFragment extends BaseFragment implements BaseRecyclerAdapte
 //                                       allMiningData = GsonUtils.parseJson(baseResponse.getData().toString(), AllMiningData.class);
                                        allMiningData = JSON.parseObject(baseResponse.getData().toString(), AllMiningData.class);
                                        tvHashrate.setText(String.format(getString(R.string.sample_hashrate), allMiningData.getCalculation()));
-                                       SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_HASHRATE, allMiningData.getCalculation());
+                                       SharedPreferenceManager.getInstance().setHashrate(allMiningData.getCalculation());
                                        List<CoinMining> coinMinings = allMiningData.getList();
                                        miningAdapter.replaceDatas(coinMinings);
 
@@ -152,7 +153,7 @@ public class DiscoverFragment extends BaseFragment implements BaseRecyclerAdapte
     }
 
     private void receiveMiningData(final int type, final double value) {
-        String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
+        String token = SharedPreferenceManager.getInstance().getSession();
         receiveMiningSubscription = ServiceApi.getInstance().getApiService()
                 .receiveMiningData(type, String.valueOf(value), token)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())

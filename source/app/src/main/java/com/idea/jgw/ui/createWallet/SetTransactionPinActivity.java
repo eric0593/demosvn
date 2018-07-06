@@ -46,8 +46,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.idea.jgw.ui.createWallet.InputKeyWordActivity.PASSPHRASE;
 import static com.idea.jgw.ui.login.LoginActivity.EXTRA_USER;
-import static org.bitcoinj.core.Utils.HEX;
 
 //生成钱包，设置密码
 @Route(path = RouterPath.SET_TRANSACTION_PIN_ACTIVITY)
@@ -65,12 +65,16 @@ public class SetTransactionPinActivity extends BaseActivity implements PayPsdInp
     String pwd;
 
     String userPhone = "";
+    private String passphrase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pivOfPassword.setOnPasswordListener(this);
         userPhone = getIntent().getStringExtra(EXTRA_USER);
+        if(getIntent().hasExtra(PASSPHRASE)) {
+            passphrase = getIntent().getStringExtra(PASSPHRASE);
+        }
     }
 
     @Override
@@ -101,9 +105,13 @@ public class SetTransactionPinActivity extends BaseActivity implements PayPsdInp
             pivOfPassword.cleanPsd();
         } else if (pwd.equals(inputPsd)) {
 
-            SharedPreferenceManager sp = new SharedPreferenceManager();
-            sp.setPaymentPwd(pwd);
-            cretaeEthWallet();
+            SharedPreferenceManager.getInstance().setPaymentPwd(pwd);
+            if(!TextUtils.isEmpty(passphrase)) {
+                MToast.showLongToast(R.string.recover_wallet_wait);
+                recoverWallet(passphrase);
+            } else {
+                cretaeEthWallet();
+            }
         } else {
             MToast.showToast(R.string.input_not_equal);
             tvOfCreateStep.setText(R.string.set_transaction_pin);
@@ -133,6 +141,32 @@ public class SetTransactionPinActivity extends BaseActivity implements PayPsdInp
             @Override
             public void onFaild() {
                 MToast.showLongToast("创建钱包失败");
+            }
+        });
+    }
+
+    private void recoverWallet(final String mnemonicPassphrase) {
+        EthWalltUtils.createEthWallet2(SetTransactionPinActivity.this, mnemonicPassphrase, new EthWalltUtils.CreateUalletCallback() {
+            @Override
+            public void onSuccess(String address) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+                });
+            }
+
+            @Override
+            public void onFaild() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MToast.showLongToast(R.string.recover_faild);
+                    }
+                });
             }
         });
     }

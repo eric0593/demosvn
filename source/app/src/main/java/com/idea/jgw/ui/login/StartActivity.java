@@ -49,14 +49,14 @@ public class StartActivity extends BaseActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                boolean isLogin = (boolean) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_LOGIN, false);
+                boolean isLogin = SharedPreferenceManager.getInstance().isLogin();
                 if(!isLogin || !App.login) {
                     ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
                 } else {
                     ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
                 }
 
-                boolean takeOnGesturePwd = (boolean) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_TAKE_ON_GESTURE_PWD, false);
+                boolean takeOnGesturePwd = SharedPreferenceManager.getInstance().isTakeOnGesturePwd();
                 if(takeOnGesturePwd) {
                     startService(new Intent(StartActivity.this, ScreenListenerService.class));
                 }

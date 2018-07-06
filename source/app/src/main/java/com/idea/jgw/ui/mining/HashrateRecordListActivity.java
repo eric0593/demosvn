@@ -29,6 +29,7 @@ import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.ShareKey;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import java.lang.reflect.Type;
@@ -104,7 +105,7 @@ public class HashrateRecordListActivity extends BaseActivity implements BaseRecy
     }
 
     private void getMiningDetail(boolean showDialog) {
-        String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
+        String token = SharedPreferenceManager.getInstance().getSession();
         miningSubscription = ServiceApi.getInstance().getApiService()
                 .calRecord(token, page)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())

@@ -21,6 +21,7 @@ import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.ShareKey;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -74,7 +75,7 @@ public class UpdateNicknameActivity extends BaseActivity {
                 etOfNickname.setText("");
                 break;
             case R.id.btn_of_update:
-                String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
+                String token = SharedPreferenceManager.getInstance().getSession();
                 String nickname = etOfNickname.getText().toString().trim();
                 if(TextUtils.isEmpty(nickname)) {
                     MToast.showToast(R.string.nickename_is_null);

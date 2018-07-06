@@ -18,6 +18,7 @@ import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.ShareKey;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -67,7 +68,7 @@ public class FeedbackActivity extends BaseActivity {
             case R.id.btn_of_submit:
                 String content = etFeedbackContent.getText().toString().trim();
                 String contact = etFeedbackContact.getText().toString().trim();
-                String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
+                String token = SharedPreferenceManager.getInstance().getSession();
                 if(TextUtils.isEmpty(content)) {
                     MToast.showToast(R.string.feedback_content_is_null);
 //                } else if(TextUtils.isEmpty(contact)) {

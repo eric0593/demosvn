@@ -39,6 +39,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -274,6 +275,12 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
 
     private void addData(CoinData cd) {
         map.replace(cd.getCoinTypeEnum().getName(), cd);
+//        Set<String> keys = map.keySet();
+//        for(String key:keys) {
+//            if(key.equals(cd.getCoinTypeEnum().getName())) {
+//                map.put(key, cd);
+//            }
+//        }
         List<CoinData> list = new ArrayList<>();
         for (CoinData data : map.values()) {
             list.add(data);

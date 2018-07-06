@@ -7,6 +7,7 @@ import com.idea.jgw.App;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.ShareKey;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 /**
  * Created by idea on 2018/6/21.
@@ -15,7 +16,7 @@ import com.idea.jgw.utils.common.ShareKey;
 public class BaseFragment extends Fragment{
 
     public void reLogin() {
-        SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_LOGIN, false);
+        SharedPreferenceManager.getInstance().setLogin(false);
         ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
         App.finishAllActivity();
         getActivity().finish();

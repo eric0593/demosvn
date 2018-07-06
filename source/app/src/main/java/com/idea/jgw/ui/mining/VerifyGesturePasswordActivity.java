@@ -42,7 +42,7 @@ public class VerifyGesturePasswordActivity extends BaseActivity implements Locus
     @Override
     public void initView() {
         lpwdGesturePwd.setOnCompleteListener(this);
-        gesturePwd = (String) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_GESTURE_PWD, "");
+        gesturePwd = SharedPreferenceManager.getInstance().getGesturePwd();
     }
 
     @Override

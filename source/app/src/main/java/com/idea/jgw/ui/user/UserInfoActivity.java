@@ -31,6 +31,7 @@ import com.idea.jgw.utils.common.CommonUtils;
 import com.idea.jgw.utils.common.DialogUtils;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.ShareKey;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.idea.jgw.utils.glide.GlideApp;
 import com.joker.annotation.PermissionsCustomRationale;
 import com.joker.annotation.PermissionsDenied;
@@ -113,7 +114,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
             face = userInfo.getFace();
             GlideApp.with(this).load(BASE_HOST + face).apply(RequestOptions.circleCropTransform()).into(ivPhoto);
         }
-        tvPhone.setText(SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_PHONE, "").toString());
+        tvPhone.setText(SharedPreferenceManager.getInstance().getPhone());
     }
 
     @OnClick({R.id.btn_of_back, R.id.iv_photo, R.id.ll_nickname, R.id.ll_phone})
@@ -269,7 +270,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
 //        map.put("token", "6fd95490e77cdf77c9c8162641d2cb6c");
         RequestBody body1 = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         MultipartBody.Part part = MultipartBody.Part.createFormData("avatarByte", file.getName(), body1);
-        String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
+        String token = SharedPreferenceManager.getInstance().getSession();
         RequestBody tokenBody = RequestBody.create(MediaType.parse("text/plain"), token);
         ServiceApi.getInstance().getApiService().updatePhoto(tokenBody, part)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -297,7 +298,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
         final File file = new File(fileName);
 //        File file = new File(Environment.getExternalStorageDirectory(), "HldImage/userPhotoPath.jpg");
 
-        String token = SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_SESSION, "").toString();
+        String token = SharedPreferenceManager.getInstance().getSession();
         OkhttpApi.updatePhoto(token, file, new UploadListener() {
             @Override
             public void onSuccess(String data) {

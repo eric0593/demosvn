@@ -13,6 +13,7 @@ import com.idea.jgw.RouterPath;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.ShareKey;
+import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.joker.api.Permissions4M;
 
 import butterknife.BindView;
@@ -49,7 +50,7 @@ public class ShareActivity extends BaseActivity {
     @Override
     public void initView() {
         tvOfTitle.setText(R.string.share_to_friends);
-        tvInviteCode.setText(SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_INVITE_CODE, "").toString());
+        tvInviteCode.setText(SharedPreferenceManager.getInstance().getInvite_code());
     }
 
     @OnClick({R.id.btn_of_back, R.id.btn_of_share})

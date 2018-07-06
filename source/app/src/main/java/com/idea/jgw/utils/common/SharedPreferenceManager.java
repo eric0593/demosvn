@@ -19,6 +19,11 @@ public class SharedPreferenceManager {
     private boolean login; //session
     private String passphrase ;//助记词
     private String paymentPwd;//支付密码
+    private String phone;
+    private String invite_url;
+    private String invite_code;
+    private int invite_num;
+    private int hashrate;
 
     public static SharedPreferenceManager getInstance() {
         if (instance == null) {
@@ -36,6 +41,11 @@ public class SharedPreferenceManager {
         login = sp.getBoolean(Key.KEY_OF_LOGIN, false);
         passphrase = sp.getString(Key.KEY_PASSPHRASE,"");
         paymentPwd = sp.getString(Key.KEY_PAYMENT_PWD,"");
+        phone = sp.getString(Key.KEY_OF_PHONE, "");
+        invite_url = sp.getString(Key.KEY_OF_INVITE_URL, "");
+        invite_code = sp.getString(Key.KEY_OF_INVITE_CODE, "");
+        invite_num = sp.getInt(Key.KEY_OF_INVITE_NUM, 0);
+        hashrate = sp.getInt(Key.KEY_OF_INVITE_NUM, 0);
     }
 
 
@@ -45,7 +55,7 @@ public class SharedPreferenceManager {
 
     public void setPaymentPwd(String paymentPwd) {
         this.paymentPwd = paymentPwd;
-        sp.edit().putString(Key.KEY_PAYMENT_PWD, session).apply();
+        sp.edit().putString(Key.KEY_PAYMENT_PWD, paymentPwd).apply();
     }
 
     public String getSession() {
@@ -104,6 +114,50 @@ public class SharedPreferenceManager {
         return passphrase;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+        sp.edit().putString(Key.KEY_OF_PHONE, phone).apply();
+    }
+
+    public String getInvite_url() {
+        return invite_url;
+    }
+
+    public void setInvite_url(String invite_url) {
+        this.invite_url = invite_url;
+        sp.edit().putString(Key.KEY_OF_INVITE_URL, invite_url).apply();
+    }
+
+    public String getInvite_code() {
+        return invite_code;
+    }
+
+    public void setInvite_code(String invite_code) {
+        this.invite_code = invite_code;
+        sp.edit().putString(Key.KEY_OF_INVITE_CODE, invite_code).apply();
+    }
+
+    public int getInvite_num() {
+        return invite_num;
+    }
+
+    public void setInvite_num(int invite_num) {
+        this.invite_num = invite_num;
+        sp.edit().putInt(Key.KEY_OF_INVITE_NUM, invite_num).apply();
+    }
+
+    public int getHashrate() {
+        return hashrate;
+    }
+
+    public void setHashrate(int hashrate) {
+        this.hashrate = hashrate;
+        sp.edit().putInt(Key.KEY_OF_HASHRATE, hashrate).apply();
+    }
 
     public static class Key {
         static final String KEY_OF_SESSION = "session"; //新登录使用
@@ -113,6 +167,11 @@ public class SharedPreferenceManager {
         static final String KEY_OF_LOGIN = "login"; //是否已登录
         static final String KEY_PASSPHRASE = "key_passphrase"; //助记词
         static final String KEY_PAYMENT_PWD ="key_payment_key";//支付密码
+        public static final String KEY_OF_PHONE = "phone"; //phone
+        public static final String KEY_OF_INVITE_URL = "invite_url"; //invite_url
+        public static final String KEY_OF_INVITE_CODE = "invite_code"; //invite_code
+        public static final String KEY_OF_INVITE_NUM = "invite_num"; //invite_num
+        public static final String KEY_OF_HASHRATE = "hashrate"; //算力
     }
 
 }

@@ -58,7 +58,7 @@ public class SecurityManagerActivity extends BaseActivity {
     @Override
     public void initView() {
         tvOfTitle.setText(R.string.security_manager);
-        boolean takeOnGesturePwd = (boolean) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_TAKE_ON_GESTURE_PWD, false);
+        boolean takeOnGesturePwd = SharedPreferenceManager.getInstance().isTakeOnGesturePwd();
         iBtnGestureSecurity.setSelected(takeOnGesturePwd);
     }
 
@@ -73,14 +73,14 @@ public class SecurityManagerActivity extends BaseActivity {
                     view.setSelected(false);
                     stopService(new Intent(this, ScreenListenerService.class));
                 } else {
-                    if(TextUtils.isEmpty((String) SPreferencesHelper.getInstance(App.getInstance()).getData(ShareKey.KEY_OF_GESTURE_PWD, ""))) {
+                    if(TextUtils.isEmpty(SharedPreferenceManager.getInstance().getGesturePwd())) {
                         MToast.showToast(R.string.set_gesture_security_first);
                     } else {
                         view.setSelected(true);
                         startService(new Intent(this, ScreenListenerService.class));
                     }
                 }
-                SPreferencesHelper.getInstance(App.getInstance()).saveData(ShareKey.KEY_OF_TAKE_ON_GESTURE_PWD, view.isSelected());
+                SharedPreferenceManager.getInstance().setTakeOnGesturePwd(view.isSelected());
                 break;
             case R.id.ll_gesture_security:
                 ARouter.getInstance().build(RouterPath.GESTURE_PASSWORD_ACTIVITY).navigation();
