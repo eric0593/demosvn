@@ -7,8 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.idea.jgw.R;
-import com.idea.jgw.ui.BaseRecyclerAdapter;
-import com.idea.jgw.utils.common.DateUtils;
+import com.idea.jgw.ui.BaseAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,7 +16,7 @@ import butterknife.ButterKnife;
  * Created by idea on 2018/5/16.
  */
 
-public class NationCodeAdapter extends BaseRecyclerAdapter<String> {
+public class NationCodeAdapter extends BaseAdapter<String> {
 
     @Override
     public RecyclerView.ViewHolder onCreate(ViewGroup parent, int viewType) {
