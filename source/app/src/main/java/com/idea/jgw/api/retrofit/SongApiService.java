@@ -45,7 +45,7 @@ public interface SongApiService {
     Observable<BaseResponse> editinfo(@Field ("token") String token, @Field ("nickname") String nickname, @Field ("sex") int sex);
 
     @FormUrlEncoded
-    @POST("feedback")
+    @POST("http://120.132.120.251:8080/feedback")
     Observable<BaseResponse> feedback(@Field ("token") String token, @Field ("content") String content, @Field ("contact") String contact);
 
     @FormUrlEncoded

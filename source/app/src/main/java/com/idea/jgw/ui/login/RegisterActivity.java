@@ -41,6 +41,7 @@ public class RegisterActivity extends BaseActivity implements BaseCallback {
 
     private static final int CUSTOMER_SERVICE = 11;
     private static final int GET_NATION_CODE = 22;
+    private static final int SET_PASSWORD = 23;
     @BindView(R.id.btn_of_back)
     Button btnOfBack;
     @BindView(R.id.tv_of_title)
@@ -134,7 +135,7 @@ public class RegisterActivity extends BaseActivity implements BaseCallback {
                             .withString("verifyCode", verifyCode)
                             .withString("phone", phone)
                             .withString("inviteCode", inviteCode)
-                            .navigation();
+                            .navigation(this, SET_PASSWORD);
                 }
                 break;
             case R.id.iBtn_of_delete:
@@ -194,6 +195,7 @@ public class RegisterActivity extends BaseActivity implements BaseCallback {
                             tvOfGetSecurityCode.setClickable(true);
                             tvOfGetSecurityCode.setFocusable(true);
                             tvOfGetSecurityCode.setText(R.string.send_security);
+                            unSubscribe(waitSubscription);
                         }
                     }
                 });
@@ -210,6 +212,8 @@ public class RegisterActivity extends BaseActivity implements BaseCallback {
                     nationName = data.getStringExtra("nationName");
                     tvNationName.setText(nationName);
                 }
+            } else if(requestCode == SET_PASSWORD) {
+                finish();
             }
         }
     }

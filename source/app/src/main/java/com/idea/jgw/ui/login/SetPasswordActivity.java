@@ -1,5 +1,6 @@
 package com.idea.jgw.ui.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -19,6 +20,9 @@ import com.idea.jgw.api.retrofit.ServiceApi;
 import com.idea.jgw.bean.BaseResponse;
 import com.idea.jgw.bean.LoginRequest;
 import com.idea.jgw.bean.RegisterRequest;
+import com.idea.jgw.logic.btc.BtcWalltUtils;
+import com.idea.jgw.logic.eth.interfaces.StorableWallet;
+import com.idea.jgw.logic.eth.utils.WalletStorage;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
@@ -27,11 +31,18 @@ import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.ShareKey;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.idea.jgw.ui.login.LoginActivity.EXTRA_USER;
 
 /**
  * 设置登录密码页面（注册第二步）
@@ -150,25 +161,59 @@ public class SetPasswordActivity extends BaseActivity {
         login(loginRequest);
     }
 
-    protected void login(LoginRequest loginRequest) {
+    protected void login(final LoginRequest loginRequest) {
         loginSubscription = ServiceApi.getInstance().getApiService()
                 .login(loginRequest.getQueryMap())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new RxSubscriber<BaseResponse>(SetPasswordActivity.this, getResources().getString(R.string.loading), true) {
+                .flatMap(new Func1<BaseResponse, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(final BaseResponse baseResponse) {
+                        return Observable.create(new Observable.OnSubscribe<Boolean>(){
+                            @Override
+                            public void call(Subscriber<? super Boolean> subscriber) {
+                                if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
+                                    App.login = true;
+                                    SharedPreferenceManager.getInstance().setSession(baseResponse.getData().toString());
+                                    SharedPreferenceManager.getInstance().setLogin(true);
+                                    SharedPreferenceManager.getInstance().setPhone(loginRequest.getAccount());
+                                    boolean hasWallet = BtcWalltUtils.hasSetupHDWallet();
+                                    List<StorableWallet> list = WalletStorage.getInstance(App.getInstance()).get();
+                                    boolean hasEthWallet = false;
+                                    if(list.size() > 0) {
+                                        hasEthWallet = true;
+                                    }
+                                    subscriber.onNext(hasEthWallet);
+                                    subscriber.onCompleted();
+
+                                } else {
+                                    subscriber.onError(new Exception(baseResponse.getData().toString()));
+                                }
+                            }
+                        });
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscriber<Boolean>(SetPasswordActivity.this, getResources().getString(R.string.loading), true) {
 
             @Override
-            protected void _onNext(BaseResponse baseResponse) {
-                if(baseResponse.getCode() == BaseResponse.RESULT_OK) {
-                    App.login = true;
-                    SharedPreferenceManager.getInstance().setSession(baseResponse.getData().toString());
-                    SharedPreferenceManager.getInstance().setLogin(true);
-                    ARouter.getInstance().build(RouterPath.LOAD_OR_CREATE_WALLET_ACTIVITY).navigation();
+            protected void _onNext(Boolean hasWallet) {
+                if(!hasWallet) {
+                    ARouter.getInstance().build(RouterPath.LOAD_OR_CREATE_WALLET_ACTIVITY)
+                            .withString(EXTRA_USER, phone)
+                            .navigation();
+                } else {
+                    ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
                 }
+                setResult(RESULT_OK);
+                finish();
             }
 
             @Override
             protected void _onError(String message) {
                 MToast.showToast(message);
+                ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
+                setResult(RESULT_OK);
+                finish();
             }
         });
     }

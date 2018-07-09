@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,7 +87,9 @@ public class MineFragment extends BaseFragment {
                                        tvOfName.setText(userInfo.getNickname());
                                        String phone = SharedPreferenceManager.getInstance().getPhone();
                                        tvPhone.setText(CommonUtils.replace(phone, "****"));
-                                       GlideApp.with(MineFragment.this).load(BASE_HOST + userInfo.getFace()).apply(RequestOptions.circleCropTransform()).placeholder(R.mipmap.icon_default_photo).into(ivPhoto);
+                                       if(!TextUtils.isEmpty(userInfo.getFace())) {
+                                           GlideApp.with(MineFragment.this).load(BASE_HOST + userInfo.getFace()).apply(RequestOptions.circleCropTransform()).placeholder(R.mipmap.icon_default_photo).into(ivPhoto);
+                                       }
                                        SharedPreferenceManager.getInstance().setInvite_code(userInfo.getInvite_num());
                                        SharedPreferenceManager.getInstance().setInvite_num(userInfo.getInvite_man_num());
                                        SharedPreferenceManager.getInstance().setInvite_url(userInfo.getInvite_url());

@@ -145,65 +145,69 @@ public class LoginActivity extends BaseActivity {
                     MToast.showToast(R.string.verify_code_is_null);
                 } else {
 
-                    LoginRequest loginRequest = new LoginRequest();
-                    loginRequest.setAccount(phone);
-                    loginRequest.setPasswd(pwd);
-                    loginSubscription = ServiceApi.getInstance().getApiService()
-                            .login(loginRequest.getQueryMap())
-                            .subscribeOn(Schedulers.io())
-                            .flatMap(new Func1<BaseResponse, Observable<Boolean>>() {
-                                @Override
-                                public Observable<Boolean> call(final BaseResponse baseResponse) {
-                                    return Observable.create(new Observable.OnSubscribe<Boolean>(){
-                                        @Override
-                                        public void call(Subscriber<? super Boolean> subscriber) {
-                                            if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
-                                                App.login = true;
-                                                SharedPreferenceManager.getInstance().setSession(baseResponse.getData().toString());
-                                                SharedPreferenceManager.getInstance().setLogin(true);
-                                                SharedPreferenceManager.getInstance().setPhone(phone);
-                                                boolean hasWallet = BtcWalltUtils.hasSetupHDWallet();
-                                                List<StorableWallet> list = WalletStorage.getInstance(App.getInstance()).get();
-                                                boolean hasEthWallet = false;
-                                                if(list.size() > 0) {
-                                                    hasEthWallet = true;
-                                                }
-//                                                hasWallet |= hasEthWallet;
-//                                                subscriber.onNext(hasWallet);
-                                                subscriber.onNext(hasEthWallet);
-                                                subscriber.onCompleted();
-
-                                            } else {
-//                                                MToast.showToast(baseResponse.getData().toString());
-                                                subscriber.onError(new Exception(baseResponse.getData().toString()));
-                                            }
-                                        }
-                                    });
-                                }
-                            })
-                            .observeOn(AndroidSchedulers.mainThread()).subscribe(new RxSubscriber<Boolean>(this, getResources().getString(R.string.loading), true) {
-                        @Override
-                        protected void _onNext(Boolean hasWallet) {
-                            if(!hasWallet) {
-                                ARouter.getInstance().build(RouterPath.LOAD_OR_CREATE_WALLET_ACTIVITY)
-                                        .withString(EXTRA_USER,phone)
-                                        .navigation();
-                            } else {
-                                ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
-                                finish();
-                            }
-                            finish();
-                        }
-
-                        @Override
-                        protected void _onError(String message) {
-                            MToast.showToast(message);
-                        }
-                    }
-                    );
+                    login(phone, pwd);
                 }
                 break;
         }
+    }
+
+    public void login(final String phone, String pwd) {
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setAccount(phone);
+        loginRequest.setPasswd(pwd);
+        loginSubscription = ServiceApi.getInstance().getApiService()
+                .login(loginRequest.getQueryMap())
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<BaseResponse, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(final BaseResponse baseResponse) {
+                        return Observable.create(new Observable.OnSubscribe<Boolean>(){
+                            @Override
+                            public void call(Subscriber<? super Boolean> subscriber) {
+                                if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
+                                    App.login = true;
+                                    SharedPreferenceManager.getInstance().setSession(baseResponse.getData().toString());
+                                    SharedPreferenceManager.getInstance().setLogin(true);
+                                    SharedPreferenceManager.getInstance().setPhone(phone);
+                                    boolean hasWallet = BtcWalltUtils.hasSetupHDWallet();
+                                    List<StorableWallet> list = WalletStorage.getInstance(App.getInstance()).get();
+                                    boolean hasEthWallet = false;
+                                    if(list.size() > 0) {
+                                        hasEthWallet = true;
+                                    }
+//                                                hasWallet |= hasEthWallet;
+//                                                subscriber.onNext(hasWallet);
+                                    subscriber.onNext(hasEthWallet);
+                                    subscriber.onCompleted();
+
+                                } else {
+//                                                MToast.showToast(baseResponse.getData().toString());
+                                    subscriber.onError(new Exception(baseResponse.getData().toString()));
+                                }
+                            }
+                        });
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new RxSubscriber<Boolean>(this, getResources().getString(R.string.loading), true) {
+            @Override
+            protected void _onNext(Boolean hasWallet) {
+                if(!hasWallet) {
+                    ARouter.getInstance().build(RouterPath.LOAD_OR_CREATE_WALLET_ACTIVITY)
+                            .withString(EXTRA_USER,phone)
+                            .navigation();
+                } else {
+                    ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
+                    finish();
+                }
+                finish();
+            }
+
+            @Override
+            protected void _onError(String message) {
+                MToast.showToast(message);
+            }
+        }
+        );
     }
 
     @Override

@@ -66,7 +66,7 @@ public abstract class BaseActivity extends SupportActivity implements ListenerWr
         ButterKnife.bind(this);
         initView();
         App.pushOneActivity(this);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     public void setFullScreenFlags() {
