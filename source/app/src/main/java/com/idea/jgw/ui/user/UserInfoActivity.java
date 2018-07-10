@@ -308,6 +308,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
                 BaseResponse baseResponse = JSON.parseObject(data, BaseResponse.class);
                 if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
                     face = baseResponse.getData().toString();
+                    if (!UserInfoActivity.this.isDestroyed())
                     GlideApp.with(UserInfoActivity.this).load(BASE_HOST + face).apply(RequestOptions.circleCropTransform()).placeholder(R.mipmap.icon_default_photo).into(ivPhoto);
                     if(file.exists()) {
                         file.delete();

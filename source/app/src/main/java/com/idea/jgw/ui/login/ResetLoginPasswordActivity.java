@@ -109,15 +109,15 @@ public class ResetLoginPasswordActivity extends BaseActivity {
                     MToast.showToast(R.string.session_is_invalid);
                     ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
                 } else {
-                    findpwd(token, newPwd1);
+                    findpwd(SharedPreferenceManager.getInstance().getPhone(), newPwd1);
                 }
                 break;
         }
     }
 
-    private void findpwd(String token, String newPwd) {
+    private void findpwd(String phone, String newPwd) {
         sendsmsSubscription = ServiceApi.getInstance().getApiService()
-                .findpwd(token, newPwd, verifyCode)
+                .findpwd(phone, newPwd, verifyCode)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscriber<BaseResponse>(this, getResources().getString(R.string.loading), true) {
                                @Override

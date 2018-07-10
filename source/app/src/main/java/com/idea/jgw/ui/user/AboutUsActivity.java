@@ -81,7 +81,7 @@ public class AboutUsActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.ll_version_log:
-                ARouter.getInstance().build(RouterPath.SHOW_ACTIVITY).withInt("contentType", InfoActivity.UPDATE_LOG).navigation();
+                ARouter.getInstance().build(RouterPath.VERSION_ACTIVITY).navigation();
                 break;
             case R.id.ll_update:
                 requestPermission(EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);

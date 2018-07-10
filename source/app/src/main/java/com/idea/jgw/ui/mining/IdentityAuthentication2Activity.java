@@ -42,12 +42,13 @@ import java.io.File;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.idea.jgw.RouterPath.IDENTITY_AUTHENTICATION_ACTIVITY2;
 import static com.idea.jgw.api.OkhttpApi.BASE_HOST;
 
 /**
  * 实名认证，第二步，上传照片
  */
-@Route(path = RouterPath.IDENTITY_AUTHENTICATION_ACTIVITY2)
+@Route(path = IDENTITY_AUTHENTICATION_ACTIVITY2)
 public class IdentityAuthentication2Activity extends BaseActivity {
     //调用系统相机请求码，正面
     public static final int DO_CAMERA_REQUEST = 100;
@@ -298,6 +299,7 @@ public class IdentityAuthentication2Activity extends BaseActivity {
                         MToast.showToast(R.string.file_not_exists);
                     }
                 case DO_CAMERA_REQUEST:
+                    if (!IdentityAuthentication2Activity.this.isDestroyed())
                     GlideApp.with(this).load(frontPhotoPath).centerInside().into(ivFrontIdCard);
                     break;
                 case OPEN_SYS_ALBUMS_REQUEST_BACK:

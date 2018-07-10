@@ -38,7 +38,7 @@ public interface SongApiService {
 
     @FormUrlEncoded
     @POST("findpwd")
-    Observable<BaseResponse> findpwd(@Field ("token") String token, @Field ("passwd") String passwd, @Field ("verifycode") String verifycode);
+    Observable<BaseResponse> findpwd(@Field ("account") String account, @Field ("passwd") String passwd, @Field ("verifycode") String verifycode);
 
     @FormUrlEncoded
     @POST("editinfo")

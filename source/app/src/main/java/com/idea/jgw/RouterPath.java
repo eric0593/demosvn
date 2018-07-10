@@ -29,6 +29,7 @@ public class RouterPath {
     public static final String VERIFY_GESTURE_PASSWORD_ACTIVITY = "/activity/verify_gesture_password";
     public static final String MAIN_ACTIVITY = "/activity/main";
     public static final String ABOUT_ACTIVITY = "/activity/about";
+    public static final String VERSION_ACTIVITY = "/activity/Version diary";
     public static final String HELP_ACTIVITY = "/activity/help";
     public static final String SECURITY_MANAGER_ACTIVITY = "/activity/securityManager";
     public static final String USER_INFO_ACTIVITY = "/activity/userInfo";
