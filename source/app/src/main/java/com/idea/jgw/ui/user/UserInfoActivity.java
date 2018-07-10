@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -112,7 +113,9 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
             nickname = userInfo.getNickname();
             tvNickname.setText(nickname);
             face = userInfo.getFace();
-            GlideApp.with(this).load(BASE_HOST + face).apply(RequestOptions.circleCropTransform()).into(ivPhoto);
+            if(!TextUtils.isEmpty(face)) {
+                GlideApp.with(this).load(BASE_HOST + face).apply(RequestOptions.circleCropTransform()).placeholder(R.mipmap.icon_default_photo).into(ivPhoto);
+            }
         }
         tvPhone.setText(SharedPreferenceManager.getInstance().getPhone());
     }

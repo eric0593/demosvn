@@ -83,7 +83,7 @@ public class CommonUtils {
      */
     public static String doCamra(Activity activity, String fileName, int requestCode) {
         String filePath = null;
-        String sdCarPath = getDiskFilePath(activity);
+        String sdCarPath = activity.getExternalCacheDir().getPath();
         // 判断获得的SD卡路径是否为null
         if (sdCarPath != null) {
             String hldPath = sdCarPath + "/HldImage/";
@@ -118,7 +118,7 @@ public class CommonUtils {
     public static String cropImageUri(Activity activity, String filePath, int requestCode) {
         String cropFile = "cropFile.jpg";
         String cropPath;
-        String sdCarPath = getDiskFilePath(activity);
+        String sdCarPath = activity.getExternalCacheDir().getPath();
         // 判断sd卡是否存在
         if (sdCarPath != null) {
             String hldPath = sdCarPath + "/HldImage/";
@@ -160,7 +160,7 @@ public class CommonUtils {
      */
     public static String openSysPick(Activity activity, String fileName, int requestCode) {
         String filePath = null;
-        String sdCarPath = getDiskFilePath(activity);
+        String sdCarPath = activity.getExternalCacheDir().getPath();
         // 判断sd卡是否存在
         if (sdCarPath != null) {
             String hldPath = sdCarPath + "/HldImage/";
