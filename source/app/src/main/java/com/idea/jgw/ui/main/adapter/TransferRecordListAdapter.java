@@ -100,7 +100,12 @@ public class TransferRecordListAdapter extends BaseRecyclerAdapter {
             v.ivOfTransferState.setImageResource(R.mipmap.send_success);
         }
         BigDecimal amount = new BigDecimal(box.getAmountNative()).divide(bd);
-        v.tvOfTransferValue.setText(df.format(amount.doubleValue()));
+        if(amount.doubleValue() > 0){
+            v.tvOfTransferValue.setText( "+"+df.format(amount.doubleValue()));
+        }else{
+            v.tvOfTransferValue.setText(df.format(amount.doubleValue()));
+        }
+
 
         Common.CoinTypeEnum coinType = box.getCoinType();
         switch (coinType) {

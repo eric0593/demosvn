@@ -80,7 +80,7 @@ public class Common {
         /**
          * 请求的url
          */
-        public static final String URL = "http://10.0.2.2:8555";//"http://api.myetherapi.com/eth";// " http://120.132.120.253:8546";
+        public static final String URL =  "http://120.132.120.253:8546";//"http://10.0.2.2:8555";//"http://api.myetherapi.com/eth";//
         /**
          * 智能合约地址
          */

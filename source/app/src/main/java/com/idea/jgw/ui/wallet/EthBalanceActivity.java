@@ -127,11 +127,11 @@ public class EthBalanceActivity extends BalanceActivity {
                         DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
 //                    df.setMaximumFractionDigits(18);
                         BigDecimal amount = new BigDecimal(bi.toString(10)).divide(bd);
-                        String balance = df.format(amount.doubleValue());
+//                        String balance = df.format(amount.doubleValue());
 
                         mCurAvailable = amount;
 
-                        tvOfUsableBalanceValue.setText(balance);
+                        tvOfUsableBalanceValue.setText(String.valueOf(amount.doubleValue()));
                     }
 
                     @Override

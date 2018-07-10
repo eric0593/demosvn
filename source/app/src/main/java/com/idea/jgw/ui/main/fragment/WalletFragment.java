@@ -204,8 +204,9 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
                 DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
 //                    df.setMaximumFractionDigits(18);
                 BigDecimal amount = new BigDecimal(bi.toString(10)).divide(bd);
-                String balance = df.format(amount.doubleValue());
+//                String balance = df.format(amount.doubleValue());
 
+                String balance = String.valueOf(amount.doubleValue());
                 CoinData cd = new CoinData();
                 cd.setAddress(address);
                 cd.setCoinTypeEnum(Common.CoinTypeEnum.ETH);
