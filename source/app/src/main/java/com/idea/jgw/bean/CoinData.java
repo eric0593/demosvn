@@ -29,6 +29,7 @@ public class CoinData {
     private String address;
     private String count;
     private Common.CoinTypeEnum coinTypeEnum;
+    private CoinPrice price; //单价
 
     public void setCoinTypeEnum(Common.CoinTypeEnum coinTypeEnum) {
         this.coinTypeEnum = coinTypeEnum;
@@ -36,6 +37,15 @@ public class CoinData {
 
     public Common.CoinTypeEnum getCoinTypeEnum() {
         return coinTypeEnum;
+    }
+
+
+    public CoinPrice getPrice() {
+        return price;
+    }
+
+    public void setPrice(CoinPrice price) {
+        this.price = price;
     }
 
     public void setAddress(String address) {

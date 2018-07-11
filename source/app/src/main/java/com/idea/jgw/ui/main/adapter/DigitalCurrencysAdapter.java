@@ -11,8 +11,10 @@ import android.widget.TextView;
 
 import com.idea.jgw.R;
 import com.idea.jgw.bean.CoinData;
+import com.idea.jgw.bean.CoinPrice;
 import com.idea.jgw.common.Common;
 import com.idea.jgw.ui.BaseRecyclerAdapter;
+import com.idea.jgw.ui.main.fragment.WalletFragment;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -39,21 +41,9 @@ public class DigitalCurrencysAdapter extends BaseRecyclerAdapter<CoinData> {
 
     @Override
     public void onBind(RecyclerView.ViewHolder viewHolder, int realPosition, CoinData data) {
-        Log.e("", "onBind");
-
-//        iv_of_digital_currency 图标
-//        tv_of_digital_name 名字
-        //tv_of_digital_unit_price 单价
-//        tv_of_digital_total_price 结合人民币数量
-//        tv_of_digital_number 数量
-//        viewHolder.
-//
-//                cd.setAddress(address);
-//        cd.setCoinTypeEnum(Common.CoinTypeEnum.JGW);
-//        cd.setCount(balance);
 
         CoinDataListHolder v = (CoinDataListHolder) viewHolder;
-
+        v.tvOfDigitalTotalPrice.setVisibility(View.INVISIBLE);
         switch (data.getCoinTypeEnum()){
             case BTC:
                 v.tvOfDigitalName.setText("BTC");
@@ -61,6 +51,9 @@ public class DigitalCurrencysAdapter extends BaseRecyclerAdapter<CoinData> {
             case ETH:
                 v.tvOfDigitalName.setText("ETH");
                 v.ivOfDigitalCurrency.setImageResource(R.mipmap.icon_eth);
+                BigDecimal bd =getSumPrice(data,data.getPrice());
+                v.tvOfDigitalTotalPrice.setText(bd.doubleValue()+ WalletFragment.MONEY_TYPE);
+                v.tvOfDigitalTotalPrice.setVisibility(View.VISIBLE);
                 break;
             case JGW:
                 v.ivOfDigitalCurrency.setImageResource(R.mipmap.icon_oce);
@@ -69,8 +62,18 @@ public class DigitalCurrencysAdapter extends BaseRecyclerAdapter<CoinData> {
         }
         v.tvOfDigitalNumber.setText(TextUtils.isEmpty(data.getCount())?"0.0":df.format(new BigDecimal(data.getCount().replace(",", "")).doubleValue()));
         v.tvOfDigitalUnitPrice.setVisibility(View.INVISIBLE);
-        v.tvOfDigitalTotalPrice.setVisibility(View.INVISIBLE);
 
+
+    }
+
+
+    private BigDecimal getSumPrice(CoinData cd,CoinPrice cp ){
+        if(null == cp){
+            return new BigDecimal("0");
+        }
+        String amount = cd.getCount();
+        BigDecimal bd = new BigDecimal(amount);
+        return  bd.multiply(new BigDecimal(cp.getLast()));
     }
 
     class CoinDataListHolder extends Holder {

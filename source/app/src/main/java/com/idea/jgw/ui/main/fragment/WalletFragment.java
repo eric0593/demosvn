@@ -2,6 +2,8 @@ package com.idea.jgw.ui.main.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,8 +18,8 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
-import com.idea.jgw.bean.Coin;
 import com.idea.jgw.bean.CoinData;
+import com.idea.jgw.bean.CoinPrice;
 import com.idea.jgw.common.Common;
 import com.idea.jgw.logic.btc.interfaces.TLCallback;
 import com.idea.jgw.logic.btc.model.TLCoin;
@@ -26,7 +28,6 @@ import com.idea.jgw.logic.jgw.JgwUtils;
 import com.idea.jgw.ui.main.MainActivity;
 import com.idea.jgw.ui.BaseRecyclerAdapter;
 import com.idea.jgw.ui.main.adapter.DigitalCurrencysAdapter;
-import com.idea.jgw.ui.wallet.BalanceActivity;
 import com.idea.jgw.ui.wallet.EthBalanceActivity;
 import com.idea.jgw.ui.wallet.JgwBalanceActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
@@ -39,7 +40,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,9 +56,14 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
     TextView tvOfTotalAsset;
     @BindView(R.id.rv_of_detail_mining)
     RecyclerView rvOfDetailAsset;
+    @BindView(R.id.tx_sum_money)
+    TextView tvSumMoney;
 
 
-//    List<CoinData> initList = new ArrayList<>();
+    CoinPrice ethCoinPrice; //姨太的单价
+    BigDecimal ethSumMoney = new BigDecimal("0"); //eth币的总价值
+    BigDecimal sumMoney = new BigDecimal("0"); //所有币的重甲
+    public static final String  MONEY_TYPE ="CNY"; //法币符号
 
     HashMap<String, CoinData> map = new HashMap<>();
 
@@ -73,6 +78,10 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        getEthOfCnyPrice();
+
         digitalCurrencysAdapter = new DigitalCurrencysAdapter();
         digitalCurrencysAdapter.addDatas(getInitData());
         digitalCurrencysAdapter.setOnItemClickListener(this);
@@ -136,7 +145,7 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
                 break;
             case JGW:
                 ARouter.getInstance().build(RouterPath.BALANCE_JGW_ACTIITY)
-                    .withSerializable(JgwBalanceActivity.EXTRA_AMOUNT, data.getCount())
+                        .withSerializable(JgwBalanceActivity.EXTRA_AMOUNT, data.getCount())
                         .navigation();
                 break;
         }
@@ -198,14 +207,10 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
             public void onSuccess(Object obj) {
                 if (null == obj) return;
                 String str = obj.toString();
-//                    BigInteger bi = new BigInteger(new BigInteger(str,16).toString(10));
                 BigInteger bi = new BigInteger(str);
                 BigDecimal bd = new BigDecimal(10).pow(18);
                 DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
-//                    df.setMaximumFractionDigits(18);
                 BigDecimal amount = new BigDecimal(bi.toString(10)).divide(bd);
-//                String balance = df.format(amount.doubleValue());
-
                 String balance = String.valueOf(amount.doubleValue());
                 CoinData cd = new CoinData();
                 cd.setAddress(address);
@@ -230,62 +235,54 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
             }
         });
 
-
-//                new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                MyLog.e("____" + e.toString());
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, final Response response) throws IOException {
-//                MyLog.e("getEthBalance____1");
-//                // MyLog.e("getEthBalance____" + response.body().string());
-//                if(null != mContext)
-//                mContext.runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//
-//                            if (response == null) {
-//                                MyLog.e("response--->response null");
-//                                return;
-//                            }
-//
-//                            ResponseBody body = response.body();
-//                            if (null == body) {
-//                                MyLog.e("response--->body null");
-//                                return;
-//                            }
-//                            BigDecimal mCurAvailable = new BigDecimal(ResponseParser.parseBalance(body.string(), 18));
-//                            CoinData cd = new CoinData();
-//                            cd.setAddress(address);
-//                            cd.setCoinTypeEnum(Common.CoinTypeEnum.ETH);
-//                            cd.setCount(mCurAvailable.toString());
-//                            addData(cd);
-//                        } catch (Exception e) {
-//
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//        );
-//            }
-//        });
     }
 
     private void addData(CoinData cd) {
+
+        if (ethCoinPrice != null) {
+            if (cd.getCoinTypeEnum().equals(Common.CoinTypeEnum.ETH)) {
+                cd.setPrice(ethCoinPrice);
+
+                BigDecimal bd = getEthSumPrice(cd,ethCoinPrice);
+                sumMoney = sumMoney.add(bd);
+                tvSumMoney.setText(sumMoney.doubleValue()+MONEY_TYPE);
+            }
+        }
+
         map.replace(cd.getCoinTypeEnum().getName(), cd);
-//        Set<String> keys = map.keySet();
-//        for(String key:keys) {
-//            if(key.equals(cd.getCoinTypeEnum().getName())) {
-//                map.put(key, cd);
-//            }
-//        }
         List<CoinData> list = new ArrayList<>();
         for (CoinData data : map.values()) {
             list.add(data);
         }
         digitalCurrencysAdapter.replaceDatas(list);
+    }
+
+
+    private void getEthOfCnyPrice() {
+        CoinPrice cp = new CoinPrice();
+        cp.getCoinPrice("ETH", MONEY_TYPE, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what > 0) {
+                    ethCoinPrice = (CoinPrice) msg.obj;
+                    CoinData cd = map.get(Common.CoinTypeEnum.ETH.getName());
+                    cd.setPrice(ethCoinPrice);
+                    addData(cd);
+
+                    BigDecimal bd = getEthSumPrice(cd,ethCoinPrice);
+                    sumMoney = sumMoney.add(bd);
+                    tvSumMoney.setText(sumMoney.doubleValue()+MONEY_TYPE);
+
+                }
+            }
+        });
+
+    }
+
+    private BigDecimal getEthSumPrice(CoinData cd,CoinPrice cp ){
+        String amount = cd.getCount();
+        BigDecimal bd = new BigDecimal(amount);
+       return  bd.multiply(new BigDecimal(cp.getLast()));
     }
 }

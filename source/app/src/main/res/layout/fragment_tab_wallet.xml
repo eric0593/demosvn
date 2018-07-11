@@ -19,6 +19,7 @@
             android:text="@string/total_asset"/>
 
         <TextView
+            android:id="@+id/tx_sum_money"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
