@@ -133,6 +133,8 @@
             android:screenOrientation="portrait" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
         <activity android:name=".ui.user.FeedbackActivity"
             android:screenOrientation="portrait" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.user.VersionDiaryActivity"
+            android:screenOrientation="portrait" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
         <activity android:name=".ui.user.UpdateNicknameActivity"
             android:screenOrientation="portrait" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"></activity>
         <service android:name=".logic.eth.service.TransactionService"
