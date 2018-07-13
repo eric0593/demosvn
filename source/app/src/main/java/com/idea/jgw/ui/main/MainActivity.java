@@ -1,7 +1,6 @@
 package com.idea.jgw.ui.main;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -107,20 +106,17 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             case R.id.btn_of_wallet:
                 currentFragment = walletFragment;
                 rbOfWallet.setSelected(true);
-                getFragmentManager().beginTransaction().replace(R.id.home_container, currentFragment).commit();
                 break;
             case R.id.btn_of_discovery:
                 currentFragment = discoverFragment;
                 rbOfDiscovery.setSelected(true);
-                getFragmentManager().beginTransaction().replace(R.id.home_container, currentFragment).commit();
                 break;
             case R.id.rb_of_mine:
                 currentFragment = mineFragment;
                 rbOfMine.setSelected(true);
-                getFragmentManager().beginTransaction().replace(R.id.home_container, currentFragment).commit();
                 break;
         }
-
+        getFragmentManager().beginTransaction().replace(R.id.home_container, currentFragment).commit();
     }
 
     @Override

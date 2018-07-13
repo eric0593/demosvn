@@ -80,7 +80,7 @@ public interface SongApiService {
 
     @FormUrlEncoded
     @POST("http://120.132.120.251:8080/transfer")
-    Observable<BaseResponse> transferMiningData(@Field("cointype") int coinType, @Field("tradepwd") String tradepwd, @Field("num") double num, @Field("addr") String addr);
+    Observable<BaseResponse> transferMiningData(@Field("cointype") int coinType, @Field("token") String token, @Field("feetype") int feetype, @Field("num") double num, @Field("addr") String addr);
 
     @FormUrlEncoded
     @POST("http://120.132.120.251:8080/get_price")
