@@ -87,6 +87,8 @@ public class SendMiningCoinActivity extends BaseActivity {
             balance = getIntent().getDoubleExtra("balance", 0);
         }
 
+        tvOfBalance.setText(R.string.balance);
+
         tvOfTitle.setText(R.string.send);
         if(coinType == 1) {
             ivDigitalLogo.setImageResource(R.mipmap.icon_btc);
