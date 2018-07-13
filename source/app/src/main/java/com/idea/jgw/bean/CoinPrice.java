@@ -153,6 +153,11 @@ public class CoinPrice {
 
 
     public void insertAll(String tableName, List<CoinPrice> list) {
+        try{
+            getHelper().clear(tableName);
+        }catch (Exception e){
+
+        }
         getHelper().saveAll(tableName, list);
     }
 

@@ -73,7 +73,7 @@ public class DigitalCurrencysAdapter extends BaseRecyclerAdapter<CoinData> {
         }
         String amount = cd.getCount();
         BigDecimal bd = new BigDecimal(amount);
-        return  bd.multiply(new BigDecimal(cp.getLast()));
+        return  bd.multiply(new BigDecimal(cp.getLast())).setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     class CoinDataListHolder extends Holder {

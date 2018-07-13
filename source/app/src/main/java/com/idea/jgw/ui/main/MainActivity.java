@@ -1,6 +1,7 @@
 package com.idea.jgw.ui.main;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -32,6 +33,7 @@ import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 import org.bitcoinj.core.Base58;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -71,6 +73,11 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     MineFragment mineFragment;
     Fragment currentFragment;
 
+
+    public static BigDecimal ethCount = new BigDecimal("0"); //
+    public static BigDecimal jgwCount = new BigDecimal("0");//
+    public static long lastGetCoinTime = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,17 +107,20 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             case R.id.btn_of_wallet:
                 currentFragment = walletFragment;
                 rbOfWallet.setSelected(true);
+                getFragmentManager().beginTransaction().replace(R.id.home_container, currentFragment).commit();
                 break;
             case R.id.btn_of_discovery:
                 currentFragment = discoverFragment;
                 rbOfDiscovery.setSelected(true);
+                getFragmentManager().beginTransaction().replace(R.id.home_container, currentFragment).commit();
                 break;
             case R.id.rb_of_mine:
                 currentFragment = mineFragment;
                 rbOfMine.setSelected(true);
+                getFragmentManager().beginTransaction().replace(R.id.home_container, currentFragment).commit();
                 break;
         }
-        getFragmentManager().beginTransaction().replace(R.id.home_container, currentFragment).commit();
+
     }
 
     @Override

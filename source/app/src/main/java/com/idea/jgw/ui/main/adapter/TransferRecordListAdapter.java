@@ -71,7 +71,7 @@ public class TransferRecordListAdapter extends BaseRecyclerAdapter {
     }
 
 
-    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     BigDecimal bd = new BigDecimal(10).pow(18);
     DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
@@ -80,15 +80,9 @@ public class TransferRecordListAdapter extends BaseRecyclerAdapter {
     @Override
     public void onBind(RecyclerView.ViewHolder viewHolder, int realPosition, Object data) {
 
-
-//        ExchangeCalculator.getInstance().displayBalanceNicely(ExchangeCalculator.getInstance().convertRate(Math.abs(box.getAmount()), ExchangeCalculator.getInstance().getCurrent().getRate())) + " " + ExchangeCalculator.getInstance().getCurrencyShort()
-//        String walletname = AddressNameConverter.getInstance(context).get(box.getFromAddress());
-//        String toName = AddressNameConverter.getInstance(context).get(box.getToAddress());
-
         TransactionDisplay box = boxlist.get(realPosition);
         DigitalCurrencyListHolder v = (DigitalCurrencyListHolder) viewHolder;
         v.ivOfDigitalCurrency.setImageResource(box.getAmount() > 0 ? R.mipmap.banlance_receive : R.mipmap.banlance_send);
-//        v.tvOfTransferValue.setText(String.valueOf(box.getAmount()));
         String toName = AddressNameConverter.getInstance(App.getInstance()).get(box.getToAddress());
         v.tvOfTransferAddress.setText(toName == null ? box.getToAddress() : toName + " (" + box.getToAddress().substring(0, 10) + ")");
         v.tvOfTransferTime.setText(sdf.format(new Date(box.getDate())));
@@ -119,18 +113,6 @@ public class TransferRecordListAdapter extends BaseRecyclerAdapter {
                 v.ivOfDigitalCurrency.setImageResource(R.mipmap.icon_btc_small);
                 break;
         }
-
-
-        Log.e("", "onBind");
-//        int coinType = data.getType();
-//        if(coinType == 1) {
-//            ((DigitalCurrencyListHolder)viewHolder).ivOfDigitalCurrency.setImageResource(R.mipmap.icon_btc_small);
-//        } else if(coinType == 2) {
-//            ((DigitalCurrencyListHolder)viewHolder).ivOfDigitalCurrency.setImageResource(R.mipmap.icon_eth);
-//        } else if(coinType == 3) {
-//            ((DigitalCurrencyListHolder)viewHolder).ivOfDigitalCurrency.setImageResource(R.mipmap.icon_oce);
-//        }
-//        ((DigitalCurrencyListHolder)viewHolder).tvOfTransferValue.setText(String.valueOf(data.getNum()));
     }
 
     class DigitalCurrencyListHolder extends RecyclerView.ViewHolder {

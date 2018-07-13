@@ -62,8 +62,8 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
 
     CoinPrice ethCoinPrice; //姨太的单价
     BigDecimal ethSumMoney = new BigDecimal("0"); //eth币的总价值
-    BigDecimal sumMoney = new BigDecimal("0"); //所有币的重甲
-    public static final String  MONEY_TYPE ="CNY"; //法币符号
+    //    BigDecimal sumMoney = new BigDecimal("0"); //所有币的重甲
+    public static final String MONEY_TYPE = "CNY"; //法币符号
 
     HashMap<String, CoinData> map = new HashMap<>();
 
@@ -74,6 +74,8 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
         mContext = (MainActivity) context;
         super.onAttach(context);
     }
+
+    static final long DEALY_GET_COIN = 60 * 60 * 5;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,8 +91,32 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
         //根据姨太的地址获取记录
         String ethAddress = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.PREFERENCES_ADDRESS_KEY, "").toString();
         if (!TextUtils.isEmpty(ethAddress) && EthWalltUtils.isValidAddress(ethAddress)) {
+
+            //后期再优化--->>>需要持久化
+
+
+//            DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
+//            {
+//                CoinData cd = new CoinData();
+//                cd.setAddress(ethAddress);
+//                cd.setCoinTypeEnum(Common.CoinTypeEnum.JGW);
+//                cd.setCount(df.format(MainActivity.jgwCount.doubleValue()));
+//                addData(cd);
+//            }
+//
+//            {
+//                CoinData cd = new CoinData();
+//                cd.setAddress(ethAddress);
+//                cd.setCoinTypeEnum(Common.CoinTypeEnum.ETH);
+//                cd.setCount(df.format(MainActivity.ethCount.doubleValue()));
+//                addData(cd);
+//            }
+
+
             getEthBalance(ethAddress);
             getJgwBalance(ethAddress);
+
+
         }
     }
 
@@ -175,6 +201,8 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
                     cd.setCoinTypeEnum(Common.CoinTypeEnum.JGW);
                     cd.setCount(balance);
                     addData(cd);
+
+                    MainActivity.jgwCount = amount;
                 }
             }
 
@@ -217,6 +245,8 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
                 cd.setCoinTypeEnum(Common.CoinTypeEnum.ETH);
                 cd.setCount(balance);
                 addData(cd);
+
+                MainActivity.ethCount = amount;
             }
 
             @Override
@@ -242,10 +272,10 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
         if (ethCoinPrice != null) {
             if (cd.getCoinTypeEnum().equals(Common.CoinTypeEnum.ETH)) {
                 cd.setPrice(ethCoinPrice);
-
-                BigDecimal bd = getEthSumPrice(cd,ethCoinPrice);
-                sumMoney = sumMoney.add(bd);
-                tvSumMoney.setText(sumMoney.doubleValue()+MONEY_TYPE);
+//                sumEth = sumEth.subtract(sumEth);
+                BigDecimal sumEth = getEthSumPrice(cd, ethCoinPrice);
+//                sumMoney = sumMoney.add(sumEth);
+                tvSumMoney.setText(sumEth.doubleValue() + MONEY_TYPE);
             }
         }
 
@@ -270,9 +300,9 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
                     cd.setPrice(ethCoinPrice);
                     addData(cd);
 
-                    BigDecimal bd = getEthSumPrice(cd,ethCoinPrice);
-                    sumMoney = sumMoney.add(bd);
-                    tvSumMoney.setText(sumMoney.doubleValue()+MONEY_TYPE);
+                    BigDecimal bd = getEthSumPrice(cd, ethCoinPrice);
+//                    sumMoney = sumMoney.add(bd);
+                    tvSumMoney.setText(bd.doubleValue() + MONEY_TYPE);
 
                 }
             }
@@ -280,9 +310,9 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
 
     }
 
-    private BigDecimal getEthSumPrice(CoinData cd,CoinPrice cp ){
+    private BigDecimal getEthSumPrice(CoinData cd, CoinPrice cp) {
         String amount = cd.getCount();
         BigDecimal bd = new BigDecimal(amount);
-       return  bd.multiply(new BigDecimal(cp.getLast()));
+        return bd.multiply(new BigDecimal(cp.getLast())).setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 }
