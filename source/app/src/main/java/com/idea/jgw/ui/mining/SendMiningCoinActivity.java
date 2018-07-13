@@ -130,7 +130,8 @@ public class SendMiningCoinActivity extends BaseActivity {
             @Override
             public void inputFinished(String inputPsd) {
                 inputTransactionPwdDialog.dismiss();
-                if(inputPsd.equals("123456")) {
+                String paymentPwd = SharedPreferenceManager.getInstance().getPaymentPwd();
+                if (inputPsd.equals(paymentPwd)) {
                     transferMining(Double.parseDouble(etSendAmount.getText().toString()), etReceivedAddress.getText().toString());
                 } else {
                     inputTransactionPwdDialog.setErrorMsg(getResources().getString(R.string.transaction_pin_error));
