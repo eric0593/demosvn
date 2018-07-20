@@ -283,7 +283,7 @@ public class AboutUsActivity extends BaseActivity {
                 DialogUtils.showAlertDialog(this, "安装权限申请：\n我们需要您开启读安装权限，用以更新app", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        requestPermissionOnRationale(PHONE_STATE, Manifest.permission.INSTALL_PACKAGES);
+                        requestPermissionOnRationale(INSTALL_PACKAGE, Manifest.permission.INSTALL_PACKAGES);
                     }
                 });
                 break;
