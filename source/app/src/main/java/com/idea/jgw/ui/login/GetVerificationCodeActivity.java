@@ -89,9 +89,8 @@ public class GetVerificationCodeActivity extends BaseActivity {
 //                    findpwdsms(token);
 //                }
                 String phone = etOfPhone.getText().toString().trim();
-                if(TextUtils.isEmpty(phone)) {
-                    MToast.showToast(R.string.session_is_invalid);
-                    ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
+                if (TextUtils.isEmpty(phone)) {
+                    MToast.showToast(R.string.phone_is_null);
                 } else {
                     phone = nationCode + "-" + phone;
                     getSms(phone);
@@ -99,10 +98,13 @@ public class GetVerificationCodeActivity extends BaseActivity {
                 break;
             case R.id.btn_of_next:
                 String verifyCode = etOfSecurityCode.getText().toString().trim();
-                if(TextUtils.isEmpty(verifyCode)) {
+                String phoneNumber = etOfPhone.getText().toString().trim();
+                if (TextUtils.isEmpty(verifyCode)) {
                     MToast.showToast(R.string.verify_code_is_null);
+                } else if (TextUtils.isEmpty(phoneNumber)) {
+                    MToast.showToast(R.string.phone_is_null);
                 } else {
-                    ARouter.getInstance().build(RouterPath.RESET_LOGIN_PASSWORD_ACTIVITY).withString("verifyCode", verifyCode).navigation(this, RESET_PWD_REQUEST);
+                    ARouter.getInstance().build(RouterPath.RESET_LOGIN_PASSWORD_ACTIVITY).withString("verifyCode", verifyCode).withString("phone", phoneNumber).navigation(this, RESET_PWD_REQUEST);
                 }
                 break;
         }
@@ -115,7 +117,7 @@ public class GetVerificationCodeActivity extends BaseActivity {
                 .subscribe(new RxSubscriber<BaseResponse>(this, getResources().getString(R.string.loading), true) {
                                @Override
                                protected void _onNext(BaseResponse baseResponse) {
-                                   if(baseResponse.getCode() == BaseResponse.RESULT_OK) {
+                                   if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
                                        getSecurityCodeWait();
 //                                   } else if(baseResponse.getCode() == 0) {
 //                                       ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
@@ -138,7 +140,7 @@ public class GetVerificationCodeActivity extends BaseActivity {
                 .subscribe(new RxSubscriber<BaseResponse>(this, getResources().getString(R.string.loading), true) {
                                @Override
                                protected void _onNext(BaseResponse baseResponse) {
-                                   if(baseResponse.getCode() == BaseResponse.RESULT_OK) {
+                                   if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
                                        getSecurityCodeWait();
                                    } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
                                        reLogin();
@@ -163,7 +165,7 @@ public class GetVerificationCodeActivity extends BaseActivity {
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
-                        if(aLong < 60) {
+                        if (aLong < 60) {
                             String s = String.format(getResources().getString(R.string.resend_notice), WAIT_TIME - aLong);
                             tvOfGetSecurityCode.setText(s);
                         } else {
@@ -178,8 +180,8 @@ public class GetVerificationCodeActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK) {
-            if(requestCode == RESET_PWD_REQUEST) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == RESET_PWD_REQUEST) {
                 finish();
             }
         }

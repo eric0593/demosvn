@@ -53,6 +53,7 @@ public class ResetLoginPasswordActivity extends BaseActivity {
     Button btnOfResetNow;
 
     String verifyCode;
+    String phone;
     private Subscription sendsmsSubscription;
 
     @Override
@@ -70,6 +71,9 @@ public class ResetLoginPasswordActivity extends BaseActivity {
         tvOfTitle.setText(R.string.reset_login_pwd);
         if(getIntent().hasExtra("verifyCode")) {
             verifyCode = getIntent().getStringExtra("verifyCode");
+        }
+        if(getIntent().hasExtra("phone")) {
+            phone = getIntent().getStringExtra("phone");
         }
     }
 
@@ -100,16 +104,12 @@ public class ResetLoginPasswordActivity extends BaseActivity {
             case R.id.btn_of_reset_now:
                 String newPwd1 = etOfPwd.getText().toString().trim();
                 String newPwd2 = etOfPwd2.getText().toString().trim();
-                String token = SharedPreferenceManager.getInstance().getSession();
                 if(TextUtils.isEmpty(newPwd1)) {
                     MToast.showToast(R.string.pwd_code_is_null);
                 } else if(TextUtils.isEmpty(newPwd2) || !newPwd1.equals(newPwd2)) {
                     MToast.showToast(R.string.input_not_equal);
-                } else if(TextUtils.isEmpty(token)) {
-                    MToast.showToast(R.string.session_is_invalid);
-                    ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
                 } else {
-                    findpwd(SharedPreferenceManager.getInstance().getPhone(), newPwd1);
+                    findpwd(phone, newPwd1);
                 }
                 break;
         }
@@ -129,14 +129,21 @@ public class ResetLoginPasswordActivity extends BaseActivity {
                                        reLogin();
                                    }
                                    MToast.showToast(baseResponse.getData().toString());
+                                   unSubscribe(sendsmsSubscription);
                                }
 
                                @Override
                                protected void _onError(String message) {
                                    MToast.showToast(message);
+                                   unSubscribe(sendsmsSubscription);
                                }
                            }
                 );
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unSubscribe(sendsmsSubscription);
+    }
 }
