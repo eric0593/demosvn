@@ -8,11 +8,15 @@ import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.logic.eth.EthWalltUtils;
+import com.idea.jgw.logic.eth.interfaces.StorableWallet;
+import com.idea.jgw.logic.eth.utils.WalletStorage;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.ui.service.ScreenListenerService;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.ShareKey;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
+
+import java.util.List;
 
 /**
  * 启动页
@@ -50,8 +54,11 @@ public class StartActivity extends BaseActivity {
                     e.printStackTrace();
                 }
                 boolean isLogin = SharedPreferenceManager.getInstance().isLogin();
+                List<StorableWallet> list = WalletStorage.getInstance(App.getInstance()).get();
                 if(!isLogin || !App.login) {
                     ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
+                } else if(list.size() == 0) {
+                    ARouter.getInstance().build(RouterPath.LOAD_OR_CREATE_WALLET_ACTIVITY).navigation();
                 } else {
                     ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
                 }
