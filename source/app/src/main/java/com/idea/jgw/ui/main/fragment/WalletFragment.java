@@ -279,7 +279,10 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
             }
         }
 
-        map.replace(cd.getCoinTypeEnum().getName(), cd);
+        //该方法只适用于api24的版本，兼容低版本用下面的代码
+//        map.replace(cd.getCoinTypeEnum().getName(), cd);
+        CoinData coinData = map.get(cd.getCoinTypeEnum().getName());
+        map.put(cd.getCoinTypeEnum().getName(), coinData);
         List<CoinData> list = new ArrayList<>();
         for (CoinData data : map.values()) {
             list.add(data);
