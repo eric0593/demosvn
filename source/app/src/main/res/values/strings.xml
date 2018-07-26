@@ -264,8 +264,8 @@
     <string name="contact_way">联系方式</string>
     <string name="contact_hint">电话/QQ/微信/邮箱</string>
     <string name="eth">ETH</string>
-    <string name="jgw">JGW</string>
-    <string name="oce">OCE</string>
+    <string name="jgw">OCE</string>
+    <!--<string name="oce">OCE</string>-->
     <string name="btc">BTC</string>
 
     <string name="token_type_err">您选择的不是甲骨币</string>
