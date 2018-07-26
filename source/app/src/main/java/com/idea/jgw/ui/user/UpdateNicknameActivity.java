@@ -17,10 +17,8 @@ import com.idea.jgw.RouterPath;
 import com.idea.jgw.api.retrofit.ServiceApi;
 import com.idea.jgw.bean.BaseResponse;
 import com.idea.jgw.ui.BaseActivity;
-import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.MToast;
-import com.idea.jgw.utils.common.ShareKey;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 import butterknife.BindView;

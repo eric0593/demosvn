@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 
+import com.idea.jgw.ui.BaseAdapter;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import android.view.View;
@@ -45,7 +46,7 @@ import rx.schedulers.Schedulers;
  * 挖矿详情页面
  */
 @Route(path = RouterPath.MINING_DETAIL_ACTIVITY)
-public class MiningDetailActivity extends BaseActivity implements BaseRecyclerAdapter.OnItemClickListener {
+public class MiningDetailActivity extends BaseActivity implements BaseAdapter.OnItemClickListener {
 
     private static final int SEND_MINING = 11;
     MiningDetailAdapter miningDetailAdapter;

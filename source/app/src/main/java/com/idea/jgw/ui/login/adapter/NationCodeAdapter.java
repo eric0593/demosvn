@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
  * Created by idea on 2018/5/16.
  */
 
-public class NationCodeAdapter extends BaseAdapter<String> {
+public class NationCodeAdapter extends BaseAdapter<String, RecyclerView.ViewHolder> {
 
     @Override
     public RecyclerView.ViewHolder onCreate(ViewGroup parent, int viewType) {

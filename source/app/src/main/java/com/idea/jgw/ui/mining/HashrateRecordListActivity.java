@@ -22,6 +22,7 @@ import com.idea.jgw.bean.MiningCoinData;
 import com.idea.jgw.bean.Nation;
 import com.idea.jgw.bean.PageData;
 import com.idea.jgw.ui.BaseActivity;
+import com.idea.jgw.ui.BaseAdapter;
 import com.idea.jgw.ui.BaseRecyclerAdapter;
 import com.idea.jgw.ui.login.adapter.NationCodeAdapter;
 import com.idea.jgw.ui.mining.adapter.HashrateRecordAdapter;
@@ -46,7 +47,7 @@ import rx.schedulers.Schedulers;
  * 算力提升列表
  */
 @Route(path = RouterPath.HASHRATE_RECORD_ACTIVITY2)
-public class HashrateRecordListActivity extends BaseActivity implements BaseRecyclerAdapter.OnItemClickListener {
+public class HashrateRecordListActivity extends BaseActivity implements BaseAdapter.OnItemClickListener {
 
     @BindView(R.id.btn_of_back)
     Button btnOfBack;

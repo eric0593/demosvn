@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
  * Created by idea on 2018/5/16.
  */
 
-public class HashrateRecordAdapter extends BaseAdapter<CaculateRecord> {
+public class HashrateRecordAdapter extends BaseAdapter<CaculateRecord, RecyclerView.ViewHolder> {
 
     @Override
     public RecyclerView.ViewHolder onCreate(ViewGroup parent, int viewType) {

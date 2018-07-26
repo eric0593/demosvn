@@ -24,6 +24,7 @@ import com.idea.jgw.api.retrofit.ServiceApi;
 import com.idea.jgw.bean.BaseResponse;
 import com.idea.jgw.bean.CoinMining;
 import com.idea.jgw.bean.AllMiningData;
+import com.idea.jgw.ui.BaseAdapter;
 import com.idea.jgw.ui.BaseFragment;
 import com.idea.jgw.ui.BaseRecyclerAdapter;
 import com.idea.jgw.ui.main.adapter.MiningAdapter;
@@ -49,7 +50,7 @@ import rx.schedulers.Schedulers;
  * Created by idea on 2018/5/16.
  */
 
-public class DiscoverFragment extends BaseFragment implements BaseRecyclerAdapter.OnItemClickListener<CoinMining> {
+public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItemClickListener<CoinMining> {
 
     MiningAdapter miningAdapter;
     MediaPlayer mMediaPlayer;
@@ -78,7 +79,7 @@ public class DiscoverFragment extends BaseFragment implements BaseRecyclerAdapte
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        miningAdapter = new MiningAdapter();
+        miningAdapter = new MiningAdapter(getActivity());
 //        miningAdapter.addDatas(getTestDatas(3));
         miningAdapter.setOnItemClickListener(this);
     }
@@ -106,18 +107,18 @@ public class DiscoverFragment extends BaseFragment implements BaseRecyclerAdapte
 
         tvHashrate.setText(String.format(getString(R.string.sample_hashrate), 0));
 
-        getMiningData();
+        getMiningData(false);
         return view;
     }
 
-    private void getMiningData() {
+    private void getMiningData(boolean showDialog) {
         String token = SharedPreferenceManager.getInstance().getSession();
 //        String imei = CommonUtils.getIMEI(App.getInstance());
         String imei = "qwe"; //设备号暂时使用qwe
         miningSubscription = ServiceApi.getInstance().getApiService()
                 .miningData(imei, token)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new RxSubscriber<BaseResponse>(getActivity(), getResources().getString(R.string.loading), true) {
+                .subscribe(new RxSubscriber<BaseResponse>(getActivity(), getResources().getString(R.string.loading), showDialog) {
                                @Override
                                protected void _onNext(BaseResponse baseResponse) {
                                    if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
@@ -133,6 +134,7 @@ public class DiscoverFragment extends BaseFragment implements BaseRecyclerAdapte
                                            FloatView.FloatViewData data = new FloatView.FloatViewData();
                                            data.setType(coinMining.getCoin_info().getId());
                                            data.setValue(coinMining.getReceive_profit());
+                                           data.setUrl(coinMining.getCoin_info().getFace());
                                            list.add(data);
                                        }
                                        fvOfMining.setList(list);
@@ -201,16 +203,6 @@ public class DiscoverFragment extends BaseFragment implements BaseRecyclerAdapte
         double balance = data.getBalance();
         ARouter.getInstance().build(RouterPath.MINING_DETAIL_ACTIVITY).withInt("coinType", coinType).withDouble("balance", balance).navigation();
     }
-
-//    public List getTestDatas(int size) {
-//        List<CoinMining> digitalCurrencys = new ArrayList<>();
-//        for (int i = 0; i < size; i++) {
-//            CoinMining coinData = new CoinMining();
-//            coinData.setType(i+1);
-//            digitalCurrencys.add(coinData);
-//        }
-//        return digitalCurrencys;
-//    }
 
     @Override
     public void onResume() {

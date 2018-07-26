@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -14,6 +15,8 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -71,35 +74,44 @@ public class FloatView extends RelativeLayout {
     private void addChidView() {
         for (int i = 0; i < mFloat.size(); i++) {
 //            TextView floatview = (TextView) LayoutInflater.from(mcontext).inflate(R.layout.view_float, this, false);
-            Button floatview = new Button(getContext());
-            LayoutParams tvLayoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams tvLayoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            LinearLayout layout = new LinearLayout(getContext());
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.setGravity(Gravity.CENTER);
+            layout.setLayoutParams(tvLayoutParams);
+            ImageView imageView = new ImageView(getContext());
+            int w = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 26, getContext().getResources().getDisplayMetrics());
+            LinearLayout.LayoutParams ivLayoutParams = new LinearLayout.LayoutParams(w, w);
+            imageView.setLayoutParams(ivLayoutParams);
+            TextView floatview = new TextView(getContext());
             floatview.setLayoutParams(tvLayoutParams);
             floatview.setTextColor(textColor);
             floatview.setTextSize(childSize);
-            floatview.setBackgroundResource(0);
             floatview.setText(String.valueOf(mFloat.get(i).getValue()));
             floatview.setGravity(Gravity.CENTER);
-            int resid = R.mipmap.icon_oce_small;
             int type = mFloat.get(i).getType();
-            if(type == 1) {
-                resid = R.mipmap.icon_btc_small;
-            } else if(type == 2) {
-                resid = R.mipmap.icon_eth;
-            }
-            floatview.setCompoundDrawablesWithIntrinsicBounds(0, resid, 0, 0);
-            floatview.setTag(type);
-            floatview.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            floatview.setOnClickListener(new OnClickListener() {
+//            int resid = R.mipmap.icon_oce_small;
+//            if(type == 1) {
+//                resid = R.mipmap.icon_btc_small;
+//            } else if(type == 2) {
+//                resid = R.mipmap.icon_eth;
+//            }
+//            floatview.setCompoundDrawablesWithIntrinsicBounds(0, resid, 0, 0);
+            layout.addView(imageView);
+            layout.addView(floatview);
+            layout.setTag(type);
+            layout.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            layout.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     childClick(v);
                 }
             });
-            setChildViewPosition(floatview);
-            initAnim(floatview);
-            initFloatAnim(floatview);
-            mViews.add(floatview);
-            addView(floatview);
+            setChildViewPosition(layout);
+            initAnim(layout);
+            initFloatAnim(layout);
+            mViews.add(layout);
+            addView(layout);
         }
     }
 

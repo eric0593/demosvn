@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
  * Created by idea on 2018/5/16.
  */
 
-public class MiningDetailAdapter extends BaseAdapter<MiningCoinData> {
+public class MiningDetailAdapter extends BaseAdapter<MiningCoinData, RecyclerView.ViewHolder> {
 
     @Override
     public RecyclerView.ViewHolder onCreate(ViewGroup parent, int viewType) {

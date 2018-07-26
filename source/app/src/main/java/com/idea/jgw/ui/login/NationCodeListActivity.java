@@ -13,6 +13,7 @@ import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.bean.Nation;
 import com.idea.jgw.ui.BaseActivity;
+import com.idea.jgw.ui.BaseAdapter;
 import com.idea.jgw.ui.BaseRecyclerAdapter;
 import com.idea.jgw.ui.login.adapter.NationCodeAdapter;
 
@@ -27,7 +28,7 @@ import butterknife.OnClick;
  * 国家代码列表
  */
 @Route(path = RouterPath.NATION_CODE_ACTIVITY)
-public class NationCodeListActivity extends BaseActivity implements BaseRecyclerAdapter.OnItemClickListener {
+public class NationCodeListActivity extends BaseActivity implements BaseAdapter.OnItemClickListener {
 
     @BindView(R.id.btn_of_back)
     Button btnOfBack;
