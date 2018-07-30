@@ -264,7 +264,7 @@ public class AboutUsActivity extends BaseActivity {
         super.customRationale(requestCode);
         switch (requestCode) {
             case PHONE_STATE:
-                DialogUtils.showAlertDialog(this, "PHONE_STATE权限申请：\n我们需要您开启读PHONE_STATE权限", new DialogInterface.OnClickListener() {
+                DialogUtils.showAlertDialog(this, getString(R.string.why_need_phone_state), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         requestPermissionOnRationale(PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
@@ -272,7 +272,7 @@ public class AboutUsActivity extends BaseActivity {
                 });
                 break;
             case EXTERNAL_STORAGE:
-                DialogUtils.showAlertDialog(this, "SD权限申请：\n我们需要您开启读SD权限", new DialogInterface.OnClickListener() {
+                DialogUtils.showAlertDialog(this, getString(R.string.why_need_storage), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         requestPermissionOnRationale(EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -280,7 +280,7 @@ public class AboutUsActivity extends BaseActivity {
                 });
                 break;
             case INSTALL_PACKAGE:
-                DialogUtils.showAlertDialog(this, "安装权限申请：\n我们需要您开启读安装权限，用以更新app", new DialogInterface.OnClickListener() {
+                DialogUtils.showAlertDialog(this, getString(R.string.why_need_install), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         requestPermissionOnRationale(INSTALL_PACKAGE, Manifest.permission.INSTALL_PACKAGES);

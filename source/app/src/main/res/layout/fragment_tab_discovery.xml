@@ -74,7 +74,7 @@
         android:text="@string/add_hashrate"
         android:background="@null"/>
 
-    <android.support.v7.widget.RecyclerView
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/rv_of_detail_mining"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

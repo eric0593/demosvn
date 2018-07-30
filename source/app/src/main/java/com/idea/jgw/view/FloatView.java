@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.idea.jgw.R;
 import com.idea.jgw.utils.common.MyLog;
+import com.idea.jgw.utils.glide.GlideApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,7 @@ public class FloatView extends RelativeLayout {
             int w = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 26, getContext().getResources().getDisplayMetrics());
             LinearLayout.LayoutParams ivLayoutParams = new LinearLayout.LayoutParams(w, w);
             imageView.setLayoutParams(ivLayoutParams);
+            GlideApp.with(getContext()).load(mFloat.get(i).getUrl()).into(imageView);
             TextView floatview = new TextView(getContext());
             floatview.setLayoutParams(tvLayoutParams);
             floatview.setTextColor(textColor);
@@ -226,6 +228,7 @@ public class FloatView extends RelativeLayout {
     public static class FloatViewData {
         double value;
         int type;
+        String url;
 
         public double getValue() {
             return value;
@@ -241,6 +244,14 @@ public class FloatView extends RelativeLayout {
 
         public void setType(int type) {
             this.type = type;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
         }
     }
 

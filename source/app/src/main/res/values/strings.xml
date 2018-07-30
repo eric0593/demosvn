@@ -275,6 +275,7 @@
     <string name="why_need_camera">相机权限申请：\n我们需要您开启相机拍照</string>
     <string name="why_need_phone_state">相机权限申请：\n我们需要您获取手机信息，用于确认身份</string>
     <string name="why_need_albums">相机权限申请：\n我们需要您开启相册，访问照片，文件</string>
+    <string name="why_need_install">"安装权限申请：\n我们需要您开启读安装权限，用以更新app"</string>
     <string name="storage_permission_fail">sd卡权限申请失败！</string>
     <string name="camera_permission_fail">相机权限申请失败！</string>
     <string name="phone_state_permission_fail">手机信息权限申请失败！</string>
