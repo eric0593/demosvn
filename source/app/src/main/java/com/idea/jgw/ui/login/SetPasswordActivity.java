@@ -2,6 +2,7 @@ package com.idea.jgw.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
@@ -66,7 +67,9 @@ public class SetPasswordActivity extends BaseActivity {
     @Autowired
     String phone;
     @Autowired
-    String inviteCode;
+    int inviteCode;
+    String pwd;
+    String imei = "";
     private Subscription loginSubscription;
     private Subscription registerSubscription;
 
@@ -74,14 +77,14 @@ public class SetPasswordActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(getIntent().hasExtra("phone")) {
+        if (getIntent().hasExtra("phone")) {
             phone = getIntent().getStringExtra("phone");
         }
-        if(getIntent().hasExtra("verifyCode")) {
+        if (getIntent().hasExtra("verifyCode")) {
             verifyCode = getIntent().getStringExtra("verifyCode");
         }
-        if(getIntent().hasExtra("inviteCode")) {
-            inviteCode = getIntent().getStringExtra("inviteCode");
+        if (getIntent().hasExtra("inviteCode")) {
+            inviteCode = getIntent().getIntExtra("inviteCode", 0);
         }
     }
 
@@ -93,6 +96,7 @@ public class SetPasswordActivity extends BaseActivity {
     @Override
     public void initView() {
         tvOfTitle.setText(R.string.set_login_pwd);
+        checkPhoneStatePermission();
     }
 
     @OnClick({R.id.btn_of_back, R.id.iBtn_of_show_pwd, R.id.btn_of_next})
@@ -111,21 +115,34 @@ public class SetPasswordActivity extends BaseActivity {
                 }
                 break;
             case R.id.btn_of_next:
-                final String pwd = etOfPwd.getText().toString().trim();
-                if(validPassword(pwd)) {
-                    RegisterRequest registerRequest = new RegisterRequest();
-                    registerRequest.setAccount(phone);
-                    registerRequest.setVerifycode(verifyCode);
-//                    registerRequest.setDevice_id(CommonUtils.getIMEI(this));
-                    registerRequest.setDevice_id("qwe");
-                    registerRequest.setInvite_num(inviteCode);
-                    registerRequest.setIp(CommonUtils.getIp(this));
-                    registerRequest.setPasswd(pwd);
+                pwd = etOfPwd.getText().toString().trim();
+                if (validPassword(pwd)) {
+                    RegisterRequest registerRequest = getRegisterRequest();
 
                     register(registerRequest);
+                } else {
+                    MToast.showToast(R.string.hint_of_input_pwd);
                 }
                 break;
         }
+    }
+
+    @Override
+    public void phoneStateGranted() {
+        imei = CommonUtils.getIMEI(this);
+    }
+
+    @NonNull
+    public RegisterRequest getRegisterRequest() {
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setAccount(phone);
+        registerRequest.setVerifycode(verifyCode);
+        registerRequest.setInvite_num(inviteCode);
+        registerRequest.setIp(CommonUtils.getIp(this));
+        registerRequest.setPasswd(pwd);
+        if (!TextUtils.isEmpty(imei))
+            registerRequest.setDevice_id(imei);
+        return registerRequest;
     }
 
     private void register(RegisterRequest registerRequest) {
@@ -135,21 +152,21 @@ public class SetPasswordActivity extends BaseActivity {
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscriber<BaseResponse>(this, getResources().getString(R.string.loading), true) {
 
-            @Override
-            protected void _onNext(BaseResponse baseResponse) {
-                if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
-                    login();
-                } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
-                    reLogin();
-                }
-                MToast.showToast(baseResponse.getData().toString());
-            }
+                    @Override
+                    protected void _onNext(BaseResponse baseResponse) {
+                        if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
+                            login();
+                        } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                            reLogin();
+                        }
+                        MToast.showToast(baseResponse.getData().toString());
+                    }
 
-            @Override
-            protected void _onError(String message) {
-                MToast.showToast(message);
-            }
-        });
+                    @Override
+                    protected void _onError(String message) {
+                        MToast.showToast(message);
+                    }
+                });
     }
 
     private void login() {
@@ -169,7 +186,7 @@ public class SetPasswordActivity extends BaseActivity {
                 .flatMap(new Func1<BaseResponse, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(final BaseResponse baseResponse) {
-                        return Observable.create(new Observable.OnSubscribe<Boolean>(){
+                        return Observable.create(new Observable.OnSubscribe<Boolean>() {
                             @Override
                             public void call(Subscriber<? super Boolean> subscriber) {
                                 if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
@@ -180,7 +197,7 @@ public class SetPasswordActivity extends BaseActivity {
                                     boolean hasWallet = BtcWalltUtils.hasSetupHDWallet();
                                     List<StorableWallet> list = WalletStorage.getInstance(App.getInstance()).get();
                                     boolean hasEthWallet = false;
-                                    if(list.size() > 0) {
+                                    if (list.size() > 0) {
                                         hasEthWallet = true;
                                     }
                                     subscriber.onNext(hasEthWallet);
@@ -196,27 +213,27 @@ public class SetPasswordActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscriber<Boolean>(SetPasswordActivity.this, getResources().getString(R.string.loading), true) {
 
-            @Override
-            protected void _onNext(Boolean hasWallet) {
-                if(!hasWallet) {
-                    ARouter.getInstance().build(RouterPath.LOAD_OR_CREATE_WALLET_ACTIVITY)
-                            .withString(EXTRA_USER, phone)
-                            .navigation();
-                } else {
-                    ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
-                }
-                setResult(RESULT_OK);
-                finish();
-            }
+                    @Override
+                    protected void _onNext(Boolean hasWallet) {
+                        if (!hasWallet) {
+                            ARouter.getInstance().build(RouterPath.LOAD_OR_CREATE_WALLET_ACTIVITY)
+                                    .withString(EXTRA_USER, phone)
+                                    .navigation();
+                        } else {
+                            ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
+                        }
+                        setResult(RESULT_OK);
+                        finish();
+                    }
 
-            @Override
-            protected void _onError(String message) {
-                MToast.showToast(message);
-                ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
-                setResult(RESULT_OK);
-                finish();
-            }
-        });
+                    @Override
+                    protected void _onError(String message) {
+                        MToast.showToast(message);
+                        ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+                });
     }
 
     private boolean validPassword(String pwd) {

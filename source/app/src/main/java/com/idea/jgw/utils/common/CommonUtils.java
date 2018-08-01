@@ -1125,7 +1125,7 @@ public class CommonUtils {
     }
 
     public static void setTextInputType(EditText editText) {
-        editText.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_CLASS_TEXT);
+        editText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD | InputType.TYPE_CLASS_TEXT);
         editText.setSelection(editText.getText().length());
     }
 

@@ -13,7 +13,7 @@ public class RegisterRequest {
     private String ip;
     private String passwd;
     private String verifycode;
-    private String invite_num;
+    private int invite_num;
 
     public String getAccount() {
         return account;
@@ -63,11 +63,11 @@ public class RegisterRequest {
         this.verifycode = verifycode;
     }
 
-    public String getInvite_num() {
+    public int getInvite_num() {
         return invite_num;
     }
 
-    public void setInvite_num(String invite_num) {
+    public void setInvite_num(int invite_num) {
         this.invite_num = invite_num;
     }
 
@@ -79,7 +79,7 @@ public class RegisterRequest {
         map.put("verifycode", verifycode);
         map.put("device_type", device_type);
         map.put("device_id", device_id);
-        map.put("invite_num", invite_num);
+        map.put("invite_num", String.valueOf(invite_num));
         return map;
     }
 }

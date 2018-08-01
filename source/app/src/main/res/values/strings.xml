@@ -273,7 +273,8 @@
     <string name="feedback_content_is_null">意见反馈内容不能为空！</string>
     <string name="why_need_storage">sd卡权限申请：\n我们需要您开启读SD卡权限，以便上传照片</string>
     <string name="why_need_camera">相机权限申请：\n我们需要您开启相机拍照</string>
-    <string name="why_need_phone_state">相机权限申请：\n我们需要您获取手机信息，用于确认身份</string>
+    <string name="why_need_phone_state">手机信息申请：\n我们需要您获取手机信息，用于确认挖矿身份，拒绝可能影响挖矿</string>
+    <string name="why_need_phone_state2">手机信息申请：\n我们需要您获取手机信息，用于确认挖矿身份，拒绝可能影响挖矿</string>
     <string name="why_need_albums">相机权限申请：\n我们需要您开启相册，访问照片，文件</string>
     <string name="why_need_install">"安装权限申请：\n我们需要您开启读安装权限，用以更新app"</string>
     <string name="storage_permission_fail">sd卡权限申请失败！</string>

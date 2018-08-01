@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -26,11 +25,9 @@ import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.ui.service.ScreenListenerService;
-import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.DialogUtils;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.MyLog;
-import com.idea.jgw.utils.common.ShareKey;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.joker.api.Permissions4M;
 import com.joker.api.wrapper.ListenerWrapper;
@@ -277,7 +274,7 @@ public abstract class BaseActivity extends SupportActivity implements ListenerWr
                 MToast.showToast(R.string.camera_permission_fail);
                 break;
             case REQUEST_PHONE_CODE:
-                MToast.showToast(R.string.phone_state_permission_fail);
+                phoneStateDenied();
                 break;
             case REQUEST_ALBUMS_CODE:
                 MToast.showToast(R.string.storage_permission_fail);
@@ -310,6 +307,10 @@ public abstract class BaseActivity extends SupportActivity implements ListenerWr
         requestPermission(REQUEST_CAMERA_CODE, Manifest.permission.CAMERA);
     }
 
+    public void checkPhoneStatePermission() {
+        requestPermission(REQUEST_PHONE_CODE, Manifest.permission.READ_PHONE_STATE);
+    }
+
     public void storageGranted() {
     }
 
@@ -317,6 +318,10 @@ public abstract class BaseActivity extends SupportActivity implements ListenerWr
     }
 
     public void phoneStateGranted() {
+    }
+
+    public void phoneStateDenied() {
+        MToast.showToast(R.string.phone_state_permission_fail);
     }
 
     @Override

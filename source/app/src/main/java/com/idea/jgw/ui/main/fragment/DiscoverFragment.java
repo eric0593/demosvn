@@ -1,5 +1,6 @@
 package com.idea.jgw.ui.main.fragment;
 
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import com.idea.jgw.ui.BaseRecyclerAdapter;
 import com.idea.jgw.ui.main.adapter.MiningAdapter;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
+import com.idea.jgw.utils.common.CommonUtils;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.ShareKey;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
@@ -51,6 +53,7 @@ import rx.schedulers.Schedulers;
  */
 
 public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItemClickListener<CoinMining> {
+    public static final int IMEI_REQUEST = 113;
 
     MiningAdapter miningAdapter;
     MediaPlayer mMediaPlayer;
@@ -107,14 +110,25 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
 
         tvHashrate.setText(String.format(getString(R.string.sample_hashrate), 0));
 
-        getMiningData(false);
+//        getMiningData(false);
+        checkPhoneStatePermission();
         return view;
+    }
+
+    @Override
+    public void showPhoneStateExplain(Intent intent){
+        showExplain(intent, getString(R.string.why_need_phone_state2));
+    }
+
+    @Override
+    public void phoneStateGranted() {
+        getMiningData(false);
     }
 
     private void getMiningData(boolean showDialog) {
         String token = SharedPreferenceManager.getInstance().getSession();
-//        String imei = CommonUtils.getIMEI(App.getInstance());
-        String imei = "qwe"; //设备号暂时使用qwe
+        String imei = CommonUtils.getIMEI(App.getInstance());
+//        String imei = "qwe"; //设备号暂时使用qwe
         miningSubscription = ServiceApi.getInstance().getApiService()
                 .miningData(imei, token)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())

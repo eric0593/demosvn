@@ -139,6 +139,7 @@
             style="@style/normal_editText"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:inputType="number"
             android:hint="@string/hint_of_invite_code"
             android:layout_weight="1"/>
 
