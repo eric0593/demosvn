@@ -23,6 +23,7 @@ import rx.Observable;
  */
 public interface SongApiService {
     String BASE_URL = "http://120.132.120.251:10004/";
+    String BASE_URL2 = "http://120.132.120.251:8080/";
 
     @FormUrlEncoded
     @POST("register")
@@ -45,11 +46,11 @@ public interface SongApiService {
     Observable<BaseResponse> editinfo(@Field ("token") String token, @Field ("nickname") String nickname, @Field ("sex") int sex);
 
     @FormUrlEncoded
-    @POST("http://120.132.120.251:8080/feedback")
+    @POST(BASE_URL2 + "feedback")
     Observable<BaseResponse> feedback(@Field ("token") String token, @Field ("content") String content, @Field ("contact") String contact);
 
     @FormUrlEncoded
-    @POST("http://120.132.120.251:10004/getinfo")
+    @POST("getinfo")
     Observable<BaseResponse> getinfo(@Field ("token") String token);
 
     @FormUrlEncoded
@@ -63,27 +64,27 @@ public interface SongApiService {
 //    Observable<BaseResponse> updatePhoto(@Part("token") String token, @Part MultipartBody.Part file);
 
     @FormUrlEncoded
-    @POST("http://120.132.120.251:8080/cal_record")
+    @POST(BASE_URL2 + "cal_record")
     Observable<BaseResponse> calRecord(@Field("token") String token, @Field("page") int page);
 
     @FormUrlEncoded
-    @POST("http://120.132.120.251:8080/book")
+    @POST(BASE_URL2 + "book")
     Observable<BaseResponse> miningList(@Field("cointype") int coinType, @Field("token") String token, @Field("page") int page);
 
     @FormUrlEncoded
-    @POST("http://120.132.120.251:8080/profit")
+    @POST(BASE_URL2 + "profit")
     Observable<BaseResponse> miningData(@Field("device_code") String device_code, @Field("token") String token);
 
     @FormUrlEncoded
-    @POST("http://120.132.120.251:8080/receive")
+    @POST(BASE_URL2 + "receive")
     Observable<BaseResponse> receiveMiningData(@Field("cointype") int coinType, @Field("num") String num, @Field("token") String token);
 
     @FormUrlEncoded
-    @POST("http://120.132.120.251:8080/transfer")
+    @POST(BASE_URL2 + "transfer")
     Observable<BaseResponse> transferMiningData(@Field("cointype") int coinType, @Field("token") String token, @Field("feetype") int feetype, @Field("num") double num, @Field("addr") String addr);
 
     @FormUrlEncoded
-    @POST("http://120.132.120.251:8080/get_price")
+    @POST(BASE_URL2 + "get_price")
     Observable<BaseResponse> getCoinPrice(@Field("cointype") String coinType);
 
 //    @FormUrlEncoded
