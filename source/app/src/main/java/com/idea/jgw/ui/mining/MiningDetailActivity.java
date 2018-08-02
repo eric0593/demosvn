@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 
 import com.idea.jgw.ui.BaseAdapter;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
+import com.idea.jgw.utils.glide.GlideApp;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -42,6 +43,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.idea.jgw.api.OkhttpApi.BASE_HOST;
+
 /**
  * 挖矿详情页面
  */
@@ -72,7 +75,8 @@ public class MiningDetailActivity extends BaseActivity implements BaseAdapter.On
     XRecyclerView rvOfDetailAsset;
 
     double balance;//余额
-    int coinType = 1;//0币种类型，1:btc ,2:eth ,3:8phc
+    String coinType = "btc";//0币种类型，1:btc ,2:eth ,3:8phc
+    String coinLogo = "";//
     private Subscription miningSubscription;
     private Subscription transferMiningSubscription;
     private int page; //请求页码
@@ -101,20 +105,17 @@ public class MiningDetailActivity extends BaseActivity implements BaseAdapter.On
         tvOfTitle.setText(R.string.mining_detail);
         tvCnyValue.setText(0 + getString(R.string.cny));
 
+        if (getIntent().hasExtra("coinLogo")) {
+            coinLogo = getIntent().getStringExtra("coinLogo");
+        }
         if (getIntent().hasExtra("coinType")) {
-            coinType = getIntent().getIntExtra("coinType", 1);
+            coinType = getIntent().getStringExtra("coinType");
         }
         if (getIntent().hasExtra("balance")) {
             balance = getIntent().getDoubleExtra("balance", 0);
         }
         tvDigitalValue.setText(String.valueOf(balance));
-        if(coinType == 1) {
-            ivDigitalLogo.setImageResource(R.mipmap.icon_btc);
-        } else if(coinType == 2) {
-            ivDigitalLogo.setImageResource(R.mipmap.icon_eth);
-        } else if(coinType == 3) {
-            ivDigitalLogo.setImageResource(R.mipmap.icon_oce);
-        }
+        GlideApp.with(this).load(BASE_HOST + coinLogo).into(ivDigitalLogo);
         rvOfDetailAsset.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
@@ -200,7 +201,7 @@ public class MiningDetailActivity extends BaseActivity implements BaseAdapter.On
             case R.id.btn_digital_description:
                 break;
             case R.id.btn_of_send:
-                ARouter.getInstance().build(RouterPath.SEND_MINING_COIN_ACTIVITY).withInt("coinType", coinType).withDouble("balance", balance).navigation(this, SEND_MINING);
+                ARouter.getInstance().build(RouterPath.SEND_MINING_COIN_ACTIVITY).withString("coinLogo", coinLogo).withString("coinType", coinType).withDouble("balance", balance).navigation(this, SEND_MINING);
                 break;
         }
     }

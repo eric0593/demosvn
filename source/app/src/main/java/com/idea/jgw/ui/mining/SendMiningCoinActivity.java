@@ -24,6 +24,7 @@ import com.idea.jgw.ui.wallet.QrSanActivity;
 import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
+import com.idea.jgw.utils.glide.GlideApp;
 import com.idea.jgw.view.PayPsdInputView;
 
 import org.web3j.utils.Numeric;
@@ -33,6 +34,8 @@ import butterknife.OnClick;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.idea.jgw.api.OkhttpApi.BASE_HOST;
 
 /**
  * 发送挖矿所得页面
@@ -62,7 +65,8 @@ public class SendMiningCoinActivity extends BaseActivity {
     @BindView(R.id.tv_of_balance)
     TextView tvOfBalance;
 
-    private int coinType;
+    private String coinType;
+    private String coinLogo;
     private Subscription transferMiningSubscription;
     private double balance;
     int feetype = 3;
@@ -81,7 +85,10 @@ public class SendMiningCoinActivity extends BaseActivity {
     public void initView() {
 
         if (getIntent().hasExtra("coinType")) {
-            coinType = getIntent().getIntExtra("coinType", 1);
+            coinType = getIntent().getStringExtra("coinType");
+        }
+        if (getIntent().hasExtra("coinLogo")) {
+            coinLogo = getIntent().getStringExtra("coinLogo");
         }
         if (getIntent().hasExtra("balance")) {
             balance = getIntent().getDoubleExtra("balance", 0);
@@ -90,13 +97,7 @@ public class SendMiningCoinActivity extends BaseActivity {
         tvOfBalance.setText(R.string.balance);
 
         tvOfTitle.setText(R.string.send);
-        if(coinType == 1) {
-            ivDigitalLogo.setImageResource(R.mipmap.icon_btc);
-        } else if(coinType == 2) {
-            ivDigitalLogo.setImageResource(R.mipmap.icon_eth);
-        } else if(coinType == 3) {
-            ivDigitalLogo.setImageResource(R.mipmap.icon_oce);
-        }
+        GlideApp.with(this).load(BASE_HOST + coinLogo).into(ivDigitalLogo);
     }
 
     @OnClick({R.id.btn_of_back, R.id.iv_of_delete, R.id.iv_of_scan_code, R.id.btn_of_send})

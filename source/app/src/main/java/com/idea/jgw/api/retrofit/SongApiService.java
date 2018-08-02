@@ -22,8 +22,12 @@ import rx.Observable;
  * Created by Ganlin.Wu on 2016/9/22.
  */
 public interface SongApiService {
-    String BASE_URL = "http://120.132.120.251:10004/";
-    String BASE_URL2 = "http://120.132.120.251:8080/";
+    //正式服
+//    String BASE_URL = "http://120.132.120.251:10004/";
+//    String BASE_URL2 = "http://120.132.120.251:8080/";
+    //测试服
+    String BASE_URL = "http://121.201.80.40:10004/";
+    String BASE_URL2 = "http://121.201.80.40:10001/";
 
     @FormUrlEncoded
     @POST("register")
@@ -69,7 +73,7 @@ public interface SongApiService {
 
     @FormUrlEncoded
     @POST(BASE_URL2 + "book")
-    Observable<BaseResponse> miningList(@Field("cointype") int coinType, @Field("token") String token, @Field("page") int page);
+    Observable<BaseResponse> miningList(@Field("cointype") String coinType, @Field("token") String token, @Field("page") int page);
 
     @FormUrlEncoded
     @POST(BASE_URL2 + "profit")
@@ -77,11 +81,11 @@ public interface SongApiService {
 
     @FormUrlEncoded
     @POST(BASE_URL2 + "receive")
-    Observable<BaseResponse> receiveMiningData(@Field("cointype") int coinType, @Field("num") String num, @Field("token") String token);
+    Observable<BaseResponse> receiveMiningData(@Field("cointype") String coinType, @Field("num") String num, @Field("token") String token);
 
     @FormUrlEncoded
     @POST(BASE_URL2 + "transfer")
-    Observable<BaseResponse> transferMiningData(@Field("cointype") int coinType, @Field("token") String token, @Field("feetype") int feetype, @Field("num") double num, @Field("addr") String addr);
+    Observable<BaseResponse> transferMiningData(@Field("cointype") String coinType, @Field("token") String token, @Field("feetype") int feetype, @Field("num") double num, @Field("addr") String addr);
 
     @FormUrlEncoded
     @POST(BASE_URL2 + "get_price")
