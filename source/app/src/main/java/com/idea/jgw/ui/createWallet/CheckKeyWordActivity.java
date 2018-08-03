@@ -48,7 +48,8 @@ public class CheckKeyWordActivity extends BaseActivity implements BaseCallback {
     TagFlowLayout flowlayoutSrc;
 
     //测试keywokds
-    private String[] srcKeywords = new String[]{"angry", "teant ", "organ ", "novel ", "angle ", "hat ", "siren ", "matter ", "mechanit ", "tent ", "biology ", "husband"};
+    String[] key_words = new String[] {"angry", "teant ", "organ ", "novel ", "angle ", "hat ", "siren ", "matter ", "mechanit ", "tent ", "biology ", "husband"};
+    private List<String> srcKeywords;
     TagAdapter srcTagAdapter;
 
     //显示选中keywokds
@@ -75,11 +76,12 @@ public class CheckKeyWordActivity extends BaseActivity implements BaseCallback {
         if (TextUtils.isEmpty(passphrase)) {
             return;
         } else {
-            srcKeywords = passphrase.split(" ");
+            key_words = passphrase.split(" ");
         }
 
-        Arrays.sort(srcKeywords);
+        Arrays.sort(key_words);
 
+        srcKeywords = Arrays.asList(key_words);
         selectedKeywords = new ArrayList<>();
         selectedTagAdapter = new TagAdapter<String>(selectedKeywords) {
             @Override
@@ -105,9 +107,11 @@ public class CheckKeyWordActivity extends BaseActivity implements BaseCallback {
             @Override
             public boolean onTagClick(View view, int i, FlowLayout flowLayout) {
                 if (((TagView) view).isChecked()) {
-                    selectedKeywords.add(srcKeywords[i]);
+                    selectedKeywords.add(srcKeywords.get(i));
+                    srcTagAdapter.setSelected(i);
                 } else {
-                    selectedKeywords.remove(srcKeywords[i]);
+                    selectedKeywords.remove(srcKeywords.get(i));
+                    srcTagAdapter.setUnSelected(i);
                 }
                 flowlayoutSelected.onChanged();
                 return true;
@@ -117,9 +121,11 @@ public class CheckKeyWordActivity extends BaseActivity implements BaseCallback {
         flowlayoutSelected.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
             @Override
             public boolean onTagClick(View view, int i, FlowLayout flowLayout) {
-                if (((TagView) view).isChecked()) {
-                    selectedKeywords.remove(srcKeywords[i]);
-                }
+                String tag = selectedKeywords.get(i);
+                selectedKeywords.remove(tag);
+                int pos = srcKeywords.indexOf(tag);
+                srcTagAdapter.setUnSelected(pos);
+//                flowlayoutSrc.onChanged();
                 flowlayoutSelected.onChanged();
                 return true;
             }
