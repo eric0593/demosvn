@@ -121,7 +121,7 @@ public class SetPasswordActivity extends BaseActivity {
 
                     register(registerRequest);
                 } else {
-                    MToast.showToast(R.string.hint_of_input_pwd);
+                    MToast.showToast(R.string.hint_of_set_pwd);
                 }
                 break;
         }

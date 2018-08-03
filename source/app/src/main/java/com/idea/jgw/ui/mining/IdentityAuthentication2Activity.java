@@ -261,8 +261,9 @@ public class IdentityAuthentication2Activity extends BaseActivity {
                     }).start();
                     setResult(RESULT_OK);
                     finish();
-                } else if(baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
-                    ARouter.getInstance().build(RouterPath.LOGIN_ACTIVITY).navigation();
+                } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                    reLogin();
+                    MToast.showToast(baseResponse.getData().toString());
                 }
             }
 

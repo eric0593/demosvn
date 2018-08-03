@@ -108,11 +108,17 @@ public class ResetLoginPasswordActivity extends BaseActivity {
                     MToast.showToast(R.string.pwd_code_is_null);
                 } else if(TextUtils.isEmpty(newPwd2) || !newPwd1.equals(newPwd2)) {
                     MToast.showToast(R.string.input_not_equal);
+                } else if(!validPassword(newPwd1)) {
+                    MToast.showToast(R.string.hint_of_set_pwd);
                 } else {
                     findpwd(phone, newPwd1);
                 }
                 break;
         }
+    }
+
+    private boolean validPassword(String pwd) {
+        return !TextUtils.isEmpty(pwd) && pwd.length() > 5;
     }
 
     private void findpwd(String phone, String newPwd) {
