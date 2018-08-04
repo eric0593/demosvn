@@ -45,6 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="59dp"
         android:orientation="horizontal"
+        android:visibility="gone"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:gravity="center_vertical">
@@ -68,6 +69,36 @@
             android:layout_height="wrap_content"
             android:src="@mipmap/icon_right_arrow"/>
         
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_load_wallet"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_load_wallet"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:layout_weight="1"
+            android:textColor="#616367"
+            android:textSize="14sp"
+            android:text="@string/load_wallet"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_right_arrow"/>
+
     </LinearLayout>
     
     <View

@@ -39,7 +39,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.idea.jgw.ui.createWallet.CheckTransactionPinActivity.CHECK_PWD;
+import static com.idea.jgw.ui.createWallet.CheckTransactionPinActivity.LOAD_WALLET;
 
 @Route(path = RouterPath.LOGIN_ACTIVITY)
 public class LoginActivity extends BaseActivity {
@@ -195,7 +195,7 @@ public class LoginActivity extends BaseActivity {
                             .withString(EXTRA_USER,phone)
                             .navigation();
                 } else {
-                    ARouter.getInstance().build(RouterPath.CHECK_TRANSACTION_PIN_ACTIVITY).withBoolean(CHECK_PWD, true).navigation();
+                    ARouter.getInstance().build(RouterPath.CHECK_TRANSACTION_PIN_ACTIVITY).withBoolean(LOAD_WALLET, true).navigation();
                     finish();
                 }
                 finish();

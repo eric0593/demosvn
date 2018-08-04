@@ -23,6 +23,7 @@ import com.idea.jgw.logic.eth.utils.WalletStorage;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.ui.createWallet.SetTransactionPinActivity;
 import com.idea.jgw.ui.createWallet.WalletCreateSuccessActivity;
+import com.idea.jgw.ui.login.StartActivity;
 import com.idea.jgw.ui.main.fragment.DiscoverFragment;
 import com.idea.jgw.ui.main.fragment.MineFragment;
 import com.idea.jgw.ui.main.fragment.WalletFragment;
@@ -81,6 +82,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startService(new Intent(this, ScreenListenerService.class));
 //        cretaeEthWallet();
 
     }

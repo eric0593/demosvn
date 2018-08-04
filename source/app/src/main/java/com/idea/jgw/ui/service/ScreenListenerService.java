@@ -12,6 +12,8 @@ import android.text.TextUtils;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.idea.jgw.App;
 import com.idea.jgw.RouterPath;
+import com.idea.jgw.logic.eth.utils.WalletStorage;
+import com.idea.jgw.ui.createWallet.CheckTransactionPinActivity;
 import com.idea.jgw.ui.user.GesturePasswordActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.CommonUtils;
@@ -25,7 +27,7 @@ import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 public class ScreenListenerService extends Service {
     public static final String ACTION_TOUCH_SCREEN = "action_touch_screen";
-    static final int LOCK_SECOND = 1 * 60;
+    static final int LOCK_SECOND = 5 * 60;
     int lockScreenSecond = LOCK_SECOND;
     Thread lockScreenThread;
     boolean running;
@@ -49,11 +51,16 @@ public class ScreenListenerService extends Service {
     private void verifyGesturePwd() {
         boolean gestureTakeoff = SharedPreferenceManager.getInstance().isTakeOnGesturePwd();
         boolean hasActivity = !App.activityStack.empty();
-        boolean frontActivity = CommonUtils.isFrontActivity(App.getInstance(), GesturePasswordActivity.class.getName());
+//        boolean frontActivity = CommonUtils.isFrontActivity(App.getInstance(), GesturePasswordActivity.class.getName());
+        boolean frontActivity = CommonUtils.isFrontActivity(App.getInstance(), CheckTransactionPinActivity.class.getName());
         boolean frontApp = CommonUtils.isForeground(App.getInstance());
         String gesturePwd = SharedPreferenceManager.getInstance().getGesturePwd();
-        if(!TextUtils.isEmpty(gesturePwd) && gestureTakeoff && App.login && hasActivity && frontApp && !frontActivity) {
-            ARouter.getInstance().build(RouterPath.VERIFY_GESTURE_PASSWORD_ACTIVITY).navigation();
+        boolean hasWallet = WalletStorage.getInstance(App.getInstance()).get().size()>0;
+//        if(!TextUtils.isEmpty(gesturePwd) && gestureTakeoff && App.login && hasActivity && frontApp && !frontActivity) {
+//            ARouter.getInstance().build(RouterPath.VERIFY_GESTURE_PASSWORD_ACTIVITY).navigation();
+//        }
+        if(hasWallet && App.login && hasActivity && frontApp && !frontActivity) {
+            ARouter.getInstance().build(RouterPath.CHECK_TRANSACTION_PIN_ACTIVITY).navigation();
         }
     }
 

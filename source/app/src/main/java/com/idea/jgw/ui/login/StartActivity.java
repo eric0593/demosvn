@@ -7,18 +7,15 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
-import com.idea.jgw.logic.eth.EthWalltUtils;
 import com.idea.jgw.logic.eth.interfaces.StorableWallet;
 import com.idea.jgw.logic.eth.utils.WalletStorage;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.ui.service.ScreenListenerService;
-import com.idea.jgw.utils.SPreferencesHelper;
-import com.idea.jgw.utils.common.ShareKey;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 import java.util.List;
 
-import static com.idea.jgw.ui.createWallet.CheckTransactionPinActivity.CHECK_PWD;
+import static com.idea.jgw.ui.createWallet.CheckTransactionPinActivity.LOAD_WALLET;
 
 /**
  * 启动页
@@ -62,13 +59,13 @@ public class StartActivity extends BaseActivity {
                 } else if(list.size() == 0) {
                     ARouter.getInstance().build(RouterPath.LOAD_OR_CREATE_WALLET_ACTIVITY).navigation();
                 } else {
-                    ARouter.getInstance().build(RouterPath.CHECK_TRANSACTION_PIN_ACTIVITY).withBoolean(CHECK_PWD, true).navigation();
+                    ARouter.getInstance().build(RouterPath.CHECK_TRANSACTION_PIN_ACTIVITY).withBoolean(LOAD_WALLET, true).navigation();
                 }
 
-                boolean takeOnGesturePwd = SharedPreferenceManager.getInstance().isTakeOnGesturePwd();
-                if(takeOnGesturePwd) {
-                    startService(new Intent(StartActivity.this, ScreenListenerService.class));
-                }
+//                boolean takeOnGesturePwd = SharedPreferenceManager.getInstance().isTakeOnGesturePwd();
+//                if(takeOnGesturePwd) {
+//                    startService(new Intent(StartActivity.this, ScreenListenerService.class));
+//                }
                 finish();
             }
         }).start();

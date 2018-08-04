@@ -6,7 +6,6 @@ import android.content.Intent;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.idea.jgw.logic.btc.BtcWalltUtils;
-import com.idea.jgw.ui.service.ScreenListenerService;
 import com.idea.jgw.utils.common.MyLog;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.squareup.leakcanary.LeakCanary;

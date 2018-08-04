@@ -1,6 +1,5 @@
 package com.idea.jgw.ui.main.fragment;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,25 +13,18 @@ import android.widget.TextView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.alibaba.fastjson.JSON;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.api.retrofit.ServiceApi;
 import com.idea.jgw.bean.BaseResponse;
 import com.idea.jgw.bean.UserInfo;
 import com.idea.jgw.ui.BaseFragment;
-import com.idea.jgw.ui.user.UserInfoActivity;
-import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.CommonUtils;
 import com.idea.jgw.utils.common.MToast;
-import com.idea.jgw.utils.common.ShareKey;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.idea.jgw.utils.glide.GlideApp;
-
-import org.apache.commons.lang3.StringUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,7 +35,7 @@ import rx.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
 import static com.idea.jgw.api.OkhttpApi.BASE_HOST;
-import static com.idea.jgw.api.OkhttpApi.UPDATE_PHOTO;
+import static com.idea.jgw.ui.createWallet.CheckTransactionPinActivity.LOAD_WALLET;
 
 /**
  * <p>钱包tab</p>
@@ -117,11 +109,14 @@ public class MineFragment extends BaseFragment {
         return view;
     }
 
-    @OnClick({R.id.ll_security_manager, R.id.ll_share, R.id.ll_help, R.id.ll_about_us,  R.id.ll_feedback, R.id.iv_photo})
+    @OnClick({R.id.ll_security_manager, R.id.ll_load_wallet, R.id.ll_share, R.id.ll_help, R.id.ll_about_us,  R.id.ll_feedback, R.id.iv_photo})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_security_manager:
                 ARouter.getInstance().build(RouterPath.SECURITY_MANAGER_ACTIVITY).navigation();
+                break;
+            case R.id.ll_load_wallet:
+                ARouter.getInstance().build(RouterPath.CHECK_TRANSACTION_PIN_ACTIVITY).withBoolean(LOAD_WALLET, true).navigation();
                 break;
             case R.id.ll_share:
                 ARouter.getInstance().build(RouterPath.SHARE_ACTIVITY).navigation();
