@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.idea.jgw.ui.createWallet.SetTransactionPinActivity">
+    android:layout_height="match_parent">
 
     <include layout="@layout/layout_of_normal_title" />
 

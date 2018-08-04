@@ -10,6 +10,7 @@ public class RouterPath {
     public static final String NATION_CODE_ACTIVITY = "/activity/nationCode";
     public static final String SET_LOGIN_PASSWORD_ACTIVITY = "/activity/setPasswd";
     public static final String SET_TRANSACTION_PIN_ACTIVITY = "/activity/setTransactionPin";
+    public static final String CHECK_TRANSACTION_PIN_ACTIVITY = "/activity/checkTransactionPin";
     public static final String WALLET_CREATE_SUCCESS_ACTIVITY = "/activity/walletCreateSuccess";
     public static final String TRANSACTION_DETAIL_ACTIVITY = "/activity/transactionDetail";
     public static final String LOAD_OR_CREATE_WALLET_ACTIVITY = "/activity/loadOrCreateWallet";

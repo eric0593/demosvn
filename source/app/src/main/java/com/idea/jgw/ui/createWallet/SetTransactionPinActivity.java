@@ -51,7 +51,7 @@ import static com.idea.jgw.ui.login.LoginActivity.EXTRA_USER;
 
 //生成钱包，设置密码
 @Route(path = RouterPath.SET_TRANSACTION_PIN_ACTIVITY)
-public class SetTransactionPinActivity extends BaseActivity implements PayPsdInputView.OnPasswordListener {
+public class SetTransactionPinActivity extends TransactionPinActivity {
 
     @BindView(R.id.btn_of_back)
     Button btnOfBack;
@@ -66,6 +66,7 @@ public class SetTransactionPinActivity extends BaseActivity implements PayPsdInp
 
     String userPhone = "";
     private String passphrase;
+    boolean checkPwd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +76,6 @@ public class SetTransactionPinActivity extends BaseActivity implements PayPsdInp
         if(getIntent().hasExtra(PASSPHRASE)) {
             passphrase = getIntent().getStringExtra(PASSPHRASE);
         }
-    }
-
-    @Override
-    public int getLayoutId() {
-        return R.layout.activity_set_transcation_pin;
     }
 
     @Override

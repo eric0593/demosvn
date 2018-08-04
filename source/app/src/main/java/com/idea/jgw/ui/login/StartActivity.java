@@ -18,6 +18,8 @@ import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 import java.util.List;
 
+import static com.idea.jgw.ui.createWallet.CheckTransactionPinActivity.CHECK_PWD;
+
 /**
  * 启动页
  */
@@ -60,7 +62,7 @@ public class StartActivity extends BaseActivity {
                 } else if(list.size() == 0) {
                     ARouter.getInstance().build(RouterPath.LOAD_OR_CREATE_WALLET_ACTIVITY).navigation();
                 } else {
-                    ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
+                    ARouter.getInstance().build(RouterPath.CHECK_TRANSACTION_PIN_ACTIVITY).withBoolean(CHECK_PWD, true).navigation();
                 }
 
                 boolean takeOnGesturePwd = SharedPreferenceManager.getInstance().isTakeOnGesturePwd();

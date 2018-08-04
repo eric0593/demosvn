@@ -156,6 +156,7 @@
     <string name="verify_code_is_null">验证码不能为空！</string>
     <string name="pwd_code_is_null">密码码不能为空！</string>
     <string name="input_not_equal">两次输入不一致！请重新输入！</string>
+    <string name="payment_pwd_invalid">资产密码不正确！请重新输入！</string>
 
     <string name="net_error">网络访问错误，请稍后再试</string>
     <string name="empty">还没有数据哦</string>

@@ -65,6 +65,8 @@
             android:screenOrientation="portrait" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
         <activity android:name=".ui.createWallet.SetTransactionPinActivity"
             android:screenOrientation="portrait" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
+        <activity android:name=".ui.createWallet.CheckTransactionPinActivity"
+            android:screenOrientation="portrait" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
         <activity android:name=".ui.createWallet.CopyKeyWordsActivity"
             android:screenOrientation="portrait" android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"/>
         <activity android:name=".ui.createWallet.InputKeyWordActivity"
