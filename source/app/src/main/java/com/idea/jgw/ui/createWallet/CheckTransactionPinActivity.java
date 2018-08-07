@@ -1,7 +1,9 @@
 package com.idea.jgw.ui.createWallet;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -30,10 +32,6 @@ public class CheckTransactionPinActivity extends TransactionPinActivity {
     @BindView(R.id.piv_of_password)
     PayPsdInputView pivOfPassword;
 
-    String pwd;
-
-    String userPhone = "";
-    private String passphrase;
     boolean loadWallet;
 
     @Override

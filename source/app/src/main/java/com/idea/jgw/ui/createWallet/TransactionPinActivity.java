@@ -1,8 +1,10 @@
 package com.idea.jgw.ui.createWallet;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -43,6 +45,14 @@ public abstract class TransactionPinActivity extends BaseActivity implements Pay
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pivOfPassword.setOnPasswordListener(this);
+        pivOfPassword.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null)
+                    imm.showSoftInput(pivOfPassword, InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }, 200);
     }
 
     @Override
@@ -57,5 +67,13 @@ public abstract class TransactionPinActivity extends BaseActivity implements Pay
                 finish();
                 break;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null)
+            imm.hideSoftInputFromWindow(pivOfPassword.getWindowToken(), 0);
     }
 }
