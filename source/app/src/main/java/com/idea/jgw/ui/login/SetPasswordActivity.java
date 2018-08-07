@@ -140,8 +140,7 @@ public class SetPasswordActivity extends BaseActivity {
         registerRequest.setInvite_num(inviteCode);
         registerRequest.setIp(CommonUtils.getIp(this));
         registerRequest.setPasswd(pwd);
-        if (!TextUtils.isEmpty(imei))
-            registerRequest.setDevice_id(imei);
+        registerRequest.setDevice_id(imei);
         return registerRequest;
     }
 
