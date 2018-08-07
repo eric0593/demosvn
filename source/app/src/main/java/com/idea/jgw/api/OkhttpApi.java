@@ -18,10 +18,13 @@ import okhttp3.Call;
 
 public class OkhttpApi {
 
-    public static final String BASE_HOST = "http://120.132.120.251:10004";
+    //正式服
+//    public static final String BASE_HOST = "http://120.132.120.251:10004/";
+    //测试服
+    public static final String BASE_HOST = "http://121.201.80.40:10004/";
 
-    public static final String UPDATE_PHOTO = "http://120.132.120.251:10004/edit_face";
-    public static final String UPDATE_CERTIFICATION = "http://120.132.120.251:10004/certification";
+    public static final String UPDATE_PHOTO = BASE_HOST + "edit_face";
+    public static final String UPDATE_CERTIFICATION = BASE_HOST + "certification";
 
     public static final void updatePhoto(String token, File file, UploadListener listener) {
 
