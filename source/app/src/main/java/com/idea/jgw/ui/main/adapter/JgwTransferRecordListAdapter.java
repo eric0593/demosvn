@@ -93,7 +93,7 @@ public class JgwTransferRecordListAdapter extends BaseRecyclerAdapter {
 
       if(box.getCoinType() == Common.CoinTypeEnum.OCE){
 
-9            if(box.getFromAddress().equals(box.getAddress())){
+         if(box.getFromAddress().equals(box.getAddress())){
                 v.tvOfTransferValue.setText(box.getAmount2()+"");
                 v.ivOfDigitalCurrency.setImageResource(R.mipmap.banlance_receive);
             }else{
