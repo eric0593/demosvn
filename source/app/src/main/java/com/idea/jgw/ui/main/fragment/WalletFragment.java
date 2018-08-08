@@ -18,6 +18,9 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
+import com.idea.jgw.api.retrofit.OceApi;
+import com.idea.jgw.api.retrofit.OceServiceApi;
+import com.idea.jgw.bean.BaseResponse;
 import com.idea.jgw.bean.CoinData;
 import com.idea.jgw.bean.CoinPrice;
 import com.idea.jgw.common.Common;
@@ -30,7 +33,9 @@ import com.idea.jgw.ui.BaseRecyclerAdapter;
 import com.idea.jgw.ui.main.adapter.DigitalCurrencysAdapter;
 import com.idea.jgw.ui.wallet.EthBalanceActivity;
 import com.idea.jgw.ui.wallet.JgwBalanceActivity;
+import com.idea.jgw.ui.wallet.OceBalanceActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
+import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.MyLog;
 
 import java.math.BigDecimal;
@@ -43,6 +48,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * <p>钱包tab</p>
@@ -87,6 +95,8 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
         digitalCurrencysAdapter = new DigitalCurrencysAdapter();
         digitalCurrencysAdapter.addDatas(getInitData());
         digitalCurrencysAdapter.setOnItemClickListener(this);
+
+        cretaeOceWallet();
 
         //根据姨太的地址获取记录
         String ethAddress = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.PREFERENCES_ADDRESS_KEY, "").toString();
@@ -134,10 +144,15 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
         CoinData cd2 = new CoinData();
         cd2.setCoinTypeEnum(Common.CoinTypeEnum.JGW);
         cd2.setCount("0.0");
+        CoinData cd3 = new CoinData();
+        cd3.setCoinTypeEnum(Common.CoinTypeEnum.OCE);
+        cd3.setCount("0.0");
         list.add(cd);
         list.add(cd2);
+        list.add(cd3);
         map.put(cd.getCoinTypeEnum().getName(), cd);
         map.put(cd2.getCoinTypeEnum().getName(), cd2);
+        map.put(cd3.getCoinTypeEnum().getName(), cd3);
         return list;
     }
 
@@ -156,12 +171,9 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
 
     @Override
     public void onItemClick(int position, CoinData data) {
-
-
         switch (data.getCoinTypeEnum()) {
             case BTC:
                 ARouter.getInstance().build(RouterPath.BALANCE_BTC_ACTIITY)
-//                    .withSerializable(BalanceActivity.EXTRA_COIN_TYPE, Coin.CoinType.BTC)
                         .navigation();
                 break;
             case ETH:
@@ -174,8 +186,17 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
                         .withSerializable(JgwBalanceActivity.EXTRA_AMOUNT, data.getCount())
                         .navigation();
                 break;
+            case OCE:
+                ARouter.getInstance().build(RouterPath.BALANCE_OCE_ACTIITY)
+                        .withSerializable(OceBalanceActivity.EXTRA_AMOUNT, data.getCount())
+                        .withString(OceBalanceActivity.EXTRA_USABLE,data.getUsable())
+                        .navigation();
+                break;
+            default:
+                break;
         }
     }
+
 
     private void getJgwBalance(final String address) {
         String tempAddress;
@@ -235,18 +256,25 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
             public void onSuccess(Object obj) {
                 if (null == obj) return;
                 String str = obj.toString();
-                BigInteger bi = new BigInteger(str);
-                BigDecimal bd = new BigDecimal(10).pow(18);
-                DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
-                BigDecimal amount = new BigDecimal(bi.toString(10)).divide(bd);
-                String balance = String.valueOf(amount.doubleValue());
+
                 CoinData cd = new CoinData();
                 cd.setAddress(address);
                 cd.setCoinTypeEnum(Common.CoinTypeEnum.ETH);
-                cd.setCount(balance);
+
+                if (!TextUtils.isEmpty(str)) {
+                    BigInteger bi = new BigInteger(str);
+                    BigDecimal bd = new BigDecimal(10).pow(18);
+                    DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
+                    BigDecimal amount = new BigDecimal(bi.toString(10)).divide(bd);
+                    String balance = String.valueOf(amount.doubleValue());
+                    cd.setCount(balance);
+                    MainActivity.ethCount = amount;
+                } else {
+                    MainActivity.ethCount = new BigDecimal(0);
+                }
                 addData(cd);
 
-                MainActivity.ethCount = amount;
+
             }
 
             @Override
@@ -269,20 +297,18 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
 
     private void addData(CoinData cd) {
 
+        //计算大概值多少人民币
         if (ethCoinPrice != null) {
             if (cd.getCoinTypeEnum().equals(Common.CoinTypeEnum.ETH)) {
                 cd.setPrice(ethCoinPrice);
-//                sumEth = sumEth.subtract(sumEth);
                 BigDecimal sumEth = getEthSumPrice(cd, ethCoinPrice);
-//                sumMoney = sumMoney.add(sumEth);
                 tvSumMoney.setText(sumEth.doubleValue() + MONEY_TYPE);
             }
         }
 
         //该方法只适用于api24的版本，兼容低版本用下面的代码
-//        map.replace(cd.getCoinTypeEnum().getName(), cd);
-        CoinData coinData = map.get(cd.getCoinTypeEnum().getName());
-        map.put(cd.getCoinTypeEnum().getName(), coinData);
+//        CoinData coinData = map.get(cd.getCoinTypeEnum().getName());
+        map.put(cd.getCoinTypeEnum().getName(), cd);
         List<CoinData> list = new ArrayList<>();
         for (CoinData data : map.values()) {
             list.add(data);
@@ -317,5 +343,73 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
         String amount = cd.getCount();
         BigDecimal bd = new BigDecimal(amount);
         return bd.multiply(new BigDecimal(cp.getLast())).setScale(2, BigDecimal.ROUND_HALF_UP);
+    }
+
+
+    public static final String OCE_PRIVATE_KEY = "OCE_PRIVATE_KEY";
+    public static final String OCE_ADDRESS = "OCE_ADDRESS";
+    public static final String OCE_PUBLIC_KEY = "OCE_PUBLIC_KEY";
+
+    /**
+     * 创建钱包
+     */
+    private void cretaeOceWallet() {
+        String address = (String) SPreferencesHelper.getInstance(getActivity()).getData(OCE_ADDRESS, "");
+        if (TextUtils.isEmpty(address)) {
+            Subscription xx = OceServiceApi.getInstance(OceApi.URL).getApiService().cretaeWallet("xxx")
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new RxSubscriber<BaseResponse>(getActivity()) {
+                        @Override
+                        protected void _onNext(BaseResponse response) {
+                            com.alibaba.fastjson.JSONObject obj = (com.alibaba.fastjson.JSONObject) response.getInfo();
+                            String privateKey = obj.getString("private key");
+                            String address = obj.getString("address");
+                            String publicKey = obj.getString("public key");
+
+                            getOceBalance(address);
+
+                            SPreferencesHelper.getInstance(getActivity()).saveData(OCE_PRIVATE_KEY, privateKey);
+                            SPreferencesHelper.getInstance(getActivity()).saveData(OCE_ADDRESS, address);
+                            SPreferencesHelper.getInstance(getActivity()).saveData(OCE_PUBLIC_KEY, publicKey);
+                        }
+
+                        @Override
+                        protected void _onError(String message) {
+
+                        }
+                    });
+        } else {
+            getOceBalance(address);
+        }
+    }
+
+
+    private void getOceBalance(final String address) {
+        OceServiceApi.getInstance(OceApi.URL).getApiService().getinfo(address)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscriber<BaseResponse>(getActivity()) {
+                    @Override
+                    protected void _onNext(BaseResponse response) {
+                        com.alibaba.fastjson.JSONObject obj = (com.alibaba.fastjson.JSONObject) response.getInfo();
+                        Integer num = obj.getInteger("Number");
+                        Integer usable = obj.getInteger("Usable");
+                        addOce(address,String.valueOf(num),String.valueOf(usable));
+                    }
+
+                    @Override
+                    protected void _onError(String message) {
+                        MyLog.e("xxx", message);
+                    }
+                });
+    }
+
+    private void addOce(String address, String amount,String usable) {
+        CoinData cd = new CoinData();
+        cd.setAddress(address);
+        cd.setCount(amount);
+        cd.setCoinTypeEnum(Common.CoinTypeEnum.OCE);
+        cd.setUsable(usable);
+        addData(cd);
     }
 }

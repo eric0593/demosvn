@@ -14,21 +14,21 @@ import java.io.Serializable;
 public class Coin {
 
 
-    public static enum CoinType implements Serializable {
-        /**
-         * 比特币
-         */
-        BTC,
-        /**
-         * 以太币
-         */
-        ETH,
-        /**
-         * 甲骨币
-         */
-        JGW
-
-
-    }
+//    public static enum CoinType implements Serializable {
+//        /**
+//         * 比特币
+//         */
+//        BTC,
+//        /**
+//         * 以太币
+//         */
+//        ETH,
+//        /**
+//         * 甲骨币
+//         */
+//        JGW
+//
+//
+//    }
 
 }

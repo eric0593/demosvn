@@ -16,11 +16,17 @@ import com.idea.jgw.logic.btc.interfaces.TLCallback;
 import com.idea.jgw.logic.btc.model.TLCoin;
 import com.idea.jgw.logic.eth.data.TransactionDisplay;
 import com.idea.jgw.logic.jgw.JgwUtils;
+import com.idea.jgw.service.GetSendStatusService;
+import com.idea.jgw.service.MessageEvent;
 import com.idea.jgw.ui.main.adapter.JgwTransferRecordListAdapter;
 import com.idea.jgw.ui.main.adapter.TransferRecordListAdapter;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.MyLog;
+
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.Web3jFactory;
+import org.web3j.protocol.http.HttpService;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -39,7 +45,7 @@ public class JgwBalanceActivity extends BalanceActivity {
     String address;
     String balance;
 
-    JgwTransferRecordListAdapter  transferRecordListAdapter;
+    JgwTransferRecordListAdapter transferRecordListAdapter;
     protected List<TransactionDisplay> wallets = new ArrayList<>();
 
     public static final String EXTRA_AMOUNT = "JgwBalanceActivity_EXTRA_AMOUNT";
@@ -56,6 +62,24 @@ public class JgwBalanceActivity extends BalanceActivity {
     }
 
     @Override
+    public void sendCoinState(MessageEvent messageEvent) {
+        if (isDestroyed() || isFinishing()) return;
+        if (messageEvent.getCoinType() == Common.CoinTypeEnum.JGW && messageEvent.getState() == MessageEvent.STAE_SUCCES) {
+//            String tranId = messageEvent.getTranId();
+//            forTag:
+//            for (TransactionDisplay transactionDisplay : wallets) {
+//                if (tranId.equals(transactionDisplay.getTxHash())) {
+//                    transactionDisplay.setConfirmationStatus(16);
+//                    break forTag;
+//                }
+//            }
+//            transferRecordListAdapter.replaceData(wallets);
+
+            getTX();
+        }
+    }
+
+    @Override
     public void initView() {
         super.initView();
 
@@ -63,10 +87,10 @@ public class JgwBalanceActivity extends BalanceActivity {
         ivOfLogo.setImageResource(R.mipmap.icon_oce);
 
 
-        balance= getIntent().getStringExtra(JgwBalanceActivity.EXTRA_AMOUNT);
-        if(TextUtils.isEmpty(balance)){
+        balance = getIntent().getStringExtra(JgwBalanceActivity.EXTRA_AMOUNT);
+        if (TextUtils.isEmpty(balance)) {
             getBalance();
-        }else{
+        } else {
             tvOfUsableBalanceValue.setText(balance);
         }
 
@@ -81,13 +105,13 @@ public class JgwBalanceActivity extends BalanceActivity {
     }
 
 
-    private void getTX(){
-        ju.queryTX(address,new TLCallback() {
+    private void getTX() {
+        ju.queryTX(address, new TLCallback() {
             @Override
             public void onSuccess(Object obj) {
-                if(null == obj)
+                if (null == obj)
                     return;
-                wallets = (     List<TransactionDisplay> )obj;
+                wallets = (List<TransactionDisplay>) obj;
                 transferRecordListAdapter.replaceData(wallets);
             }
 
@@ -108,22 +132,18 @@ public class JgwBalanceActivity extends BalanceActivity {
         });
     }
 
-    private void getBalance(){
+    private void getBalance() {
 
         ju.queryBalance(address, new TLCallback() {
             @Override
             public void onSuccess(Object obj) {
-
                 try {
                     String str = obj.toString();
-//                    BigInteger bi = new BigInteger(new BigInteger(str,16).toString(10));
                     BigInteger bi = new BigInteger(str);
                     BigDecimal bd = new BigDecimal(10).pow(18);
                     DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
-//                    df.setMaximumFractionDigits(18);
                     BigDecimal amount = new BigDecimal(bi.toString(10)).divide(bd);
                     balance = df.format(amount.doubleValue());
-                    MyLog.e("balance-->>" + obj.toString());
                     tvOfUsableBalanceValue.setText(balance);
                 } catch (Exception e) {
                     tvOfUsableBalanceValue.setText("0");
@@ -167,11 +187,11 @@ public class JgwBalanceActivity extends BalanceActivity {
 
     @Override
     public void onItemClick(int position, Object data) {
-        TransactionDisplay td = (TransactionDisplay)data;
+        TransactionDisplay td = (TransactionDisplay) data;
         ARouter.getInstance().build(RouterPath.TRANSACTION_DETAIL_ACTIVITY)
 //                .withObject(EXTRA_DETAIL_OBJECT,data)
-                .withSerializable(TransactionDetailActivity.EXTRA_DETAIL_OBJECT,td)
-                .withInt(TransactionDetailActivity.EXTRA_COIN_TYPE,Common.CoinTypeEnum.JGW.getIndex())
+                .withSerializable(TransactionDetailActivity.EXTRA_DETAIL_OBJECT, td)
+                .withInt(TransactionDetailActivity.EXTRA_COIN_TYPE, Common.CoinTypeEnum.JGW.getIndex())
                 .navigation();
     }
 

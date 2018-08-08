@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.idea.jgw.App;
 import com.idea.jgw.R;
+import com.idea.jgw.common.Common;
 import com.idea.jgw.logic.eth.data.TransactionDisplay;
 import com.idea.jgw.logic.eth.utils.AddressNameConverter;
 import com.idea.jgw.logic.eth.utils.Settings;
@@ -78,7 +79,7 @@ public class JgwTransferRecordListAdapter extends BaseRecyclerAdapter {
     public void onBind(RecyclerView.ViewHolder viewHolder, int realPosition, Object data) {
         TransactionDisplay box = boxlist.get(realPosition);
         DigitalCurrencyListHolder v = (DigitalCurrencyListHolder) viewHolder;
-        v.ivOfDigitalCurrency.setImageResource(box.getAmount() > 0 ? R.mipmap.banlance_receive : R.mipmap.banlance_send);
+
         String toName = AddressNameConverter.getInstance(App.getInstance()).get(box.getToAddress());
         v.tvOfTransferAddress.setText(toName == null ? box.getToAddress() : toName + " (" + box.getToAddress().substring(0, 10) + ")");
         v.tvOfTransferTime.setVisibility(View.INVISIBLE);
@@ -90,12 +91,24 @@ public class JgwTransferRecordListAdapter extends BaseRecyclerAdapter {
             v.ivOfTransferState.setImageResource(R.mipmap.send_success);
         }
 
-        BigDecimal amount = new BigDecimal(box.getAmountNative()).divide(bd);
-        if(amount.doubleValue() > 0){
-            v.tvOfTransferValue.setText( "+"+df.format(amount.doubleValue()));
-        }else{
-            v.tvOfTransferValue.setText(df.format(amount.doubleValue()));
-        }
+      if(box.getCoinType() == Common.CoinTypeEnum.OCE){
+
+9            if(box.getFromAddress().equals(box.getAddress())){
+                v.tvOfTransferValue.setText(box.getAmount2()+"");
+                v.ivOfDigitalCurrency.setImageResource(R.mipmap.banlance_receive);
+            }else{
+                v.tvOfTransferValue.setText("-"+box.getAmount2());
+                v.ivOfDigitalCurrency.setImageResource( R.mipmap.banlance_send);
+            }
+      }else{
+          v.ivOfDigitalCurrency.setImageResource(box.getAmount() > 0 ? R.mipmap.banlance_receive : R.mipmap.banlance_send);
+          BigDecimal amount = new BigDecimal(box.getAmountNative()).divide(bd);
+          if(amount.doubleValue() > 0){
+              v.tvOfTransferValue.setText( "+"+df.format(amount.doubleValue()));
+          }else{
+              v.tvOfTransferValue.setText(df.format(amount.doubleValue()));
+          }
+      }
     }
 
     class DigitalCurrencyListHolder extends RecyclerView.ViewHolder {

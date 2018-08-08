@@ -46,7 +46,7 @@ public class CopyKeyWordsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(savedInstanceState);
-
+        flowlayoutKeywords.setEnabled(false);
 
     }
 

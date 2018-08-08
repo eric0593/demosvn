@@ -183,6 +183,7 @@
     <string name="notification_might_take_a_minute">This might take a minute</string>
     <string name="succes">确认</string>
     <string name="address_empty">地址不能为空</string>
+    <string name="address_is_self">接收地址不能是自己</string>
     <string name="address_wrong">地址不合法</string>
     <string name="send_amount_empty">请输入需要转账的数量</string>
     <string name="request_permission">应用保持运行,需要这些权限</string>
@@ -239,6 +240,8 @@
     <string name="name_is_null">姓名不能为空！</string>
     <string name="id_photo_is_null">还未添加身份证正面照！</string>
     <string name="id_back_photo_is_null">还未添加身份证背面照！</string>
+
+    <string name="send_sucess">发送成功</string>
 
     <string name="session_is_invalid">登录已过期！请重新登录！</string>
     <string name="nickename">昵称</string>

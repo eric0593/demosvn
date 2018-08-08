@@ -30,6 +30,25 @@ public class CoinData {
     private String count;
     private Common.CoinTypeEnum coinTypeEnum;
     private CoinPrice price; //单价
+    private String frozen;//冻结的金额
+    private String usable;//可用
+
+
+    public String getFrozen() {
+        return frozen;
+    }
+
+    public void setFrozen(String frozen) {
+        this.frozen = frozen;
+    }
+
+    public String getUsable() {
+        return usable;
+    }
+
+    public void setUsable(String usable) {
+        this.usable = usable;
+    }
 
     public void setCoinTypeEnum(Common.CoinTypeEnum coinTypeEnum) {
         this.coinTypeEnum = coinTypeEnum;

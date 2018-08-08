@@ -102,10 +102,39 @@ public class TransactionDetailActivity extends BaseActivity {
             ivCoinLogo.setImageResource(R.mipmap.icon_oce);
             setDataToValue(td);
 
+        } else if (coinType == Common.CoinTypeEnum.OCE.getIndex()) {
+            ivCoinLogo.setImageResource(R.mipmap.icon_oce);
+            setOceData(td);
         }
     }
 
-    private void setDataToValue(TransactionDisplay td){
+    private void setOceData(TransactionDisplay td) {
+        BigDecimal bd = new BigDecimal(10).pow(18);
+        DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
+        df.setMaximumFractionDigits(18);
+
+        tvTransactionId.setText(getResources().getString(R.string.transaction_id) + ":" + td.getTxHash());
+        tvChainNumber.setText(getResources().getString(R.string.chain_number) + ":" + td.getBlock());
+        tvSendTime.setText(sdf.format(new Date(td.getDate())));
+        BigDecimal gas = new BigDecimal(td.getGasUsed() * td.getGasprice()).divide(bd);
+        tvCommission.setText(getResources().getString(R.string.commission) + ":" + df.format(gas.doubleValue()));
+        BigDecimal amount = new BigDecimal(td.getAmountNative()).divide(bd);
+
+        // amount > 0 表示接收，< 0表示发送
+        if (!td.getAddress().equals(td.getFromAddress())) {
+            tvTransactionNumber.setText("-" + df.format(td.getAmount2()));
+            tvSendLabel.setText(R.string.send);
+            tvReceivedAddress.setText(td.getToAddress());
+            tvSendAddress.setText(td.getFromAddress());
+        } else {
+            tvSendLabel.setText(R.string.received);
+            tvSendAddress.setText(td.getToAddress());
+            tvReceivedAddress.setText(td.getFromAddress());
+            tvTransactionNumber.setText(df.format(td.getAmount2()));
+        }
+    }
+
+    private void setDataToValue(TransactionDisplay td) {
         BigDecimal bd = new BigDecimal(10).pow(18);
         DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
         df.setMaximumFractionDigits(18);
@@ -122,7 +151,7 @@ public class TransactionDetailActivity extends BaseActivity {
             tvSendLabel.setText(R.string.received);
             tvSendAddress.setText(td.getToAddress());
             tvReceivedAddress.setText(td.getFromAddress());
-        }else{
+        } else {
             tvSendLabel.setText(R.string.send);
             tvReceivedAddress.setText(td.getToAddress());
             tvSendAddress.setText(td.getFromAddress());

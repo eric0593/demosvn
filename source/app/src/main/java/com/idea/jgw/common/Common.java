@@ -19,7 +19,8 @@ public class Common {
         /**
          * 请求的url
          */
-        public static final String URL = "https://api.myetherapi.com/eth";// " http://120.132.120.253:8546";
+        public static final String URL = "http://120.132.120.253:8546" ;   //"https://api.myetherapi.com/eth";// " http://120.132.120.253:8546";
+
         /**
          * 智能合约地址
          */
@@ -33,7 +34,8 @@ public class Common {
     public static enum CoinTypeEnum {
         BTC("btc",0),
         ETH("eth",1),
-        JGW("jgw",2)
+        JGW("jgw",2),
+        OCE("oce",3)
         ;
         // 成员变量
         private String name;

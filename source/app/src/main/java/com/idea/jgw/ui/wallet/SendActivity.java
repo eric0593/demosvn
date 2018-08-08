@@ -21,7 +21,7 @@ import butterknife.OnClick;
  * 发送转账页面
  */
 @Route(path = RouterPath.SEND_ACTIVITY)
-public class SendActivity extends BaseActivity {
+public abstract class SendActivity extends BaseActivity {
 
 
     /***
@@ -92,6 +92,9 @@ public class SendActivity extends BaseActivity {
                 onQrScanCodeClick();
                 break;
             case R.id.btn_of_send: //确认发送
+
+
+
                 if (onSendClick()) {
                     showPwdInputDialog();
                 }
@@ -120,6 +123,9 @@ public class SendActivity extends BaseActivity {
         inputTransactionPwdDialog.show();
     }
 
+    protected abstract String getSelfAddress();
+
+
     /**
      * 扫描按钮的点击事件
      */
@@ -128,13 +134,16 @@ public class SendActivity extends BaseActivity {
     }
 
     /**
-     * 发送按钮点击的事件
+     * 发送按钮点击的事件(子类做基本的判断)
      *
      * @return true 弹出密码框 false 不弹出密码框
      */
     public boolean onSendClick() {
         return false;
     }
+
+
+
 
     /**
      * 密码输入完成的操作
@@ -144,4 +153,5 @@ public class SendActivity extends BaseActivity {
     public void onPaswordInputFinished(String inputPsd) {
 
     }
+
 }

@@ -43,9 +43,9 @@ public class CheckKeyWordActivity extends BaseActivity implements BaseCallback {
     @BindView(R.id.btn_next)
     Button btnNext;
     @BindView(R.id.flowlayout_selected)
-    TagFlowLayout flowlayoutSelected;
+    TagFlowLayout flowlayoutSelected;   //助记词输入
     @BindView(R.id.flowlayout_src)
-    TagFlowLayout flowlayoutSrc;
+    TagFlowLayout flowlayoutSrc;  //助记词显示
 
     //测试keywokds
     private String[] srcKeywords = new String[]{"angry", "teant ", "organ ", "novel ", "angle ", "hat ", "siren ", "matter ", "mechanit ", "tent ", "biology ", "husband"};
@@ -98,9 +98,8 @@ public class CheckKeyWordActivity extends BaseActivity implements BaseCallback {
                 tv.setText(s);
                 return tv;
             }
-
         };
-
+        //显示
         flowlayoutSrc.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
             @Override
             public boolean onTagClick(View view, int i, FlowLayout flowLayout) {
@@ -113,14 +112,17 @@ public class CheckKeyWordActivity extends BaseActivity implements BaseCallback {
                 return true;
             }
         });
-
+        //选中的
         flowlayoutSelected.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
             @Override
             public boolean onTagClick(View view, int i, FlowLayout flowLayout) {
                 if (((TagView) view).isChecked()) {
-                    selectedKeywords.remove(srcKeywords[i]);
+                    selectedKeywords.remove(i);
                 }
-                flowlayoutSelected.onChanged();
+                String str = selectedKeywords.toString();
+//                flowlayoutSelected.onChanged();
+                selectedTagAdapter.setData(selectedKeywords);
+                selectedTagAdapter.notifyDataChanged();
                 return true;
             }
         });

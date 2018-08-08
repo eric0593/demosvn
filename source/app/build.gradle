@@ -112,6 +112,9 @@ dependencies {
     compile files('libs/bugly_crash_release.jar')
     //三方下拉刷新recyclerView
     compile 'com.jcodecraeer:xrecyclerview:1.5.9'
+    //enventBus
+    compile 'org.greenrobot:eventbus:3.1.1'
+
 }
 
 configurations.all {

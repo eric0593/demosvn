@@ -31,6 +31,7 @@ import com.idea.jgw.logic.eth.utils.MyMnemonicUtils;
 import com.idea.jgw.logic.eth.utils.ResponseParser;
 import com.idea.jgw.logic.eth.utils.SecureRandomUtils;
 import com.idea.jgw.logic.eth.utils.WalletStorage;
+import com.idea.jgw.service.GetSendStatusService;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.MyLog;
@@ -150,6 +151,8 @@ public class EthWalltUtils extends WalletUtils {
                             String result = send.getResult();
                             MyLog.e("sendCoin ----result--ok---" + result);
                             handler.sendEmptyMessage(0);
+
+                            GetSendStatusService.startNewService(Common.CoinTypeEnum.ETH,result);
                         } catch (Exception e) {
                             MyLog.e("sendCoin ----onResponse---exception");
                             handler.sendEmptyMessage(-1);

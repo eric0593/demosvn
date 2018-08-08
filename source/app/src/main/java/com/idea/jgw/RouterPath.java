@@ -40,14 +40,16 @@ public class RouterPath {
     public static final String BALANCE_ETH_ACTIITY = "/activity/balance/eth";
     public static final String BALANCE_BTC_ACTIITY = "/activity/balance/btc";
     public static final String BALANCE_JGW_ACTIITY = "/activity/balance/jgw";
+    public static final String BALANCE_OCE_ACTIITY = "/activity/balance/oce";
     public static final String SEND_BTC_ACTIVITY = "/activity/send/btc";
     public static final String SEND_ETH_ACTIVITY = "/activity/send/eth";
     public static final String SEND_JGW_ACTIVITY = "/activity/send/jgw";
+    public static final String SEND_OCE_ACTIVITY = "/activity/send/oce";
     public static final String QR_SCAN_ACTIVITY = "/activity/qrCode";
-
     public static final String RECEIVED_ETH_ACTIVITY = "/activity/received/eth";
     public static final String RECEIVED_BTC_ACTIVITY = "/activity/received/btc";
     public static final String RECEIVED_JGW_ACTIVITY = "/activity/received/jgw";
+    public static final String RECEIVED_OCE_ACTIVITY = "/activity/received/oce";
     public static final String IDENTITY_AUTHENTICATION_ACTIVITY2 = "/activity/authentication2";
     public static final String NIKENAME_ACTIVITY2 = "/activity/updateNickname";
     public static final String HASHRATE_RECORD_ACTIVITY2 = "/activity/hashrateRecord";

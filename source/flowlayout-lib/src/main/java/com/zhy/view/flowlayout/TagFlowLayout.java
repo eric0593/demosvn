@@ -97,7 +97,7 @@ public class TagFlowLayout extends FlowLayout
         removeAllViews();
         TagAdapter adapter = mTagAdapter;
         TagView tagViewContainer = null;
-        HashSet preCheckedList = mTagAdapter.getPreCheckedList();
+        HashSet preCheckedList = adapter.getPreCheckedList();
         for (int i = 0; i < adapter.getCount(); i++) {
             View tagView = adapter.getView(this, i, adapter.getItem(i));
 
@@ -126,7 +126,7 @@ public class TagFlowLayout extends FlowLayout
                 setChildChecked(i, tagViewContainer);
             }
 
-            if (mTagAdapter.setSelected(i, adapter.getItem(i))) {
+            if (adapter.setSelected(i, adapter.getItem(i))) {
                 setChildChecked(i, tagViewContainer);
             }
             tagView.setClickable(false);

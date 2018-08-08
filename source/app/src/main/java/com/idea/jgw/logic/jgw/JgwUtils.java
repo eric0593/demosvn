@@ -1,5 +1,6 @@
 package com.idea.jgw.logic.jgw;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -11,6 +12,7 @@ import com.idea.jgw.common.Common;
 import com.idea.jgw.logic.btc.interfaces.TLCallback;
 import com.idea.jgw.logic.eth.data.TransactionDisplay;
 import com.idea.jgw.logic.eth.network.EtherscanAPI;
+import com.idea.jgw.service.GetSendStatusService;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.MyLog;
 
@@ -170,10 +172,14 @@ public class JgwUtils {
                         toAdd = "0x" + toAdd;
                     Future<TransactionReceipt> transactionReceiptFuture = load.transfer(toAdd, new BigInteger(amont)).sendAsync();
                     String hash = transactionReceiptFuture.get().getBlockHash();
+
                     Message msg = handler.obtainMessage();
                     msg.what = 0;
                     msg.obj = hash;
                     handler.sendMessage(msg);
+
+
+                    GetSendStatusService.startNewService(Common.CoinTypeEnum.JGW,hash);
                 } catch (Exception e) {
                     Message m = handler.obtainMessage();
                     String msg = e.getLocalizedMessage();
@@ -210,12 +216,9 @@ public class JgwUtils {
             }
         };
 
-
         new Thread(new Runnable() {
             @Override
             public void run() {
-
-
                 try {
                     EtherscanAPI.getInstance().getTransaction(Common.Jgw.SMART_CONTRACT, address, new Callback() {
                         @Override

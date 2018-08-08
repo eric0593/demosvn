@@ -31,13 +31,14 @@ public class App extends Application {
     public static Stack<Activity> activityStack;//App所有页面堆栈
 
     //开关类
-    public static boolean debug = false;  //是否测试
+    public static boolean debug = true;  //是否测试
+
     public static String APP_KEY = "1ac3660a73e00";
     public static String APP_SECRET = "28051a43a5283acea68e0e13b0b4e76c";
 
 
     //是否已登录状态，默认false，即app被杀死后需要重新验证登录
-    public static boolean login = false;
+    public static boolean login = true;
     //钱包测试
     public static boolean isWalletDebug = false;
 

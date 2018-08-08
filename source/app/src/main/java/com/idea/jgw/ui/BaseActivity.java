@@ -24,6 +24,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
+import com.idea.jgw.service.GetSendStatusService;
 import com.idea.jgw.ui.service.ScreenListenerService;
 import com.idea.jgw.utils.common.DialogUtils;
 import com.idea.jgw.utils.common.MToast;
@@ -32,6 +33,8 @@ import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.joker.api.Permissions4M;
 import com.joker.api.wrapper.ListenerWrapper;
 
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,7 +49,7 @@ import rx.Subscription;
  * Created by idea on 2018/5/16.
  */
 
-public abstract class BaseActivity extends SupportActivity implements ListenerWrapper.PermissionCustomRationaleListener, ListenerWrapper.PermissionRequestListener, ListenerWrapper.PermissionPageListener{
+public abstract class BaseActivity extends SupportActivity implements ListenerWrapper.PermissionCustomRationaleListener, ListenerWrapper.PermissionRequestListener, ListenerWrapper.PermissionPageListener {
     //动态权限申请码
     private static int PREMISSION_REQUEST_CODE = 222; //相册访问sd权限
     public static final int REQUEST_STORAGE_CODE = 223; //存储权限
@@ -66,31 +69,38 @@ public abstract class BaseActivity extends SupportActivity implements ListenerWr
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
+
+
+
+
     public void setFullScreenFlags() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     public abstract int getLayoutId();
+
     public abstract void initView();
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         App.popOneActivity(this);
     }
 
     public void unSubscribe(Subscription subscription) {
-        if(subscription != null && !subscription.isUnsubscribed()) {
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
     }
+
     long lastTouchTime;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         long currentTime = System.currentTimeMillis();
-        if(currentTime - lastTouchTime > 1000) {
+        if (currentTime - lastTouchTime > 1000) {
             lastTouchTime = currentTime;
 //            sendBroadcast(new Intent(ScreenListenerService.ACTION_TOUCH_SCREEN));
             startService(new Intent(this, ScreenListenerService.class));

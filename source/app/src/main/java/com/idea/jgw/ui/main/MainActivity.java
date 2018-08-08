@@ -1,8 +1,11 @@
 package com.idea.jgw.ui.main;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
@@ -15,6 +18,10 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
+import com.idea.jgw.api.retrofit.OceApi;
+import com.idea.jgw.api.retrofit.OceServiceApi;
+import com.idea.jgw.bean.BaseResponse;
+import com.idea.jgw.bean.OceBaseResponse;
 import com.idea.jgw.logic.btc.model.TLAppDelegate;
 import com.idea.jgw.logic.btc.model.TLHDWalletWrapper;
 import com.idea.jgw.logic.eth.EthWalltUtils;
@@ -26,17 +33,23 @@ import com.idea.jgw.ui.createWallet.WalletCreateSuccessActivity;
 import com.idea.jgw.ui.main.fragment.DiscoverFragment;
 import com.idea.jgw.ui.main.fragment.MineFragment;
 import com.idea.jgw.ui.main.fragment.WalletFragment;
+import com.idea.jgw.utils.SPreferencesHelper;
+import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.MyLog;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 import org.bitcoinj.core.Base58;
+import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 主页面
@@ -150,5 +163,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             return super.onKeyDown(keyCode, event);
         }
     }
+
+
 }
 

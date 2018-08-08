@@ -59,6 +59,10 @@ public class DigitalCurrencysAdapter extends BaseRecyclerAdapter<CoinData> {
                 v.ivOfDigitalCurrency.setImageResource(R.mipmap.icon_oce);
                 v.tvOfDigitalName.setText("JGW");
                 break;
+            case OCE:
+                v.ivOfDigitalCurrency.setImageResource(R.mipmap.icon_oce);
+                v.tvOfDigitalName.setText("OCE");
+                break;
         }
         v.tvOfDigitalNumber.setText(TextUtils.isEmpty(data.getCount())?"0.0":df.format(new BigDecimal(data.getCount().replace(",", "")).doubleValue()));
         v.tvOfDigitalUnitPrice.setVisibility(View.INVISIBLE);

@@ -20,9 +20,15 @@ import com.idea.jgw.logic.eth.EthWalltUtils;
 import com.idea.jgw.logic.eth.interfaces.StorableWallet;
 import com.idea.jgw.logic.eth.utils.ResponseParser;
 import com.idea.jgw.logic.eth.utils.WalletStorage;
+import com.idea.jgw.service.GetSendStatusService;
+import com.idea.jgw.service.MessageEvent;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.ui.BaseRecyclerAdapter;
 import com.idea.jgw.ui.main.adapter.TransferRecordListAdapter;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -68,7 +74,7 @@ public abstract class BalanceActivity extends BaseActivity implements BaseRecycl
     public static final String EXTRA_COIN_TYPE = "BalanceActivity.EXTRA_COIN_TYPE"; //币类型
 
     //    @Autowired(name = EXTRA_COIN_TYPE)
-    public Coin.CoinType mCoinType;
+//    public Coin.CoinType mCoinType;
 
     int coinType;//0币种类型，1:btc ,2:eth ,3:8phc
     private Subscription miningSubscription;
@@ -78,6 +84,17 @@ public abstract class BalanceActivity extends BaseActivity implements BaseRecycl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ARouter.getInstance().inject(this);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public  void sendCoinState(MessageEvent messageEvent){
 
     }
 

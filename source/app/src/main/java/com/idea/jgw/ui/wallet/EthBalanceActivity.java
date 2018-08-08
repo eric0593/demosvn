@@ -25,6 +25,8 @@ import com.idea.jgw.logic.eth.network.EtherscanAPI;
 import com.idea.jgw.logic.eth.utils.RequestCache;
 import com.idea.jgw.logic.eth.utils.ResponseParser;
 import com.idea.jgw.logic.eth.utils.WalletStorage;
+import com.idea.jgw.service.GetSendStatusService;
+import com.idea.jgw.service.MessageEvent;
 import com.idea.jgw.ui.main.adapter.TransferRecordListAdapter;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.MToast;
@@ -84,7 +86,6 @@ public class EthBalanceActivity extends BalanceActivity {
         ivOfLogo.setImageResource(R.mipmap.icon_eth);
 
 
-
         String balance = getIntent().getStringExtra(EXTRA_AMOUNT);
         if (!TextUtils.isEmpty(balance))
             tvOfUsableBalanceValue.setText(balance);
@@ -103,6 +104,23 @@ public class EthBalanceActivity extends BalanceActivity {
             //当 String balance = getIntent().getStringExtra(EXTRA_AMOUNT);不为空时，不需要再去请求数据
             //获取姨太的金额
             getEthBanlance(ethAddress);
+        }
+    }
+
+    @Override
+    public void sendCoinState(MessageEvent messageEvent) {
+        if (isDestroyed() || isFinishing()) return;
+        if (messageEvent.getCoinType() == Common.CoinTypeEnum.ETH && messageEvent.getState() == MessageEvent.STAE_SUCCES) {
+            String tranId = messageEvent.getTranId();
+            forTag:
+            for (TransactionDisplay transactionDisplay : wallets) {
+                if (tranId.equals(transactionDisplay.getTxHash())) {
+                    transactionDisplay.setConfirmationStatus(16);
+                    break forTag;
+                }
+            }
+            transferRecordListAdapter.replaceData(wallets);
+
         }
     }
 

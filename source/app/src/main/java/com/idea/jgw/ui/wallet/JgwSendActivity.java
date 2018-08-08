@@ -15,10 +15,12 @@ import com.idea.jgw.logic.eth.EthWalltUtils;
 import com.idea.jgw.logic.eth.IBAN;
 import com.idea.jgw.logic.eth.utils.WalletStorage;
 import com.idea.jgw.logic.jgw.JgwUtils;
+import com.idea.jgw.service.MessageEvent;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
 
+import org.greenrobot.eventbus.EventBus;
 import org.web3j.crypto.Credentials;
 import org.web3j.utils.Numeric;
 
@@ -46,6 +48,10 @@ public class JgwSendActivity extends SendActivity {
         ivDigitalLogo.setImageResource(R.mipmap.icon_oce_small);
     }
 
+    @Override
+    protected String getSelfAddress() {
+        return address;
+    }
 
     @Override
     public void onQrScanCodeClick() {
@@ -123,14 +129,24 @@ public class JgwSendActivity extends SendActivity {
             return false;
         }
 
-        if (!validAddress(address)) {
+        //是否是转给自己
+        String tempAddress =address;
+       if(!address.startsWith("0x")){
+            tempAddress = "0x"+address;
+       }
+       if(tempAddress.endsWith(getSelfAddress())){
+            MToast.showLongToast(getResources().getString(R.string.address_is_self));
             return false;
-        }
+       }
 
         //金额验证
         String sendAmount = etSendAmount.getText().toString();
         if (TextUtils.isEmpty(sendAmount)) {
             MToast.showLongToast(getResources().getString(R.string.send_amount_empty));
+            return false;
+        }
+
+        if (!validAddress(address)) {
             return false;
         }
 
@@ -149,6 +165,8 @@ public class JgwSendActivity extends SendActivity {
                         @Override
                         public void onSuccess(Object obj) {
                             MToast.showLongToast(R.string.jgw_send_coin_succes);
+                            MessageEvent m = new MessageEvent(Common.CoinTypeEnum.JGW,1,"");
+                            EventBus.getDefault().post(m);
                         }
 
                         @Override

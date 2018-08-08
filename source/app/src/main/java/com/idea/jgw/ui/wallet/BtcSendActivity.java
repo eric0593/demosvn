@@ -8,4 +8,12 @@ import com.idea.jgw.RouterPath;
  */
 @Route(path = RouterPath.SEND_BTC_ACTIVITY)
 public class BtcSendActivity extends SendActivity {
+
+    String selfAddress;
+
+
+    @Override
+    protected String getSelfAddress() {
+        return selfAddress;
+    }
 }

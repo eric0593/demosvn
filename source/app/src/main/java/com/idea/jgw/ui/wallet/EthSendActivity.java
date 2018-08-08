@@ -24,7 +24,16 @@ import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
 
 import org.web3j.crypto.Credentials;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.Web3jFactory;
+import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action0;
+import rx.functions.Action1;
 
 /**
  * Created by vam on 2018\6\4 0004.
@@ -47,6 +56,12 @@ public class EthSendActivity extends SendActivity {
         tvLight.setText("wei");
 
         ivDigitalLogo.setImageResource(R.mipmap.icon_eth);
+    }
+
+
+    @Override
+    protected String getSelfAddress() {
+        return mWalletAddress;
     }
 
     @Override
@@ -101,7 +116,13 @@ public class EthSendActivity extends SendActivity {
             return false;
         }
 
-        if (!validAddress(address)) {
+        //是否是转给自己
+        String tempAddress =address;
+        if(!address.startsWith("0x")){
+            tempAddress = "0x"+address;
+        }
+        if(tempAddress.endsWith(getSelfAddress())){
+            MToast.showLongToast(getResources().getString(R.string.address_is_self));
             return false;
         }
 
@@ -109,6 +130,10 @@ public class EthSendActivity extends SendActivity {
         String sendAmount = etSendAmount.getText().toString();
         if (TextUtils.isEmpty(sendAmount)) {
             MToast.showLongToast(getResources().getString(R.string.send_amount_empty));
+            return false;
+        }
+
+        if (!validAddress(address)) {
             return false;
         }
 
@@ -170,7 +195,19 @@ public class EthSendActivity extends SendActivity {
     protected void onResume() {
         register();
         super.onResume();
+    }
 
+    private void registerEthSend(){
+        Web3j web3j = Web3jFactory.build(new HttpService(Common.Eth.URL));
+        web3j.blockObservable(false).subscribe(new Action1<EthBlock>() {
+            @Override
+            public void call(EthBlock ethBlock) {
+                String hash = ethBlock.getBlock().getHash();
+                if(null != hash && !hash.isEmpty()){
+                    //高度有增长
+                }
+            }
+        });
     }
 
     private void register() {

@@ -9,6 +9,14 @@ public class BaseResponse {
     public static final int INVALID_SESSION = 1;
     private int code;
     private Object data;
+    private Object info;
+    public Object getInfo() {
+        return info;
+    }
+
+    public void setInfo(Object info) {
+        this.info = info;
+    }
 
     public int getCode() {
         return code;

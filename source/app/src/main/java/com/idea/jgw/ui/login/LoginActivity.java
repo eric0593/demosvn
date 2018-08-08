@@ -172,8 +172,6 @@ public class LoginActivity extends BaseActivity {
                                     if(list.size() > 0) {
                                         hasEthWallet = true;
                                     }
-//                                                hasWallet |= hasEthWallet;
-//                                                subscriber.onNext(hasWallet);
                                     subscriber.onNext(hasEthWallet);
                                     subscriber.onCompleted();
 
