@@ -75,7 +75,7 @@ public class MiningHashrateActivity extends BaseActivity {
         textView.setText(spannableString);
     }
 
-    @OnClick({R.id.btn_of_back, R.id.ll_auth, R.id.tv_of_hashrate_record, R.id.ll_share_to_friends})
+    @OnClick({R.id.btn_of_back, R.id.ll_base_task, R.id.ll_auth, R.id.tv_of_hashrate_record, R.id.ll_share_to_friends})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_of_back:
@@ -84,6 +84,9 @@ public class MiningHashrateActivity extends BaseActivity {
             case R.id.tv_of_hashrate_record:
                 //算力提示记录
                 ARouter.getInstance().build(RouterPath.HASHRATE_RECORD_ACTIVITY2).navigation();
+                break;
+            case R.id.ll_base_task:
+                ARouter.getInstance().build(RouterPath.USER_INFO_ACTIVITY).navigation();
                 break;
             case R.id.ll_auth:
                 ARouter.getInstance().build(RouterPath.IDENTITY_AUTHENTICATION_ACTIVITY).navigation();

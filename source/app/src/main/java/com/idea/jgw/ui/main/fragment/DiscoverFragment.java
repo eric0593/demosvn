@@ -146,7 +146,11 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
                                        List<FloatView.FloatViewData> list = new ArrayList<>();
                                        for(CoinMining coinMining : coinMinings) {
                                            FloatView.FloatViewData data = new FloatView.FloatViewData();
-                                           data.setType(coinMining.getCoin_info().getId());
+                                           if(App.testIP) {
+                                               data.setType(coinMining.getCoin_info().getCharX());
+                                           } else {
+                                               data.setType(coinMining.getCoin_info().getId()+ "");
+                                           }
                                            data.setValue(coinMining.getReceive_profit());
                                            data.setUrl(coinMining.getCoin_info().getFace());
                                            list.add(data);
@@ -168,7 +172,7 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
                 );
     }
 
-    private void receiveMiningData(final int type, final double value) {
+    private void receiveMiningData(final String type, final double value) {
         String token = SharedPreferenceManager.getInstance().getSession();
         receiveMiningSubscription = ServiceApi.getInstance().getApiService()
                 .receiveMiningData(type, String.valueOf(value), token)
@@ -179,7 +183,7 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
                                    if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
                                        fvOfMining.removeAt(type);
                                        for(CoinMining coinMining : miningAdapter.getmDatas()) {
-                                           if(coinMining.getCoin_info().getId() == type) {
+                                           if(coinMining.getCoin_info().getCharX().equals(type)) {
                                                double profit = coinMining.getBalance() + value;
                                                coinMining.setBalance(profit);
                                                break;
@@ -213,9 +217,13 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
 
     @Override
     public void onItemClick(int position, CoinMining data) {
-        int coinType = data.getCoin_info().getId();
+        String coinType = data.getCoin_info().getCharX();
+        if(!App.testIP) {
+            coinType = data.getCoin_info().getId() + "";
+        }
+        String coinLogo = data.getCoin_info().getFace();
         double balance = data.getBalance();
-        ARouter.getInstance().build(RouterPath.MINING_DETAIL_ACTIVITY).withInt("coinType", coinType).withDouble("balance", balance).navigation();
+        ARouter.getInstance().build(RouterPath.MINING_DETAIL_ACTIVITY).withString("coinLogo", coinLogo).withString("coinType", coinType).withDouble("balance", balance).navigation();
     }
 
     @Override

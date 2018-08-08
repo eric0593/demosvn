@@ -80,7 +80,7 @@
     <string name="hint_of_input_phone">请输入手机号</string>
     <string name="hint_of_input_security">请输验证码</string>
     <string name="hint_of_input_pwd">请输登录密码</string>
-    <string name="hint_of_set_pwd">请输入密码在6-16位之间</string>
+    <string name="hint_of_set_pwd">请输入6-16位密码</string>
     <string name="hint_of_invite_code">请输入邀请码(选填)</string>
     <string name="hint_of_send_amount">请输发送金额</string>
     <string name="received_address_hint">请输入接收地址</string>
@@ -156,6 +156,7 @@
     <string name="verify_code_is_null">验证码不能为空！</string>
     <string name="pwd_code_is_null">密码码不能为空！</string>
     <string name="input_not_equal">两次输入不一致！请重新输入！</string>
+    <string name="payment_pwd_invalid">资产密码不正确！请重新输入！</string>
 
     <string name="net_error">网络访问错误，请稍后再试</string>
     <string name="empty">还没有数据哦</string>
@@ -167,7 +168,7 @@
     <string name="resend_notice">%1$ds后重发</string>
     <string name="record">记录</string>
     <string name="id_auth_one">共两步，第一步</string>
-    <string name="id_auth_two">共两步，第一步</string>
+    <string name="id_auth_two">共两步，第二步</string>
     <string name="id_photo_notice">上传身份证正反面照片，请保证照片清晰可辨认</string>
     <string name="id_front_notice">上传身份证正面照片</string>
     <string name="id_back_notice">上传身份证反面照片</string>

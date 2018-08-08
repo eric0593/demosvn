@@ -45,6 +45,17 @@ public abstract class TagAdapter<T> {
         setSelectedList(set);
     }
 
+    public void setSelected(int postion) {
+        mCheckedPosList.add(postion);
+        notifyDataChanged();
+    }
+
+    public void setUnSelected(Integer postion) {
+        if (mCheckedPosList.contains(postion))
+            mCheckedPosList.remove(postion);
+        notifyDataChanged();
+    }
+
     @Deprecated
     public void setSelectedList(Set<Integer> set) {
         mCheckedPosList.clear();
@@ -76,12 +87,12 @@ public abstract class TagAdapter<T> {
     public abstract View getView(FlowLayout parent, int position, T t);
 
 
-    public void onSelected(int position, View view){
-        Log.d("zhy","onSelected " + position);
+    public void onSelected(int position, View view) {
+        Log.d("zhy", "onSelected " + position);
     }
 
-    public void unSelected(int position, View view){
-        Log.d("zhy","unSelected " + position);
+    public void unSelected(int position, View view) {
+        Log.d("zhy", "unSelected " + position);
     }
 
     public boolean setSelected(int position, T t) {

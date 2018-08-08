@@ -43,12 +43,13 @@ public class CheckKeyWordActivity extends BaseActivity implements BaseCallback {
     @BindView(R.id.btn_next)
     Button btnNext;
     @BindView(R.id.flowlayout_selected)
-    TagFlowLayout flowlayoutSelected;   //助记词输入
+    TagFlowLayout flowlayoutSelected;
     @BindView(R.id.flowlayout_src)
-    TagFlowLayout flowlayoutSrc;  //助记词显示
+    TagFlowLayout flowlayoutSrc;
 
     //测试keywokds
-    private String[] srcKeywords = new String[]{"angry", "teant ", "organ ", "novel ", "angle ", "hat ", "siren ", "matter ", "mechanit ", "tent ", "biology ", "husband"};
+    String[] key_words = new String[] {"angry", "teant ", "organ ", "novel ", "angle ", "hat ", "siren ", "matter ", "mechanit ", "tent ", "biology ", "husband"};
+    private List<String> srcKeywords;
     TagAdapter srcTagAdapter;
 
     //显示选中keywokds
@@ -75,11 +76,12 @@ public class CheckKeyWordActivity extends BaseActivity implements BaseCallback {
         if (TextUtils.isEmpty(passphrase)) {
             return;
         } else {
-            srcKeywords = passphrase.split(" ");
+            key_words = passphrase.split(" ");
         }
 
-        Arrays.sort(srcKeywords);
+        Arrays.sort(key_words);
 
+        srcKeywords = Arrays.asList(key_words);
         selectedKeywords = new ArrayList<>();
         selectedTagAdapter = new TagAdapter<String>(selectedKeywords) {
             @Override
@@ -98,31 +100,33 @@ public class CheckKeyWordActivity extends BaseActivity implements BaseCallback {
                 tv.setText(s);
                 return tv;
             }
+
         };
-        //显示
+
         flowlayoutSrc.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
             @Override
             public boolean onTagClick(View view, int i, FlowLayout flowLayout) {
                 if (((TagView) view).isChecked()) {
-                    selectedKeywords.add(srcKeywords[i]);
+                    selectedKeywords.add(srcKeywords.get(i));
+                    srcTagAdapter.setSelected(i);
                 } else {
-                    selectedKeywords.remove(srcKeywords[i]);
+                    selectedKeywords.remove(srcKeywords.get(i));
+                    srcTagAdapter.setUnSelected(i);
                 }
                 flowlayoutSelected.onChanged();
                 return true;
             }
         });
-        //选中的
+
         flowlayoutSelected.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
             @Override
             public boolean onTagClick(View view, int i, FlowLayout flowLayout) {
-                if (((TagView) view).isChecked()) {
-                    selectedKeywords.remove(i);
-                }
-                String str = selectedKeywords.toString();
-//                flowlayoutSelected.onChanged();
-                selectedTagAdapter.setData(selectedKeywords);
-                selectedTagAdapter.notifyDataChanged();
+                String tag = selectedKeywords.get(i);
+                selectedKeywords.remove(tag);
+                int pos = srcKeywords.indexOf(tag);
+                srcTagAdapter.setUnSelected(pos);
+//                flowlayoutSrc.onChanged();
+                flowlayoutSelected.onChanged();
                 return true;
             }
         });

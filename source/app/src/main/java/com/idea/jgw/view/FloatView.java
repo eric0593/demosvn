@@ -91,7 +91,7 @@ public class FloatView extends RelativeLayout {
             floatview.setTextSize(childSize);
             floatview.setText(String.valueOf(mFloat.get(i).getValue()));
             floatview.setGravity(Gravity.CENTER);
-            int type = mFloat.get(i).getType();
+            String type = mFloat.get(i).getType();
 //            int resid = R.mipmap.icon_oce_small;
 //            if(type == 1) {
 //                resid = R.mipmap.icon_btc_small;
@@ -167,9 +167,9 @@ public class FloatView extends RelativeLayout {
         //设置接口回调
 
 //        remove(view);
-        int type = Integer.parseInt(view.getTag().toString());
+        String type = view.getTag().toString();
         for (FloatViewData viewData : mFloat) {
-            if(viewData.getType() == type) {
+            if(viewData.getType().equals(type)) {
                 mListener.itemClick(viewData);
             }
         }
@@ -180,9 +180,9 @@ public class FloatView extends RelativeLayout {
         animRemoveView(view);
     }
 
-    public void removeAt(int type) {
+    public void removeAt(String type) {
         for(View view:mViews) {
-            if((int)view.getTag() == type) {
+            if(view.getTag().equals(type)) {
                 mViews.remove(view);
                 animRemoveView(view);
                 break;
@@ -227,7 +227,7 @@ public class FloatView extends RelativeLayout {
 
     public static class FloatViewData {
         double value;
-        int type;
+        String type;
         String url;
 
         public double getValue() {
@@ -238,11 +238,11 @@ public class FloatView extends RelativeLayout {
             this.value = value;
         }
 
-        public int getType() {
+        public String getType() {
             return type;
         }
 
-        public void setType(int type) {
+        public void setType(String type) {
             this.type = type;
         }
 

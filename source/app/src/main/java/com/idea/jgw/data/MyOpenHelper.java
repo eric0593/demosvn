@@ -329,8 +329,13 @@ public class MyOpenHelper extends SQLiteOpenHelper implements IOpenHelper {
      */
     @Override
     public void clear(String tableName) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.delete(tableName.replaceAll("\\.","_"), null, null);
+
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            db.delete(tableName.replaceAll("\\.", "_"), null, null);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**

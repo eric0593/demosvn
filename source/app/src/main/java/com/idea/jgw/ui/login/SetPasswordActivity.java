@@ -121,7 +121,7 @@ public class SetPasswordActivity extends BaseActivity {
 
                     register(registerRequest);
                 } else {
-                    MToast.showToast(R.string.hint_of_input_pwd);
+                    MToast.showToast(R.string.hint_of_set_pwd);
                 }
                 break;
         }
@@ -140,8 +140,7 @@ public class SetPasswordActivity extends BaseActivity {
         registerRequest.setInvite_num(inviteCode);
         registerRequest.setIp(CommonUtils.getIp(this));
         registerRequest.setPasswd(pwd);
-        if (!TextUtils.isEmpty(imei))
-            registerRequest.setDevice_id(imei);
+        registerRequest.setDevice_id(imei);
         return registerRequest;
     }
 

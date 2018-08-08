@@ -191,7 +191,7 @@ public class LoginActivity extends BaseActivity {
                             .withString(EXTRA_USER,phone)
                             .navigation();
                 } else {
-                    ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
+                    ARouter.getInstance().build(RouterPath.CHECK_TRANSACTION_PIN_ACTIVITY).navigation();
                     finish();
                 }
                 finish();

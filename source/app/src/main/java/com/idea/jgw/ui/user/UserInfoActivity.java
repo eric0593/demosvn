@@ -314,6 +314,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
                         file.delete();
                     }
                 } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                    MToast.showToast(baseResponse.getData().toString());
                     reLogin();
                 }
             }

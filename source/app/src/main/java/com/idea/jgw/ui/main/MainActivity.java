@@ -30,11 +30,13 @@ import com.idea.jgw.logic.eth.utils.WalletStorage;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.ui.createWallet.SetTransactionPinActivity;
 import com.idea.jgw.ui.createWallet.WalletCreateSuccessActivity;
+import com.idea.jgw.ui.login.StartActivity;
 import com.idea.jgw.ui.main.fragment.DiscoverFragment;
 import com.idea.jgw.ui.main.fragment.MineFragment;
 import com.idea.jgw.ui.main.fragment.WalletFragment;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
+import com.idea.jgw.ui.service.ScreenListenerService;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.MyLog;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
@@ -93,6 +95,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startService(new Intent(this, ScreenListenerService.class));
 //        cretaeEthWallet();
 
     }
@@ -137,6 +140,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopService(new Intent(this, ScreenListenerService.class));
         MyLog.e("main onDestroy");
     }
 
