@@ -60,7 +60,7 @@ public class DigitalCurrencysAdapter extends BaseRecyclerAdapter<CoinData> {
                 v.tvOfDigitalName.setText("JGW");
                 break;
             case OCE:
-                v.ivOfDigitalCurrency.setImageResource(R.mipmap.icon_oce);
+                v.ivOfDigitalCurrency.setImageResource(R.mipmap.oce);
                 v.tvOfDigitalName.setText("OCE");
                 break;
         }

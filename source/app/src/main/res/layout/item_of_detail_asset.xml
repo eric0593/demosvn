@@ -7,11 +7,10 @@
 
     <ImageView
         android:id="@+id/iv_of_digital_currency"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_centerVertical="true"
         android:src="@mipmap/icon_btc"/>
-
     <TextView
         android:id="@+id/tv_of_digital_name"
         android:layout_width="wrap_content"

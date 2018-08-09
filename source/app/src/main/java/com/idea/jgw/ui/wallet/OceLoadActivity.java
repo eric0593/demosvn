@@ -60,6 +60,7 @@ public class OceLoadActivity extends BaseActivity {
 
                 SPreferencesHelper.getInstance(OceLoadActivity.this).saveData(OCE_PRIVATE_KEY, privateKey);
                 SPreferencesHelper.getInstance(OceLoadActivity.this).saveData(OCE_ADDRESS, address);
+                if(!TextUtils.isEmpty(publicKey))
                 SPreferencesHelper.getInstance(OceLoadActivity.this).saveData(OCE_PUBLIC_KEY, publicKey);
 
                 MToast.showLongToast("导入成功");
