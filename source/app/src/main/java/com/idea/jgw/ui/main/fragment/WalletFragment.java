@@ -28,6 +28,7 @@ import com.idea.jgw.logic.btc.interfaces.TLCallback;
 import com.idea.jgw.logic.btc.model.TLCoin;
 import com.idea.jgw.logic.eth.EthWalltUtils;
 import com.idea.jgw.logic.jgw.JgwUtils;
+import com.idea.jgw.service.MessageEvent;
 import com.idea.jgw.ui.main.MainActivity;
 import com.idea.jgw.ui.BaseRecyclerAdapter;
 import com.idea.jgw.ui.main.adapter.DigitalCurrencysAdapter;
@@ -37,6 +38,10 @@ import com.idea.jgw.ui.wallet.OceBalanceActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.MyLog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -89,6 +94,8 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        EventBus.getDefault().register(this);
+
 
         getEthOfCnyPrice();
 
@@ -130,6 +137,17 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
 
     /**
      * 初始化数据
@@ -379,6 +397,14 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
                         }
                     });
         } else {
+            getOceBalance(address);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void sendCoinState(MessageEvent messageEvent) {
+        if (messageEvent.getCoinType() == Common.CoinTypeEnum.OCE && messageEvent.getState() == MessageEvent.STAE_SUCCES) {
+            String address = (String) SPreferencesHelper.getInstance(getActivity()).getData(OCE_ADDRESS, "");
             getOceBalance(address);
         }
     }

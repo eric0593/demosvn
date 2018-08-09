@@ -72,8 +72,10 @@ public class OceBalanceActivity extends BalanceActivity {
     public void sendCoinState(MessageEvent messageEvent) {
         if (isDestroyed() || isFinishing()) return;
         if (messageEvent.getCoinType() == Common.CoinTypeEnum.OCE && messageEvent.getState() == MessageEvent.STAE_SUCCES) {
-            if(!isFinishing())
-            getTX(address);
+            if (!isFinishing()) {
+                getTX(address);
+                getBalance(address);
+            }
         }
     }
 
@@ -86,7 +88,7 @@ public class OceBalanceActivity extends BalanceActivity {
         balance = getIntent().getStringExtra(OceBalanceActivity.EXTRA_AMOUNT);
         usable = getIntent().getStringExtra(OceBalanceActivity.EXTRA_USABLE);
         address = (String) SPreferencesHelper.getInstance(this).getData(OCE_ADDRESS, "");
-        String privateKey =(String)SPreferencesHelper.getInstance(this).getData(OCE_PRIVATE_KEY,"");
+        String privateKey = (String) SPreferencesHelper.getInstance(this).getData(OCE_PRIVATE_KEY, "");
 
         if (TextUtils.isEmpty(balance)) {
             getBalance(address);
@@ -112,6 +114,7 @@ public class OceBalanceActivity extends BalanceActivity {
         }
 
         getTX(address);
+        getBalance(address);
     }
 
 
@@ -122,12 +125,14 @@ public class OceBalanceActivity extends BalanceActivity {
                 .subscribe(new RxSubscriber<BaseResponse>(OceBalanceActivity.this) {
                     @Override
                     protected void _onNext(BaseResponse response) {
+                        wallets.clear();
                         com.alibaba.fastjson.JSONArray arr = (com.alibaba.fastjson.JSONArray) response.getInfo();
                         TransactionDisplay td;
                         int len = arr.size();
                         for (int i = 0; i < len; i++) {
                             td = new TransactionDisplay();
-                            JSONObject obj =arr.getJSONObject(i);
+                            JSONObject obj = arr.getJSONObject(i);
+                            String a = String.valueOf(obj.getIntValue("number"));
                             td.setToAddress(obj.getString("to_address"));
                             td.setFromAddress(obj.getString("from_address"));
                             td.setAmount(new BigInteger(String.valueOf(obj.getIntValue("number"))));
@@ -140,6 +145,7 @@ public class OceBalanceActivity extends BalanceActivity {
                             td.setBrokerage(obj.getString("brokerage"));
                             wallets.add(td);
                         }
+
                         transferRecordListAdapter.replaceData(wallets);
                     }
 
@@ -150,7 +156,13 @@ public class OceBalanceActivity extends BalanceActivity {
                 });
     }
 
+
     private void getBalance(String address) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         OceServiceApi.getInstance(OceApi.URL).getApiService().getinfo(address)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -188,7 +200,7 @@ public class OceBalanceActivity extends BalanceActivity {
     @Override
     public void onReceivedCoin() {
         ARouter.getInstance().build(RouterPath.RECEIVED_OCE_ACTIVITY)
-                .withString(WalletAddressActivity.EXTRA_ADDRESS,address)
+                .withString(WalletAddressActivity.EXTRA_ADDRESS, address)
                 .navigation(OceBalanceActivity.this, EthReceivedActivity.REQ_CODE);
     }
 

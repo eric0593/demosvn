@@ -89,7 +89,11 @@ public class MyOpenHelper extends SQLiteOpenHelper implements IOpenHelper {
         }
 
         //对于一般的数据操作，我们采用通常是insert来插入数据，但是为了防止同一个对象的数据进行刷新，所以采用直接替换掉
-        db.replace(table.getName().replaceAll("\\.", "_"), null, contentValues);
+       try{
+           db.replace(table.getName().replaceAll("\\.", "_"), null, contentValues);
+       }catch (Exception e){
+
+       }
     }
 
     /**
