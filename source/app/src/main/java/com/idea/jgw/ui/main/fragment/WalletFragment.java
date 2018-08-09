@@ -143,10 +143,18 @@ public class WalletFragment extends Fragment implements BaseRecyclerAdapter.OnIt
         EventBus.getDefault().unregister(this);
     }
 
+    static  String oceAddress ="";
     @Override
     public void onResume() {
         super.onResume();
 
+
+        // 这里只是demo，所以没考虑什么性能之类的。
+        String address = (String) SPreferencesHelper.getInstance(getActivity()).getData(OCE_ADDRESS, "");;
+        if( !(TextUtils.isEmpty(oceAddress) && oceAddress.equals(address))){
+            oceAddress = address;
+            getOceBalance(address);
+        }
     }
 
     /**

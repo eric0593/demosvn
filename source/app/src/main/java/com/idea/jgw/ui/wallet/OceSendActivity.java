@@ -172,6 +172,8 @@ public class OceSendActivity extends SendActivity {
                 String formAddress =(String) SPreferencesHelper.getInstance(this).getData(OCE_ADDRESS,"");
                 String toAddress = etReceivedAddress.getText().toString();
 
+                MToast.showLongToast("正在转账...");
+
                 OceServiceApi.getInstance(OceApi.URL).getApiService()
                         .tran(Integer.valueOf(sendAmount),formAddress,"转账",toAddress)
                         .subscribeOn(Schedulers.io())
