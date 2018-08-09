@@ -20,6 +20,7 @@ import com.idea.jgw.logic.eth.data.TransactionDisplay;
 import com.idea.jgw.logic.eth.utils.AddressNameConverter;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
+import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.MyLog;
 
 import java.math.BigDecimal;
@@ -166,9 +167,11 @@ public class TransactionDetailActivity extends BaseActivity {
                 break;
             case R.id.tv_copy_send_address:
                 copyText(tvSendAddress);
+                MToast.showLongToast(R.string.copy_success);
                 break;
             case R.id.tv_copy_received_address:
                 copyText(tvReceivedAddress);
+                MToast.showLongToast(R.string.copy_success);
                 break;
         }
     }
@@ -179,5 +182,8 @@ public class TransactionDetailActivity extends BaseActivity {
         }
         ClipData clipData = ClipData.newPlainText("address", textView.getText().toString().trim());
         mClipboardManager.setPrimaryClip(clipData);
+
+
+
     }
 }

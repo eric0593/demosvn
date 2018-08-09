@@ -48,10 +48,10 @@ public class OceLoadActivity extends BaseActivity {
                     return;
                 }
 
-                if(TextUtils.isEmpty(publicKey)){
-                    MToast.showLongToast("公钥不能为空");
-                    return;
-                }
+//                if(TextUtils.isEmpty(publicKey)){
+//                    MToast.showLongToast("公钥不能为空");
+//                    return;
+//                }
 
                 if(TextUtils.isEmpty(privateKey)){
                     MToast.showLongToast("私钥不能为空");

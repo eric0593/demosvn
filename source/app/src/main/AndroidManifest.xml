@@ -250,6 +250,10 @@
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="portrait"></activity>
 
+
+        <activity android:name="com.idea.jgw.ui.wallet.OceLoadActivity">
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="portrait"></activity>
         <service
             android:name=".ui.service.ScreenListenerService"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"

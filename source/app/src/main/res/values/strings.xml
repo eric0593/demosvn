@@ -195,6 +195,8 @@
     <string name="send_eth_result_fail">发送以太币失败</string>
     <!-- 姨太钱包 End-->
 
+    <string name="copy_success">复制成功</string>
+
     <!--  BTC Start -->
     <string name="back_up_wallet">Back up wallet</string>
     <string name="write_down_backup_passphrase_suggestion">Write down or memorize your 12 word wallet backup passphrase which can be found in settings. Your wallet backup passphrase is needed to recover your bitcoins.</string>
