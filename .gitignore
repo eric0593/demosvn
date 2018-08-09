@@ -24,3 +24,4 @@ source/okhttp-lib/build/
 source/flowlayout-lib/
 source/build/intermediates/dex-cache/cache.xml
 source/build/android-profile/
+source/okhttp-lib/okhttp-lib.iml

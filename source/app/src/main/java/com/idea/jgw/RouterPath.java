@@ -37,6 +37,9 @@ public class RouterPath {
     public static final String SHOW_ACTIVITY = "/activity/show";
     public static final String GESTURE_PASSWORD_ACTIVITY = "/activity/gesturePassword";
 
+    public static final String LOAD_OCE = "/activity/loadOce";
+
+
 
     public static final String BALANCE_ETH_ACTIITY = "/activity/balance/eth";
     public static final String BALANCE_BTC_ACTIITY = "/activity/balance/btc";

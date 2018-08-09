@@ -23,7 +23,7 @@ import butterknife.OnClick;
  * 帮助中心
  */
 @Route(path = RouterPath.HELP_ACTIVITY)
-public class HelpActivity extends BaseActivity implements BaseCallback{
+public class HelpActivity extends BaseActivity implements BaseCallback {
 
     private static final int CUSTOMER_SERVICE = 11;
     @BindView(R.id.btn_of_back)
@@ -36,7 +36,7 @@ public class HelpActivity extends BaseActivity implements BaseCallback{
     LinearLayout llHowToLoad;
 
     @Override
-    protected void onCreate (Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
@@ -50,11 +50,14 @@ public class HelpActivity extends BaseActivity implements BaseCallback{
         tvOfTitle.setText(R.string.help);
     }
 
-    @OnClick({R.id.btn_of_back, R.id.tv_of_right, R.id.ll_how_to_load})
+    @OnClick({R.id.btn_of_back, R.id.tv_of_right, R.id.ll_how_to_load, R.id.ll_how_to_load_oce})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_of_back:
                 finish();
+                break;
+            case R.id.ll_how_to_load_oce:
+                ARouter.getInstance().build(RouterPath.LOAD_OCE).navigation();
                 break;
             case R.id.tv_of_right:
                 showCustomerServiceDialog();
@@ -77,8 +80,8 @@ public class HelpActivity extends BaseActivity implements BaseCallback{
             int resultCode = Integer.parseInt(parameters[1].toString().trim());
             if (requestCode == CUSTOMER_SERVICE) {
                 if (resultCode == ChooseDialog.SELECTED_OK) {
-                    String jaw_service="4000888888";
-                    Intent dialIntent =  new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" +jaw_service));//跳转到拨号界面，同时传递电话号码
+                    String jaw_service = "4000888888";
+                    Intent dialIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + jaw_service));//跳转到拨号界面，同时传递电话号码
                     startActivity(dialIntent);
                 }
             }

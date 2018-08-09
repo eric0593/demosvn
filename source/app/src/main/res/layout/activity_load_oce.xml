@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@mipmap/bg_of_title"
+        android:paddingTop="16dp">
+
+        <Button
+            android:id="@+id/btn_of_back"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:drawableLeft="@mipmap/ic_of_back"
+            android:paddingLeft="16dp" />
+
+        <TextView
+            android:id="@+id/tv_of_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@null"
+            android:textColor="#ffffff"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_of_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:paddingRight="16dp"
+            android:text="@string/customer_service"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_how_to_load"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:gravity="top"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+
+        <EditText
+            android:id="@+id/et_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="地址" />
+
+        <EditText
+            android:id="@+id/et_privateKey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="私钥" />
+
+        <EditText
+            android:id="@+id/et_publicKey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="公钥" />
+
+        <Button
+            android:id="@+id/btn_load"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="导入" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
