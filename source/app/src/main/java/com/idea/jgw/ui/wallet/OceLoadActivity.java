@@ -53,11 +53,13 @@ public class OceLoadActivity extends BaseActivity {
 //                    return;
 //                }
 
-                if(TextUtils.isEmpty(privateKey)){
-                    MToast.showLongToast("私钥不能为空");
-                    return;
-                }
+//                if(TextUtils.isEmpty(privateKey)){
+//                    MToast.showLongToast("私钥不能为空");
+//                    return;
+//                }
 
+
+                if(!TextUtils.isEmpty(privateKey))
                 SPreferencesHelper.getInstance(OceLoadActivity.this).saveData(OCE_PRIVATE_KEY, privateKey);
                 SPreferencesHelper.getInstance(OceLoadActivity.this).saveData(OCE_ADDRESS, address);
                 if(!TextUtils.isEmpty(publicKey))

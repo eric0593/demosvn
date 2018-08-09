@@ -118,7 +118,7 @@ public class TransactionDetailActivity extends BaseActivity {
         tvChainNumber.setText(getResources().getString(R.string.chain_number) + ":" + td.getBlock());
         tvSendTime.setText(sdf.format(new Date(td.getDate())));
         BigDecimal gas = new BigDecimal(td.getGasUsed() * td.getGasprice()).divide(bd);
-        tvCommission.setText(getResources().getString(R.string.commission) + ":" + df.format(gas.doubleValue()));
+        tvCommission.setText(getResources().getString(R.string.commission) + ":"+td.getBrokerage());
         BigDecimal amount = new BigDecimal(td.getAmountNative()).divide(bd);
 
         // amount > 0 表示接收，< 0表示发送

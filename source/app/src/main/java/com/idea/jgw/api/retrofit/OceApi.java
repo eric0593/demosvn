@@ -61,13 +61,13 @@ public interface OceApi {
     Observable<BaseResponse> transign(@Field("data") String data, @Field("sign") String sign);
 
 //    tran
+
     /**
      * 钱包转账
      */
     @FormUrlEncoded
     @POST("tran")
-    Observable<BaseResponse> tran(@Field("amount") int amount, @Field("privatekey") String privatekey, @Field("to_address") String to_address	);
-
+    Observable<BaseResponse> tran(@Field("amount") int amount, @Field("from_address") String fromAddres, @Field("goods") String goods, @Field("to_address") String to_address);
 
 
 }

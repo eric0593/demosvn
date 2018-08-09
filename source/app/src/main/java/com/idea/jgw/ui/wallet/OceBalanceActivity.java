@@ -83,8 +83,6 @@ public class OceBalanceActivity extends BalanceActivity {
 
         tvOfTitle.setText(R.string.jgw);
         ivOfLogo.setImageResource(R.mipmap.oce);
-
-
         balance = getIntent().getStringExtra(OceBalanceActivity.EXTRA_AMOUNT);
         usable = getIntent().getStringExtra(OceBalanceActivity.EXTRA_USABLE);
         address = (String) SPreferencesHelper.getInstance(this).getData(OCE_ADDRESS, "");
@@ -139,6 +137,7 @@ public class OceBalanceActivity extends BalanceActivity {
                             td.setAddress(address);
                             td.setBlock(obj.getLong("block"));
                             td.setCoinType(Common.CoinTypeEnum.OCE);
+                            td.setBrokerage(obj.getString("brokerage"));
                             wallets.add(td);
                         }
                         transferRecordListAdapter.replaceData(wallets);

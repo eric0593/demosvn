@@ -61,11 +61,13 @@
 
         <EditText
             android:id="@+id/et_privateKey"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="私钥" />
+            android:hint="私钥（b）" />
 
         <EditText
+            android:visibility="gone"
             android:id="@+id/et_publicKey"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -169,10 +169,11 @@ public class OceSendActivity extends SendActivity {
 
                 String sendAmount = etSendAmount.getText().toString();
                 String privateKey =(String) SPreferencesHelper.getInstance(this).getData(OCE_PRIVATE_KEY,"");
-                String address = etReceivedAddress.getText().toString();
+                String formAddress =(String) SPreferencesHelper.getInstance(this).getData(OCE_ADDRESS,"");
+                String toAddress = etReceivedAddress.getText().toString();
 
                 OceServiceApi.getInstance(OceApi.URL).getApiService()
-                        .tran(Integer.valueOf(sendAmount),privateKey,address)
+                        .tran(Integer.valueOf(sendAmount),formAddress,"转账",toAddress)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new RxSubscriber<BaseResponse>(OceSendActivity.this) {
@@ -186,6 +187,8 @@ public class OceSendActivity extends SendActivity {
                                     EventBus.getDefault().post(m);
 
                                     OceSendActivity.this.finish();
+                                }else{
+                                    MToast.showLongToast("发送失败");
                                 }
 
                             }

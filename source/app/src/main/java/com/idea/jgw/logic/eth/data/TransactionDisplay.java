@@ -26,6 +26,7 @@ public class TransactionDisplay implements Comparable ,Serializable{
     private boolean error;
     private Common.CoinTypeEnum coinType;
     private String address;//当前地址
+    private String brokerage;//手续费
 
     public TransactionDisplay(String fromAddress, String toAddress, BigInteger amount, int confirmationStatus, long date, String walletName, byte type, String txHash, String nounce, long block, int gasUsed, long gasprice, boolean error) {
         this.fromAddress = fromAddress;
@@ -52,6 +53,14 @@ public class TransactionDisplay implements Comparable ,Serializable{
 
     public TransactionDisplay(){
 
+    }
+
+    public String getBrokerage() {
+        return brokerage;
+    }
+
+    public void setBrokerage(String brokerage) {
+        this.brokerage = brokerage;
     }
 
     public String getAddress() {
