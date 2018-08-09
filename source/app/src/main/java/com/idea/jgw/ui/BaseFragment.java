@@ -32,7 +32,6 @@ public class BaseFragment extends Fragment implements ListenerWrapper.Permission
         App.finishAllActivity();
         getActivity().finish();
     }
-
     public void checkPhoneStatePermission() {
         requestPermission(REQUEST_PHONE_CODE, Manifest.permission.READ_PHONE_STATE);
     }
