@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.idea.jgw.ui.login.RegisterActivity">
+    android:background="@mipmap/bg_start">
 
     <include
         android:id="@+id/rl_of_title"
@@ -156,7 +156,7 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:textSize="12sp"
-        android:textColor="#193fc3"
+        android:textColor="#20b8ff"
         android:text="@string/login"/>
 
     <LinearLayout
@@ -185,7 +185,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:textSize="12sp"
-            android:textColor="#193fc3"
+            android:textColor="@color/white"
             android:text="@string/agree_agreement"/>
 
         <Space
@@ -200,7 +200,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:textSize="12sp"
-            android:textColor="#193fc3"
+            android:textColor="@color/white"
             android:text="@string/customer_service"/>
 
     </LinearLayout>
