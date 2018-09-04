@@ -109,7 +109,7 @@ public class MineFragment extends BaseFragment {
         return view;
     }
 
-    @OnClick({R.id.ll_security_manager, R.id.ll_load_wallet, R.id.ll_share, R.id.ll_help, R.id.ll_about_us,  R.id.ll_feedback, R.id.iv_photo})
+    @OnClick({R.id.ll_security_manager, R.id.ll_load_wallet, R.id.ll_share, R.id.ll_help, R.id.ll_about_us,  R.id.ll_feedback, R.id.iv_photo, R.id.ll_crowd})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_security_manager:
@@ -129,6 +129,9 @@ public class MineFragment extends BaseFragment {
                 break;
             case R.id.ll_feedback:
                 ARouter.getInstance().build(RouterPath.FEEDBACK_ACTIVITY2).navigation();
+                break;
+            case R.id.ll_crowd:
+                ARouter.getInstance().build(RouterPath.CROWD_ACTIVITY).navigation();
                 break;
             case R.id.iv_photo:
                 ARouter.getInstance().build(RouterPath.USER_INFO_ACTIVITY).withParcelable("userInfo", userInfo).navigation(getActivity(), UPDATE_INFO_REQUEST);

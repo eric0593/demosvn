@@ -23,6 +23,7 @@ public class OceLoadActivity extends BaseActivity {
     EditText etPrivateKey;
     EditText etPublicKey;
     Button btnLoad;
+    String maijia = "phenix3LvG3Ka7JQHQzXJhvcEdkCjnY5gurcNX5P";
 
     @Override
     public int getLayoutId() {
@@ -35,6 +36,7 @@ public class OceLoadActivity extends BaseActivity {
         etPrivateKey = findViewById(R.id.et_privateKey);
         etPublicKey = findViewById(R.id.et_publicKey);
         btnLoad = findViewById(R.id.btn_load);
+        etAddrss.setText(maijia);
 
         btnLoad.setOnClickListener(new View.OnClickListener() {
             @Override

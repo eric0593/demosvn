@@ -36,6 +36,8 @@ public class RouterPath {
     public static final String USER_INFO_ACTIVITY = "/activity/userInfo";
     public static final String SHOW_ACTIVITY = "/activity/show";
     public static final String GESTURE_PASSWORD_ACTIVITY = "/activity/gesturePassword";
+    public static final String VERIFY_PHONE_ACTIVITY = "/activity/verifyPhone";
+    public static final String RECOVER_WALLET_WARNING_ACTIVITY = "/activity/recoverWalletWarning";
 
     public static final String LOAD_OCE = "/activity/loadOce";
 
@@ -58,4 +60,7 @@ public class RouterPath {
     public static final String NIKENAME_ACTIVITY2 = "/activity/updateNickname";
     public static final String HASHRATE_RECORD_ACTIVITY2 = "/activity/hashrateRecord";
     public static final String FEEDBACK_ACTIVITY2 = "/activity/feedback";
+    public static final String CROWD_ACTIVITY = "/activity/crowd";
+    public static final String CROWD_INFO_ACTIVITY = "/activity/crowdInfo";
+    public static final String ENSURE_CROWD_ACTIVITY = "/activity/ensureCrowd";
 }

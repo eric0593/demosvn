@@ -11,6 +11,8 @@
     <string name="login_pwd_description">登录密码在每次登录甲骨文钱包时使用</string>
     <string name="reset_now">立即重置</string>
     <string name="ok">确认</string>
+    <string name="cancel">取消</string>
+    <string name="verify_verification_code">校验验证码</string>
 
     <string name="jaw_service">甲骨文客服电话</string>
     <string name="jaw_service_tel">400 088 8888</string>
@@ -33,6 +35,7 @@
     <string name="forbid_screen_description">截图会给别人获取助记词的机会，请抄写助记词，存放到安全的地方！</string>
     <string name="remove_key_word_description">助记词验证正确，为防止他人窃取助记词，请从甲骨文钱包里删除助记词！</string>
     <string name="copy_key_word">请抄写助记词</string>
+    <string name="input_key_word">输入助记词</string>
     <string name="check_key_word">确认助记词</string>
     <string name="remove_key_word">移除助记词</string>
     <string name="forbid_screen_shot">请勿截图</string>
@@ -40,10 +43,12 @@
     <string name="check_key_word_description">请根据抄写的助记词，按照顺序点击</string>
 
     <string name="set_transaction_pin">设置资产密码</string>
+    <string name="reset_transaction_pin">重置资产密码</string>
     <string name="set_transaction_pin_notice">资产密码在资产变动时使用，是您资产安全的重要保障。甲骨文服务器不存储资产密码，只存储在甲骨文手机加密芯片里，设置完成后不能修改，只能通过导入钱包重新设置！</string>
     <string name="key_word_notice">助记词泄露就等于泄露钱包全部资产，且助记词是恢复钱包的唯一方式，请务必备份！</string>
     <string name="ensure_transaction_pin">确认资产密码</string>
     <string name="ensure_transaction_pin_notice">确认资产密码提醒。。。</string>
+    <string name="recover_wallet_warning">资产密码保存在本地，只能通过导入钱包重设，请重新导入钱包，重新设置资产密码。甲骨文钱包只支持一个钱包，导入新钱包后原钱包将被替代</string>
 
     <string name="wallet">钱包</string>
     <string name="discovery">挖矿</string>
@@ -259,6 +264,14 @@
     <string name="feedback">意见反馈</string>
     <string name="personal_info">个人信息</string>
     <string name="recover_faild">恢复钱包失败</string>
+
+    <string name="crowd">众筹上链</string>
+    <string name="recommend">综合推荐</string>
+    <string name="last">即将结束</string>
+    <string name="high_popularity">人气最旺</string>
+    <string name="iot_crowd">IOT投票众筹上链平台</string>
+    <string name="my_order">我的订单</string>
+    <string name="support">去支持</string>
 
     <string name="quit_notice">连续两次返回退出！</string>
     <string name="current_is_new">已是最新版本！</string>

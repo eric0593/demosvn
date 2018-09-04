@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.idea.jgw.ui.createWallet.CheckTransactionPinActivity.LOAD_WALLET;
 import static com.idea.jgw.ui.main.MainActivity.ACCESS_NETWORK_STATE_CODE;
 import static com.idea.jgw.ui.main.MainActivity.CAMERA_CODE;
 import static com.idea.jgw.ui.main.MainActivity.CHANGE_NETWORK_STATE_CODE;
@@ -64,6 +65,7 @@ public class InputKeyWordActivity extends BaseActivity {
     EditText etInputKeyWords;
     @BindView(R.id.btn_load)
     Button btnLoad;
+//    private boolean loadWallet;
 
 //    TLAppDelegate appDelegate;
 
@@ -71,6 +73,9 @@ public class InputKeyWordActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        appDelegate = TLAppDelegate.instance(App.getInstance());
+//        if(getIntent().hasExtra(LOAD_WALLET)) {
+//            loadWallet = getIntent().getBooleanExtra(LOAD_WALLET, false);
+//        }
     }
 
     @Override
@@ -80,7 +85,12 @@ public class InputKeyWordActivity extends BaseActivity {
 
     @Override
     public void initView() {
-        tvOfTitle.setText(R.string.create_wallet);
+//        if(loadWallet) {
+//            tvOfTitle.setText(R.string.create_wallet);
+//        } else {
+//            tvOfTitle.setText(R.string.create_wallet);
+//        }
+        tvOfTitle.setText(R.string.input_key_word);
     }
 
     @OnClick({R.id.btn_of_back, R.id.btn_load})

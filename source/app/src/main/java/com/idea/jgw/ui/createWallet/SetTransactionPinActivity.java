@@ -80,7 +80,11 @@ public class SetTransactionPinActivity extends TransactionPinActivity {
 
     @Override
     public void initView() {
-        tvOfTitle.setText(R.string.create_wallet);
+        if(TextUtils.isEmpty(passphrase)) {
+            tvOfTitle.setText(R.string.create_wallet);
+        } else {
+            tvOfTitle.setText(R.string.load_wallet);
+        }
     }
 
     @OnClick(R.id.btn_of_back)

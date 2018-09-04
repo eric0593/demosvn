@@ -54,6 +54,10 @@ public class App extends Application {
         //bug收集
 //        CrashReport.initCrashReport(this, "5c69a04d04", debug);
 
+        //初始化自定义全局异常捕捉器
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(getApplicationContext());
+
         BtcWalltUtils.init();
 
         if (debug) {           // 这两行必须写在init之前，否则这些配置在init过程中将无效

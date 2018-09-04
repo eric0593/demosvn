@@ -71,7 +71,7 @@ public class JgwTransferRecordListAdapter extends BaseRecyclerAdapter {
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-    BigDecimal bd =  new BigDecimal(10).pow(18);
+    BigDecimal bd = new BigDecimal(10).pow(18);
     DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
 
 
@@ -91,24 +91,24 @@ public class JgwTransferRecordListAdapter extends BaseRecyclerAdapter {
             v.ivOfTransferState.setImageResource(R.mipmap.send_success);
         }
 
-      if(box.getCoinType() == Common.CoinTypeEnum.OCE){
+        if (box.getCoinType() == Common.CoinTypeEnum.OCE) {
 
-         if(box.getFromAddress().equals(box.getAddress())){
-                v.tvOfTransferValue.setText(box.getAmount2()+"");
+            if (box.getFromAddress().toUpperCase().equals(box.getAddress().toUpperCase())) {
+                v.tvOfTransferValue.setText("-" + box.getAmount2());
+                v.ivOfDigitalCurrency.setImageResource(R.mipmap.banlance_send);
+            } else {
+                v.tvOfTransferValue.setText("+" + box.getAmount2());
                 v.ivOfDigitalCurrency.setImageResource(R.mipmap.banlance_receive);
-            }else{
-                v.tvOfTransferValue.setText("-"+box.getAmount2());
-                v.ivOfDigitalCurrency.setImageResource( R.mipmap.banlance_send);
             }
-      }else{
-          v.ivOfDigitalCurrency.setImageResource(box.getAmount() > 0 ? R.mipmap.banlance_receive : R.mipmap.banlance_send);
-          BigDecimal amount = new BigDecimal(box.getAmountNative()).divide(bd);
-          if(amount.doubleValue() > 0){
-              v.tvOfTransferValue.setText( "+"+df.format(amount.doubleValue()));
-          }else{
-              v.tvOfTransferValue.setText(df.format(amount.doubleValue()));
-          }
-      }
+        } else {
+            v.ivOfDigitalCurrency.setImageResource(box.getAmount() > 0 ? R.mipmap.banlance_receive : R.mipmap.banlance_send);
+            BigDecimal amount = new BigDecimal(box.getAmountNative()).divide(bd);
+            if (amount.doubleValue() > 0) {
+                v.tvOfTransferValue.setText("+" + df.format(amount.doubleValue()));
+            } else {
+                v.tvOfTransferValue.setText(df.format(amount.doubleValue()));
+            }
+        }
     }
 
     class DigitalCurrencyListHolder extends RecyclerView.ViewHolder {

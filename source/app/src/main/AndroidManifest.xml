@@ -198,10 +198,6 @@
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.wallet.SendActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.wallet.WalletAddressActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="portrait" />
@@ -251,80 +247,31 @@
             android:screenOrientation="portrait"></activity>
 
 
-        <activity android:name="com.idea.jgw.ui.wallet.OceLoadActivity">
+        <activity android:name="com.idea.jgw.ui.wallet.OceLoadActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
+
+        <activity android:name="com.idea.jgw.ui.createWallet.RecoverWalletWarningActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name="com.idea.jgw.ui.wallet.VerifyPhoneActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name="com.idea.jgw.ui.user.CrowdActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name="com.idea.jgw.ui.user.CrowdInfoActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name="com.idea.jgw.ui.user.EnsureCrowdCrowdActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="portrait"/>
         <service
             android:name=".ui.service.ScreenListenerService"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.wallet.BtcBalanceActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.wallet.BtcReceivedActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.wallet.BtcSendActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.wallet.EthBalanceActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.wallet.EthReceivedActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.wallet.EthSendActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.wallet.JgwBalanceActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.wallet.JgwReceivedActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.wallet.JgwSendActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.wallet.TransactionDetailActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.wallet.SendActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.wallet.WalletAddressActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.wallet.QrSanActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.mining.HashrateRecordListActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.user.FeedbackActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.user.VersionDiaryActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.user.UpdateNicknameActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="portrait" />
 

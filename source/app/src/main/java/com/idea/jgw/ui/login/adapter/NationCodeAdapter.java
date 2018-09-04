@@ -36,6 +36,12 @@ public class NationCodeAdapter extends BaseAdapter<String, RecyclerView.ViewHold
         }
         ((DigitalCurrencyListHolder) viewHolder).tvOfNationName.setText(nationName);
         ((DigitalCurrencyListHolder) viewHolder).tvOfNationCode.setText(nationCode);
+        ((DigitalCurrencyListHolder) viewHolder).tvOfNationCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     class DigitalCurrencyListHolder extends Holder {
@@ -49,5 +55,9 @@ public class NationCodeAdapter extends BaseAdapter<String, RecyclerView.ViewHold
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public interface OnItemClickListener2 extends View.OnClickListener {
+        void onItemClick(int position, T data);
     }
 }

@@ -7,14 +7,14 @@
 
     <include
         android:id="@+id/rl_of_title"
-        layout="@layout/layout_of_normal_title" />
+        layout="@layout/layout_of_transparent_bgl_title" />
 
     <LinearLayout
         android:id="@+id/ll_of_nation_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="105dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:paddingRight="8dp"
@@ -209,6 +209,8 @@
         android:id="@+id/btn_of_next"
         android:layout_width="match_parent"
         android:layout_height="41dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_below="@id/ll_of_agreement"
         android:layout_marginTop="16dp"
         android:text="@string/next"

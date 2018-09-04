@@ -62,7 +62,7 @@ public class CheckTransactionPinActivity extends TransactionPinActivity {
     public void inputFinished(String inputPsd) {
         if(SharedPreferenceManager.getInstance().getPaymentPwd().equals(inputPsd)) {
             if(loadWallet) {
-                ARouter.getInstance().build(RouterPath.INPUT_KEY_WORDS_ACTIVITY).navigation();
+                ARouter.getInstance().build(RouterPath.INPUT_KEY_WORDS_ACTIVITY).withBoolean(LOAD_WALLET, loadWallet).navigation();
             } else {
                 ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY).navigation();
             }

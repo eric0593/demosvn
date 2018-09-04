@@ -145,15 +145,17 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
 
                                        List<FloatView.FloatViewData> list = new ArrayList<>();
                                        for(CoinMining coinMining : coinMinings) {
-                                           FloatView.FloatViewData data = new FloatView.FloatViewData();
-                                           if(App.testIP) {
-                                               data.setType(coinMining.getCoin_info().getCharX());
-                                           } else {
-                                               data.setType(coinMining.getCoin_info().getId()+ "");
+                                           if(coinMining.getReceive_profit() > 0) {
+                                               FloatView.FloatViewData data = new FloatView.FloatViewData();
+                                               if(App.testIP) {
+                                                   data.setType(coinMining.getCoin_info().getCharX());
+                                               } else {
+                                                   data.setType(coinMining.getCoin_info().getId()+ "");
+                                               }
+                                               data.setValue(coinMining.getReceive_profit());
+                                               data.setUrl(coinMining.getCoin_info().getFace());
+                                               list.add(data);
                                            }
-                                           data.setValue(coinMining.getReceive_profit());
-                                           data.setUrl(coinMining.getCoin_info().getFace());
-                                           list.add(data);
                                        }
                                        fvOfMining.setList(list);
                                    } else if(baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
