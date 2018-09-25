@@ -45,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="缪斯智能珠宝戒指"
+                android:text="@string/crowd_name_sample"
                 android:textColor="#193fc3"
                 android:textSize="14sp" />
 
@@ -54,9 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="缪斯智能珠宝戒指通过手机移动端轻松实现心率检查
-，一键拍照，远程关爱，一键密语，一键呼救，来电
-通知，摩斯密码。同时具备OCE绿色挖光功能"
+                android:text="@string/crowd_des_sample"
                 android:textColor="@color/gravity6"
                 android:textSize="14sp" />
 
@@ -70,7 +68,7 @@
                     android:id="@+id/tv_crowd_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="众筹OCE：2000000 OCE"
+                    android:text="@string/crowd_value_sample"
                     android:textColor="@color/gravity9"
                     android:textSize="12dp" />
 
@@ -83,7 +81,7 @@
                     android:id="@+id/tv_award_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="奖励池: 99999 OCE"
+                    android:text="@string/award_value_sample"
                     android:textColor="@color/gravity9"
                     android:textSize="12dp" />
 
@@ -115,7 +113,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="已凑额度"
+                        android:text="@string/current_crowd_value_sample"
                         android:textColor="@color/gravity9"
                         android:textSize="12dp" />
                 </LinearLayout>
@@ -140,7 +138,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="剩余天数"
+                        android:text="@string/last_days"
                         android:textColor="@color/gravity9"
                         android:textSize="12dp" />
                 </LinearLayout>
@@ -165,7 +163,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="支持人数"
+                        android:text="@string/support_person_num"
                         android:textColor="@color/gravity9"
                         android:textSize="12dp" />
                 </LinearLayout>
@@ -192,7 +190,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="众筹档位"
+                    android:text="@string/crowd_level"
                     android:textColor="@color/gravity9"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -266,8 +264,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="【个人档】您将以2999 OCE 的优惠价格获得缪斯智
-能珠宝戒指施华洛世奇闪钻版一个。"
+                android:text="@string/crowd_level_desc"
                 android:textColor="@color/gravity6"
                 android:textSize="14sp" />
 
@@ -279,7 +276,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="数量"
+                    android:text="@string/numbers"
                     android:textColor="@color/gravity9"
                     android:textSize="12sp" />
 
@@ -326,7 +323,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="投票档位"
+                    android:text="@string/vote_level"
                     android:textColor="@color/gravity9"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -400,8 +397,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="【个人档】您将以2999 OCE 的优惠价格获得缪斯智
-能珠宝戒指施华洛世奇闪钻版一个。"
+                android:text="@string/vote_level_desc"
                 android:textColor="@color/gravity6"
                 android:textSize="14sp" />
 
@@ -413,7 +409,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="数量"
+                    android:text="@string/numbers"
                     android:textColor="@color/gravity9"
                     android:textSize="12sp" />
 

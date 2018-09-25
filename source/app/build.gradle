@@ -9,8 +9,8 @@ android {
         applicationId "com.idea.jgw"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 3
+        versionName "1.0.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -48,6 +48,11 @@ android {
         exclude 'com/google/thirdparty/publicsuffix/PublicSuffixType.gwt.xml'
         exclude 'org/bitcoinj/crypto/mnemonic/wordlist/english.txt'
         exclude 'org/bitcoinj/crypto/cacerts'
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
     }
 }
 

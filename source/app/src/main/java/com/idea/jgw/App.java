@@ -55,8 +55,8 @@ public class App extends Application {
 //        CrashReport.initCrashReport(this, "5c69a04d04", debug);
 
         //初始化自定义全局异常捕捉器
-        CrashHandler crashHandler = CrashHandler.getInstance();
-        crashHandler.init(getApplicationContext());
+//        CrashHandler crashHandler = CrashHandler.getInstance();
+//        crashHandler.init(getApplicationContext());
 
         BtcWalltUtils.init();
 

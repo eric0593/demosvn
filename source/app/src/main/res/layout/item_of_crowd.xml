@@ -18,7 +18,7 @@
         android:layout_marginLeft="16dp"
         android:textColor="#193fc3"
         android:textSize="14sp"
-        android:text="缪斯智能珠宝戒指" />
+        android:text="@string/crowd_name_sample" />
 
     <TextView
         android:id="@+id/tv_of_crowd_award"
@@ -50,6 +50,6 @@
         android:layout_marginTop="4dp"
         android:textColor="@color/gravity6"
         android:textSize="14sp"
-        android:text="超值档:  2999  OCE" />
+        android:text="众筹进度:  2387%" />
 
 </RelativeLayout>

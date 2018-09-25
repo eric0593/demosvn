@@ -58,6 +58,6 @@ public class NationCodeAdapter extends BaseAdapter<String, RecyclerView.ViewHold
     }
 
     public interface OnItemClickListener2 extends View.OnClickListener {
-        void onItemClick(int position, T data);
+        void onItemClick(int position, String data);
     }
 }

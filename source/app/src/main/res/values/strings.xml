@@ -303,4 +303,33 @@
     <string name="file_not_exists">找不到该文件！</string>
     <string name="cny">CNY</string>
 
+    <string name="total">总计：</string>
+    <string name="available">可用：</string>
+    <string name="award_pool">奖励池:</string>
+    <string name="overflow_level">超值档: </string>
+    <string name="crowd_progress">众筹进度: </string>
+    <string name="vote_level">投票档位</string>
+    <string name="vote_level_desc">众筹成功后，将根据您投票的OCE占整个投票OCE的
+比重，分得项目对应奖金池中的OCE。众筹期间，投
+票的OCE将被锁定，众筹成功后解锁归还</string>
+    <string name="crowd_level">众筹档位</string>
+    <string name="crowd_level_desc">【个人档】您将以2999 OCE 的优惠价格获得缪斯智
+能珠宝戒指施华洛世奇闪钻版一个。</string>
+    <string name="numbers">数量</string>
+    <string name="day">天</string>
+    <string name="last_days">剩余天数</string>
+    <string name="support_person_num">支持人数</string>
+    <string name="current_crowd_value_sample">已凑额度</string>
+    <string name="crowd_value_sample">众筹OCE：2000000 OCE</string>
+    <string name="award_value_sample">奖励池: 99999 OCE</string>
+    <string name="crowd_name_sample">缪斯智能珠宝戒指</string>
+    <string name="crowd_des_sample">缪斯智能珠宝戒指通过手机移动端轻松实现心率检查
+，一键拍照，远程关爱，一键密语，一键呼救，来电
+通知，摩斯密码。同时具备OCE绿色挖光功能</string>
+    <!--<string name="crowd_name_sample">MuseHeart Smart Jewelry</string>-->
+    <!--<string name="crowd_des_sample">缪斯智能珠宝戒指通过手机移动端轻松实现心率检查-->
+<!--，一键拍照，远程关爱，一键密语，一键呼救，来电-->
+    <!-- heart rate measurement, remote care, on key photograph, one key Message, one key SOS, call reminder, mobile anti lost, Morse code -->
+<!--通知，摩斯密码。同时具备OCE绿色挖光功能</string>-->
+
 </resources>

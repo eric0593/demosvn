@@ -122,7 +122,8 @@ public class TransactionDetailActivity extends BaseActivity {
         BigDecimal amount = new BigDecimal(td.getAmountNative()).divide(bd);
 
         // amount > 0 表示接收，< 0表示发送
-        if (!td.getAddress().equals(td.getFromAddress())) {
+        if (td.getAddress().toUpperCase().equals(td.getFromAddress().toUpperCase())) {
+//        if(amount.doubleValue() < 0){
             tvTransactionNumber.setText("-" + df.format(td.getAmount2()));
             tvSendLabel.setText(R.string.send);
             tvReceivedAddress.setText(td.getToAddress());
@@ -131,7 +132,7 @@ public class TransactionDetailActivity extends BaseActivity {
             tvSendLabel.setText(R.string.received);
             tvSendAddress.setText(td.getToAddress());
             tvReceivedAddress.setText(td.getFromAddress());
-            tvTransactionNumber.setText(df.format(td.getAmount2()));
+            tvTransactionNumber.setText("+" + df.format(td.getAmount2()));
         }
     }
 

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -14,9 +15,12 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.SupportActivity;
 import android.support.v4.content.FileProvider;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -49,7 +53,7 @@ import rx.Subscription;
  * Created by idea on 2018/5/16.
  */
 
-public abstract class BaseActivity extends SupportActivity implements ListenerWrapper.PermissionCustomRationaleListener, ListenerWrapper.PermissionRequestListener, ListenerWrapper.PermissionPageListener {
+public abstract class BaseActivity extends AppCompatActivity implements ListenerWrapper.PermissionCustomRationaleListener, ListenerWrapper.PermissionRequestListener, ListenerWrapper.PermissionPageListener {
     //动态权限申请码
     private static int PREMISSION_REQUEST_CODE = 222; //相册访问sd权限
     public static final int REQUEST_STORAGE_CODE = 223; //存储权限
@@ -61,7 +65,8 @@ public abstract class BaseActivity extends SupportActivity implements ListenerWr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setFullScreenFlags();
+//        setFullScreenFlags();
+        hideStatusBar();
         setContentView(getLayoutId());
         ButterKnife.bind(this);
         initView();
@@ -77,6 +82,22 @@ public abstract class BaseActivity extends SupportActivity implements ListenerWr
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
+
+    //只透明状态栏
+    private void hideStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+    }
+
 
     public abstract int getLayoutId();
 

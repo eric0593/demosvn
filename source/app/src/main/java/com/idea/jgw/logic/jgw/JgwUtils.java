@@ -163,6 +163,7 @@ public class JgwUtils {
                     String fileName = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.FILE_NAME, "").toString();
                     File file = new File(filePath, fileName);
                     Credentials credentials = WalletUtils.loadCredentials(password, file.getPath());
+
                     LTEToken load = LTEToken.load(tokenAddress, web3j, credentials,
                             web3j.ethGasPrice().send().getGasPrice(), //price
                             new BigInteger("35000") //limiet
@@ -171,6 +172,7 @@ public class JgwUtils {
                     if (!toAdd.contains("0x"))
                         toAdd = "0x" + toAdd;
                     Future<TransactionReceipt> transactionReceiptFuture = load.transfer(toAdd, new BigInteger(amont)).sendAsync();
+
                     String hash = transactionReceiptFuture.get().getBlockHash();
 
                     Message msg = handler.obtainMessage();
