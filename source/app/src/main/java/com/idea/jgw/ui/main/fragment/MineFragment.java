@@ -85,6 +85,8 @@ public class MineFragment extends BaseFragment {
                                        SharedPreferenceManager.getInstance().setInvite_code(userInfo.getInvite_num());
                                        SharedPreferenceManager.getInstance().setInvite_num(userInfo.getInvite_man_num());
                                        SharedPreferenceManager.getInstance().setInvite_url(userInfo.getInvite_url());
+                                       SharedPreferenceManager.getInstance().setFace(userInfo.getFace());
+                                       SharedPreferenceManager.getInstance().setNickname(userInfo.getNickname());
                                    } else if(baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
                                        reLogin();
                                    } else {

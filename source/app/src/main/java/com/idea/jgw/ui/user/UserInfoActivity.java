@@ -111,11 +111,14 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
         }
         if (userInfo != null) {
             nickname = userInfo.getNickname();
-            tvNickname.setText(nickname);
             face = userInfo.getFace();
-            if(!TextUtils.isEmpty(face)) {
-                GlideApp.with(this).load(BASE_HOST + face).apply(RequestOptions.circleCropTransform()).placeholder(R.mipmap.icon_default_photo).into(ivPhoto);
-            }
+        } else {
+            face = SharedPreferenceManager.getInstance().getFace();
+            nickname = SharedPreferenceManager.getInstance().getNickname();
+        }
+        tvNickname.setText(nickname);
+        if(!TextUtils.isEmpty(face)) {
+            GlideApp.with(this).load(BASE_HOST + face).apply(RequestOptions.circleCropTransform()).placeholder(R.mipmap.icon_default_photo).into(ivPhoto);
         }
         tvPhone.setText(SharedPreferenceManager.getInstance().getPhone());
     }

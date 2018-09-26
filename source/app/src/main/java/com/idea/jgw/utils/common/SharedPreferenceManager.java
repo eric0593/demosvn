@@ -22,6 +22,8 @@ public class SharedPreferenceManager {
     private String phone;
     private String invite_url;
     private String invite_code;
+    private String face;
+    private String nickname;
     private int invite_num;
     private int hashrate;
 
@@ -46,6 +48,8 @@ public class SharedPreferenceManager {
         invite_code = sp.getString(Key.KEY_OF_INVITE_CODE, "");
         invite_num = sp.getInt(Key.KEY_OF_INVITE_NUM, 0);
         hashrate = sp.getInt(Key.KEY_OF_INVITE_NUM, 0);
+        face = sp.getString(Key.KEY_OF_FACE, "");
+        nickname = sp.getString(Key.KEY_OF_NICK_NAME, "");
     }
 
 
@@ -159,6 +163,24 @@ public class SharedPreferenceManager {
         sp.edit().putInt(Key.KEY_OF_HASHRATE, hashrate).apply();
     }
 
+    public String getFace() {
+        return face;
+    }
+
+    public void setFace(String face) {
+        this.face = face;
+        sp.edit().putString(Key.KEY_OF_FACE, face).apply();
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+        sp.edit().putString(Key.KEY_OF_NICK_NAME, nickname).apply();
+    }
+
     public static class Key {
         static final String KEY_OF_SESSION = "session"; //新登录使用
         static final String KEY_OF_CREATE_WALLET = "create_wallet"; //是否需要新建钱包
@@ -172,6 +194,8 @@ public class SharedPreferenceManager {
         public static final String KEY_OF_INVITE_CODE = "invite_code"; //invite_code
         public static final String KEY_OF_INVITE_NUM = "invite_num"; //invite_num
         public static final String KEY_OF_HASHRATE = "hashrate"; //算力
+        public static final String KEY_OF_FACE = "face"; //算力
+        public static final String KEY_OF_NICK_NAME = "nick_name"; //算力
     }
 
 }
