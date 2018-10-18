@@ -3,12 +3,14 @@ package com.idea.jgw.ui.wallet;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.google.zxing.qrcode.QRCodeUtil;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.logic.eth.IBAN;
 import com.idea.jgw.utils.DisplayUtils;
+import com.idea.jgw.utils.common.MyLog;
 
 import org.web3j.utils.Numeric;
 
@@ -42,6 +44,10 @@ public class EthReceivedActivity extends WalletAddressActivity {
         final String tempAddressNoPrefix = addressNoPrefix;
         tvSendAddress.setText(addressNoPrefix);
 
+        if(TextUtils.isEmpty(tempAddressNoPrefix)) {
+            MyLog.e("address is null");
+            return;
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {

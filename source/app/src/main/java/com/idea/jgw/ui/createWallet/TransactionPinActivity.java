@@ -62,7 +62,7 @@ public abstract class TransactionPinActivity extends BaseActivity implements Pay
         return R.layout.activity_set_transcation_pin;
     }
 
-    @OnClick(R.id.btn_of_back)
+    @OnClick({R.id.btn_of_back, R.id.tv_of_forget_pwd})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_of_forget_pwd:

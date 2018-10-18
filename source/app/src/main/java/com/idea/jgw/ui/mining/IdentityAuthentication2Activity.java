@@ -212,10 +212,10 @@ public class IdentityAuthentication2Activity extends BaseActivity {
                 backPhotoPath = CommonUtils.doCamra(this, "back.jpg", DO_CAMERA_REQUEST_BACK);
                 break;
             case OPEN_SYS_ALBUMS_PERMISSION_REQUEST:
-                frontPhotoPath = CommonUtils.openSysPick(this, "front.jpg", OPEN_SYS_ALBUMS_REQUEST);
+                CommonUtils.openSysPick(this,  OPEN_SYS_ALBUMS_REQUEST);
                 break;
             case OPEN_SYS_ALBUMS_PERMISSION_REQUEST_BACK:
-                backPhotoPath = CommonUtils.openSysPick(this, "back.jpg", OPEN_SYS_ALBUMS_REQUEST_BACK);
+                CommonUtils.openSysPick(this,  OPEN_SYS_ALBUMS_REQUEST_BACK);
                 break;
         }
     }

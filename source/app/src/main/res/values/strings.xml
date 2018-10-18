@@ -44,11 +44,11 @@
 
     <string name="set_transaction_pin">设置资产密码</string>
     <string name="reset_transaction_pin">重置资产密码</string>
-    <string name="set_transaction_pin_notice">资产密码在资产变动时使用，是您资产安全的重要保障。甲骨文服务器不存储资产密码，只存储在甲骨文手机加密芯片里，设置完成后不能修改，只能通过导入钱包重新设置！</string>
-    <string name="key_word_notice">助记词泄露就等于泄露钱包全部资产，且助记词是恢复钱包的唯一方式，请务必备份！</string>
+    <string name="set_transaction_pin_notice">\u3000\u3000资产密码在资产变动时使用，是您资产安全的重要保障。甲骨文服务器不存储资产密码，只存储在甲骨文手机加密芯片里，设置完成后不能修改，只能通过导入钱包重新设置！</string>
+    <string name="key_word_notice">\u3000\u3000助记词泄露就等于泄露钱包全部资产，且助记词是恢复钱包的唯一方式，请务必备份！</string>
     <string name="ensure_transaction_pin">确认资产密码</string>
     <string name="ensure_transaction_pin_notice">确认资产密码提醒。。。</string>
-    <string name="recover_wallet_warning">资产密码保存在本地，只能通过导入钱包重设，请重新导入钱包，重新设置资产密码。甲骨文钱包只支持一个钱包，导入新钱包后原钱包将被替代</string>
+    <string name="recover_wallet_warning">\u3000\u3000资产密码保存在本地，只能通过导入钱包重设，请重新导入钱包，重新设置资产密码。甲骨文钱包只支持一个钱包，导入新钱包后原钱包将被替代</string>
 
     <string name="wallet">钱包</string>
     <string name="discovery">挖矿</string>
@@ -105,7 +105,7 @@
     <string name="sample_hashrate">算力%1$d</string>
     <string name="sample_asset">挖矿资产(CNY): 0.0</string>
     <string name="sample_myAddress">我的地址</string>
-    <string name="sample_how_to_load">打开甲骨文钱包，在钱包起始页选择创建钱包，设置交易密码后，钱包即创建成功；用户需要根据提示备份好钱包助记词，拥有助记词即可完全控制钱包资产，甲骨文不存储用户钱包助记词，丢失助记词即丢失钱包资产，请务必妥善保存</string>
+    <string name="sample_how_to_load">\u3000\u3000打开甲骨文钱包，在钱包起始页选择创建钱包，设置交易密码后，钱包即创建成功；用户需要根据提示备份好钱包助记词，拥有助记词即可完全控制钱包资产，甲骨文不存储用户钱包助记词，丢失助记词即丢失钱包资产，请务必妥善保存</string>
     <string name="os_platform">Android</string>
     <string name="update_log">1.0.0 \n\n 1、支持比特币、以太坊转入转出；\n
 2、实现挖矿功能；</string>
@@ -126,7 +126,7 @@
     <string name="gesture_security">手势解锁</string>
     <string name="gesture_security_des">用于甲骨文钱包登入解锁</string>
 
-    <string name="jgw_wallet_des">甲骨文手机安全钱包是一款轻钱包APP，使用加密芯片保存资产私钥，是您的数字资产的保险箱，还能通过挖矿获取其它数字资产，为您提供安全、便捷、可增值的数字资产管理。</string>
+    <string name="jgw_wallet_des">\u3000\u3000甲骨文手机安全钱包是一款轻钱包APP，使用加密芯片保存资产私钥，是您的数字资产的保险箱，还能通过挖矿获取其它数字资产，为您提供安全、便捷、可增值的数字资产管理。</string>
     <string name="version_log">版本日记</string>
     <string name="check_and_update">检测更新</string>
 
@@ -153,7 +153,7 @@
 
     <string name="jgw_phone_wallet">甲骨文手机钱包</string>
     <string name="jgw_feature">硬件加密 挖矿神器</string>
-    <string name="jgw_feature_des">加密芯片守护您的资产私钥，永久安全，更能挖取比特币</string>
+    <string name="jgw_feature_des">\u3000\u3000加密芯片守护您的资产私钥，永久安全，更能挖取比特币</string>
     <string name="jgw_service">咨询电话：0111-88888888</string>
     <string name="share">分享</string>
 
@@ -302,7 +302,10 @@
     <string name="albums_state_permission_fail">相册权限申请失败！</string>
     <string name="file_not_exists">找不到该文件！</string>
     <string name="cny">CNY</string>
+    <string name="merchants">卖家</string>
+    <string name="customer">买家</string>
 
+    <string name="function_is_developing">功能开发中......敬请期待！</string>
     <string name="total">总计：</string>
     <string name="available">可用：</string>
     <string name="award_pool">奖励池:</string>

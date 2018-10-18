@@ -12,18 +12,22 @@ import android.support.v7.app.AlertDialog;
 
 public class DialogUtils {
 
-    public static void showAlertDialog(Context context, String msg, DialogInterface.OnClickListener positiveListner) {
+    public static void showAlertDialog(Context context, int resId, DialogInterface.OnClickListener positiveListener) {
+        showAlertDialog(context, context.getString(resId), positiveListener);
+    }
+
+    public static void showAlertDialog(Context context, String msg, DialogInterface.OnClickListener positiveListener) {
         new AlertDialog.Builder(context)
                 .setMessage(msg)
-                .setPositiveButton("确定", positiveListner)
+                .setPositiveButton("确定", positiveListener)
                 .show();
     }
 
-    public static void showAlertDialog(Context context, String msg, DialogInterface.OnClickListener positiveListner, DialogInterface.OnClickListener negativeListner) {
+    public static void showAlertDialog(Context context, String msg, DialogInterface.OnClickListener positiveListner, DialogInterface.OnClickListener positiveListener) {
         new AlertDialog.Builder(context)
                 .setMessage(msg)
                 .setPositiveButton("确定", positiveListner)
-                .setNegativeButton("取消", negativeListner)
+                .setNegativeButton("取消", positiveListener)
                 .show();
     }
 }

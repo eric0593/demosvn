@@ -1,5 +1,6 @@
 package com.idea.jgw.ui.user;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import com.idea.jgw.RouterPath;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.ui.BaseAdapter;
 import com.idea.jgw.ui.user.adapter.CrodAdapter;
+import com.idea.jgw.utils.common.DialogUtils;
 import com.idea.jgw.utils.common.MToast;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 

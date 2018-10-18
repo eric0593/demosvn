@@ -18,6 +18,8 @@ import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.joker.api.Permissions4M;
 import com.joker.api.wrapper.ListenerWrapper;
 
+import rx.Subscription;
+
 /**
  * Created by idea on 2018/6/21.
  */
@@ -185,6 +187,12 @@ public class BaseFragment extends Fragment implements ListenerWrapper.Permission
             grantResults) {
         Permissions4M.onRequestPermissionsResult(this, requestCode, grantResults);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    public void unSubscribe(Subscription subscription) {
+        if(subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
     }
 
 }

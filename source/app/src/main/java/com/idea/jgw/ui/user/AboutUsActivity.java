@@ -28,9 +28,6 @@ import com.idea.jgw.utils.common.CommonUtils;
 import com.idea.jgw.utils.common.DialogUtils;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.MyLog;
-import com.joker.annotation.PermissionsCustomRationale;
-import com.joker.annotation.PermissionsGranted;
-import com.joker.annotation.PermissionsNonRationale;
 
 import java.io.File;
 
@@ -57,6 +54,8 @@ public class AboutUsActivity extends BaseActivity {
     LinearLayout llVersionLog;
     @BindView(R.id.ll_update)
     LinearLayout llUpdate;
+    @BindView(R.id.tv_of_version)
+    TextView tvOfVersion;
     private String apkPath = "";
 
     @Override
@@ -72,6 +71,8 @@ public class AboutUsActivity extends BaseActivity {
     @Override
     public void initView() {
         tvOfTitle.setText(R.string.about_us);
+        tvOfVersion.setText("V"+ CommonUtils.getAppVersionName2(this));
+        llVersionLog.setVisibility(View.GONE);
     }
 
     @OnClick({R.id.btn_of_back, R.id.ll_version_log, R.id.ll_update})
@@ -137,7 +138,7 @@ public class AboutUsActivity extends BaseActivity {
                                         });
                                     }
                                 } else {
-                                        MToast.showToast(R.string.current_is_new);
+                                    MToast.showToast(R.string.current_is_new);
                                 }
                             }
                         });
@@ -173,7 +174,7 @@ public class AboutUsActivity extends BaseActivity {
 
     private String[] getVersionNumber(String version1) {
         String[] str;
-        if(version1.startsWith("v")) {
+        if (version1.startsWith("v")) {
             str = version1.replace("v", "").split("\\.");
         } else {
             str = version1.replace("d", "").split("\\.");
@@ -190,7 +191,7 @@ public class AboutUsActivity extends BaseActivity {
 //            }
 //        });
         AlertDialog alertDialog = builder.create();
-        if(!TextUtils.isEmpty(title)) {
+        if (!TextUtils.isEmpty(title)) {
             alertDialog.setTitle(title);
         } else {
             alertDialog.setTitle(null);
@@ -205,7 +206,7 @@ public class AboutUsActivity extends BaseActivity {
         alertDialog.show();
     }
 
-//    @PermissionsGranted({PHONE_STATE, INSTALL_PACKAGE, EXTERNAL_STORAGE})
+    //    @PermissionsGranted({PHONE_STATE, INSTALL_PACKAGE, EXTERNAL_STORAGE})
     @Override
     public void granted(int requestCode) {
         super.granted(requestCode);
@@ -226,7 +227,7 @@ public class AboutUsActivity extends BaseActivity {
     private void checkPermissionAndInstall() {
         if (Build.VERSION.SDK_INT >= 26) {
             //来判断应用是否有权限安装apk
-            boolean installAllowed= getPackageManager().canRequestPackageInstalls();
+            boolean installAllowed = getPackageManager().canRequestPackageInstalls();
             //有权限
             if (installAllowed) {
                 //安装apk
@@ -258,7 +259,7 @@ public class AboutUsActivity extends BaseActivity {
         startActivity(intent);
     }
 
-//    @PermissionsCustomRationale({PHONE_STATE, EXTERNAL_STORAGE, INSTALL_PACKAGE})
+    //    @PermissionsCustomRationale({PHONE_STATE, EXTERNAL_STORAGE, INSTALL_PACKAGE})
     @Override
     public void customRationale(int requestCode) {
         super.customRationale(requestCode);
@@ -290,7 +291,7 @@ public class AboutUsActivity extends BaseActivity {
         }
     }
 
-//    @PermissionsNonRationale({PHONE_STATE, EXTERNAL_STORAGE, INSTALL_PACKAGE})
+    //    @PermissionsNonRationale({PHONE_STATE, EXTERNAL_STORAGE, INSTALL_PACKAGE})
     @Override
     public void non(int requestCode, final Intent intent) {
         super.non(requestCode, intent);

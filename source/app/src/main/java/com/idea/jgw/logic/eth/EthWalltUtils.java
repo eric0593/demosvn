@@ -31,6 +31,7 @@ import com.idea.jgw.logic.eth.utils.MyMnemonicUtils;
 import com.idea.jgw.logic.eth.utils.ResponseParser;
 import com.idea.jgw.logic.eth.utils.SecureRandomUtils;
 import com.idea.jgw.logic.eth.utils.WalletStorage;
+import com.idea.jgw.logic.ic.EncryptUtils;
 import com.idea.jgw.service.GetSendStatusService;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.common.MToast;
@@ -133,6 +134,7 @@ public class EthWalltUtils extends WalletUtils {
         EtherscanAPI.getInstance().getNonceForAddress(fromAddress, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
                 MyLog.e("sendCoin ----onFailure");
                 handler.sendEmptyMessage(-1);
             }
@@ -146,14 +148,40 @@ public class EthWalltUtils extends WalletUtils {
                         try {
                             JSONObject o = new JSONObject(response.body().string());
                             BigInteger nonce = new BigInteger(o.getString("result").substring(2), 16);
-                            String hexValue = KeyStoreUtils.signedTransactionData(password, fromAddress, toAddress, nonce.toString(), web3j.ethGasPrice().send().getGasPrice().toString(), String.valueOf(gasLimit), String.valueOf(sendAmountGwei));
+                            String pubKey = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.PREFERENCES_PUBLIC_KEY, "").toString();
+                            String hexValue = "";
+                            String result = null;
+                            //循环发送增加发送交易nonce，result 返回null时也出现了区块确认成功的情况，此时区块高度一致，单个发送返回null失败几乎百分之百
+//                            for (; ; ) {
+//                                if (EncryptUtils.isJGWBrand()) {
+//                                    hexValue = KeyStoreUtils.signedTransactionData(toAddress, nonce.toString(), web3j.ethGasPrice().send().getGasPrice().toString(), String.valueOf(gasLimit), String.valueOf(sendAmountGwei), pubKey);
+//                                } else {
+//                                    hexValue = KeyStoreUtils.signedTransactionData(password, fromAddress, toAddress, nonce.toString(), web3j.ethGasPrice().send().getGasPrice().toString(), String.valueOf(gasLimit), String.valueOf(sendAmountGwei));
+//                                }
+//                                EthSendTransaction send = web3j.ethSendRawTransaction(hexValue).send();
+//                                //result 代表区块hash，如果result = null表示hash块打包失败，可能是由于nonce重复导致，比如上一个打包的nonce还未上链，此时nonce和上一个打包的nonce一致导致失败
+//                                result = send.getResult();
+//                                MyLog.e("sendCoin ----result--ok---" + result);
+//                                if(result != null) {
+//                                    break;
+//                                }
+//                                nonce = nonce.add(new BigInteger("1"));
+//                            }
+
+                            if (EncryptUtils.isJGWBrand()) {
+                                hexValue = KeyStoreUtils.signedTransactionData(toAddress, nonce.toString(), web3j.ethGasPrice().send().getGasPrice().toString(), String.valueOf(gasLimit), String.valueOf(sendAmountGwei), pubKey);
+                            } else {
+                                hexValue = KeyStoreUtils.signedTransactionData(password, fromAddress, toAddress, nonce.toString(), web3j.ethGasPrice().send().getGasPrice().toString(), String.valueOf(gasLimit), String.valueOf(sendAmountGwei));
+                            }
                             EthSendTransaction send = web3j.ethSendRawTransaction(hexValue).send();
-                            String result = send.getResult();
+                            //result 代表区块hash，如果result = null表示hash块打包失败，可能是由于nonce重复导致，比如上一个打包的nonce还未上链，此时nonce和上一个打包的nonce一致导致失败
+                            result = send.getResult();
                             MyLog.e("sendCoin ----result--ok---" + result);
                             handler.sendEmptyMessage(0);
 
-                            GetSendStatusService.startNewService(Common.CoinTypeEnum.ETH,result);
+                            GetSendStatusService.startNewService(Common.CoinTypeEnum.ETH, result);
                         } catch (Exception e) {
+                            e.printStackTrace();
                             MyLog.e("sendCoin ----onResponse---exception");
                             handler.sendEmptyMessage(-1);
 
@@ -280,8 +308,8 @@ public class EthWalltUtils extends WalletUtils {
      * @param callback   回调
      */
     public static void createEthWallet2(Context context, String passphrase, CreateUalletCallback callback) {
-        String filePath = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.FILE_DIR,"").toString();
-        if(!TextUtils.isEmpty(filePath)){
+        String filePath = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.FILE_DIR, "").toString();
+        if (!TextUtils.isEmpty(filePath)) {
             try {
                 File[] wallets = new File(filePath).listFiles();
                 if (null != wallets)
@@ -289,7 +317,7 @@ public class EthWalltUtils extends WalletUtils {
                         f.delete();
                     }
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
         String masterHex = BtcWalltUtils.getMasterHex(context, passphrase);
@@ -322,7 +350,77 @@ public class EthWalltUtils extends WalletUtils {
     }
 
 
+    /**
+     * 创建钱包(IC方式)
+     *
+     * @param context
+     * @param passphrase 助记词 （用BtcWalltUtils.getPassphrase()生成）
+     * @param callback   回调
+     */
+    public static void createEthWalletFromIC(Context context, String passphrase, CreateUalletCallback callback) {
+//        String filePath = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.FILE_DIR,"").toString();
+//        if(!TextUtils.isEmpty(filePath)){
+//            try {
+//                File[] wallets = new File(filePath).listFiles();
+//                if (null != wallets)
+//                    for (File f : wallets) {
+//                        f.delete();
+//                    }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+        String masterHex = BtcWalltUtils.getMasterHex(context, passphrase);
+        if (null == masterHex) {
+            masterHex = passphrase;
+        }
+        String pwd = Base58.encode(masterHex.getBytes());
+        File file = new File(context.getFilesDir(), "");
+        boolean result = false;
+        String filename = null;
+        if (EncryptUtils.isJGWBrand()) {
+            result = generateBip39WalletFromIC(passphrase, pwd);
+        } else {
+            try {
+                Bip39Wallet wallet = generateBip39Wallet(passphrase, pwd, file);
+                String mnemonic = wallet.getMnemonic();
+                filename = wallet.getFilename();
+                int lastIndex = filename.lastIndexOf("--") + 2;
+                filename = filename.substring(lastIndex, filename.length() - 5);
+
+                WalletStorage.getInstance(context).add(new FullWallet("0x" + filename, filename), context);
+                AddressNameConverter.getInstance(context).put("0x" + filename, "Wallet " + ("0x" + filename).substring(0, 6), context);
+                SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_ADDRESS_KEY, filename);
+                SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_PWD_KEY, pwd);
+                SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.FILE_DIR, file.getPath());
+                SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.FILE_NAME, wallet.getFilename());
+                result = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                result = false;
+            }
+        }
+        if (null != callback) {
+            if (result) {
+                callback.onSuccess(filename);
+            } else {
+                callback.onFaild();
+            }
+        }
+    }
+
+
     static SecureRandom secureRandom = SecureRandomUtils.secureRandom();
+
+    public static boolean generateBip39WalletFromIC(String mnemonic, String password) {
+        byte[] initialEntropy = new byte[16];
+        secureRandom.nextBytes(initialEntropy);
+        byte[] seed = MyMnemonicUtils.generateSeed(mnemonic, password);
+        ECKeyPair privateKey = ECKeyPair.create(Hash.sha256(seed));
+        SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_PUBLIC_KEY, privateKey.getPublicKey().toString());
+        SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_ADDRESS_KEY, Keys.getAddress(privateKey));
+        return EncryptUtils.writePrivateKey(privateKey);
+    }
 
     public static Bip39Wallet generateBip39Wallet(String mnemonic, String password, File destinationDirectory) throws CipherException, IOException {
         byte[] initialEntropy = new byte[16];

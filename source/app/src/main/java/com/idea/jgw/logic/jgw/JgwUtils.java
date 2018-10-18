@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
@@ -87,15 +88,15 @@ public class JgwUtils {
                     Future<EthCall> ethCallFuture = web3j.ethCall(etherTransaction, DefaultBlockParameterName.LATEST).sendAsync();
                     EthCall r = ethCallFuture.get();
                     // org.web3j.protocol.core.methods.response.EthCall r = ethCallFuture;
-                    if (TextUtils.isEmpty(r.getResult())) {
+                    String value = r.getResult().substring(2);
+                    if (TextUtils.isEmpty(value)) {
                         handler.sendEmptyMessage(-1);
                         return;
                     }
 
-                    String vallue = r.getResult().substring(2);
                     Message msg = handler.obtainMessage();
                     msg.what = 0;
-                    msg.obj = new BigInteger(vallue, 16).toString(10).toString();
+                    msg.obj = new BigInteger(value, 16).toString(10).toString();
                     handler.sendMessage(msg);
                 } catch (Exception e) {
                     handler.sendEmptyMessage(-1);
@@ -112,10 +113,10 @@ public class JgwUtils {
             public void handleMessage(Message msg) {
                 if (msg.what == 0) {
                     callback.onSuccess(msg.obj);
-                } else if(msg.what == -2) {
-                    callback.onFail(-2,null);
-                }else{
-                    callback.onFail(-1,null);
+                } else if (msg.what == -2) {
+                    callback.onFail(-2, null);
+                } else {
+                    callback.onFail(-1, null);
                 }
             }
         };
@@ -163,7 +164,6 @@ public class JgwUtils {
                     String fileName = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.FILE_NAME, "").toString();
                     File file = new File(filePath, fileName);
                     Credentials credentials = WalletUtils.loadCredentials(password, file.getPath());
-
                     LTEToken load = LTEToken.load(tokenAddress, web3j, credentials,
                             web3j.ethGasPrice().send().getGasPrice(), //price
                             new BigInteger("35000") //limiet
@@ -172,7 +172,6 @@ public class JgwUtils {
                     if (!toAdd.contains("0x"))
                         toAdd = "0x" + toAdd;
                     Future<TransactionReceipt> transactionReceiptFuture = load.transfer(toAdd, new BigInteger(amont)).sendAsync();
-
                     String hash = transactionReceiptFuture.get().getBlockHash();
 
                     Message msg = handler.obtainMessage();
@@ -181,14 +180,14 @@ public class JgwUtils {
                     handler.sendMessage(msg);
 
 
-                    GetSendStatusService.startNewService(Common.CoinTypeEnum.JGW,hash);
+                    GetSendStatusService.startNewService(Common.CoinTypeEnum.JGW, hash);
                 } catch (Exception e) {
                     Message m = handler.obtainMessage();
                     String msg = e.getLocalizedMessage();
-                    if(msg.contains("not have enough funds")){
-                        m.what =-2;
+                    if (msg.contains("not have enough funds")) {
+                        m.what = -2;
                         handler.sendMessage(m);
-                    }else{
+                    } else {
                         handler.sendEmptyMessage(-1);
                     }
                     e.printStackTrace();

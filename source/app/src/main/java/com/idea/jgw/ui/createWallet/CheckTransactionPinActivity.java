@@ -49,14 +49,14 @@ public class CheckTransactionPinActivity extends TransactionPinActivity {
         btnOfBack.setVisibility(View.GONE);
     }
 
-    @OnClick(R.id.btn_of_back)
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_of_back:
-                finish();
-                break;
-        }
-    }
+//    @OnClick(R.id.btn_of_back)
+//    public void onClick(View view) {
+//        switch (view.getId()) {
+//            case R.id.btn_of_back:
+//                finish();
+//                break;
+//        }
+//    }
 
     @Override
     public void inputFinished(String inputPsd) {
@@ -68,6 +68,7 @@ public class CheckTransactionPinActivity extends TransactionPinActivity {
             }
             finish();
         } else {
+            pivOfPassword.cleanPsd();
             MToast.showToast(R.string.payment_pwd_invalid);
         }
     }

@@ -115,7 +115,7 @@ public class MiningDetailActivity extends BaseActivity implements BaseAdapter.On
             balance = getIntent().getDoubleExtra("balance", 0);
         }
         tvDigitalValue.setText(String.valueOf(balance));
-        GlideApp.with(this).load(BASE_HOST + coinLogo).into(ivDigitalLogo);
+        GlideApp.with(this).load(coinLogo).into(ivDigitalLogo);
         rvOfDetailAsset.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {

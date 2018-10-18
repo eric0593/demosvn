@@ -22,4 +22,16 @@
         android:layout_height="wrap_content"
         android:text="秘钥签名"/>
 
+    <Button
+        android:id="@+id/write_pin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="写入PIN"/>
+
+    <Button
+        android:id="@+id/write_pin2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="写入PIN2"/>
+
 </LinearLayout>

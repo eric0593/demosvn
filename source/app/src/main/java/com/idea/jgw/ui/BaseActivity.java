@@ -43,6 +43,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -386,5 +387,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Listener
             grantResults) {
         Permissions4M.onRequestPermissionsResult(this, requestCode, grantResults);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @NonNull
+    public String getBigDecimalText(BigDecimal amount) {
+        return String.valueOf(amount.setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue());
     }
 }

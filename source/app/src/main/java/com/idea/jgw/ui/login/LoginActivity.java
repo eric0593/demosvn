@@ -21,6 +21,7 @@ import com.idea.jgw.common.Common;
 import com.idea.jgw.logic.btc.BtcWalltUtils;
 import com.idea.jgw.logic.eth.interfaces.StorableWallet;
 import com.idea.jgw.logic.eth.utils.WalletStorage;
+import com.idea.jgw.logic.ic.EncryptUtils;
 import com.idea.jgw.ui.BaseActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
@@ -81,7 +82,13 @@ public class LoginActivity extends BaseActivity {
         btnOfBack.setVisibility(View.GONE);
         tvOfTitle.setText(R.string.login);
         CommonUtils.setTextPwdInputType(etOfPwd);
-        if(App.isWalletDebug){
+        etOfPhone.setText(SharedPreferenceManager.getInstance().getPhone());
+        if (App.test) {
+            etOfPhone.setText("15196638740");
+            etOfPwd.setText("12345678");
+        }
+        etOfPhone.setSelection(etOfPhone.getText().length());
+        if (App.isWalletDebug) {
             etOfPhone.setText("18681591321");
             etOfPwd.setText("baxxasn123");
         }
@@ -97,7 +104,7 @@ public class LoginActivity extends BaseActivity {
                 etOfPhone.setText("");
                 break;
             case R.id.iBtn_of_show_pwd:
-                if(view.isSelected()) {
+                if (view.isSelected()) {
                     view.setSelected(false);
                     CommonUtils.setTextPwdInputType(etOfPwd);
                 } else {
@@ -115,10 +122,9 @@ public class LoginActivity extends BaseActivity {
             case R.id.btn_of_update:
 
 
-
-                if(App.isIsWalletDebug2){
+                if (App.isIsWalletDebug2) {
                     ARouter.getInstance().build(RouterPath.MAIN_ACTIVITY)
-                            .withString(EXTRA_USER,"18681591321")
+                            .withString(EXTRA_USER, "18681591321")
                             .navigation();
 
                     SPreferencesHelper.getInstance(App.getInstance()).saveData(Common.Eth.PREFERENCES_ADDRESS_KEY, "0x339b66306381b81d9dc15771059a559e5ecb838e");
@@ -126,20 +132,19 @@ public class LoginActivity extends BaseActivity {
                     return;
                 }
 
-                if(App.isWalletDebug)
-                {
+                if (App.isWalletDebug) {
                     ARouter.getInstance().build(RouterPath.LOAD_OR_CREATE_WALLET_ACTIVITY)
-                            .withString(EXTRA_USER,"18681591321")
+                            .withString(EXTRA_USER, "18681591321")
                             .navigation();
                     return;
                 }
 
-              final  String phone = etOfPhone.getText().toString().trim();
+                final String phone = etOfPhone.getText().toString().trim();
                 String pwd = etOfPwd.getText().toString().trim();
-                if(TextUtils.isEmpty(phone)) {
+                if (TextUtils.isEmpty(phone)) {
                     MToast.showToast(R.string.phone_is_null);
-                } else if(TextUtils.isEmpty(pwd)) {
-                    MToast.showToast(R.string.verify_code_is_null);
+                } else if (TextUtils.isEmpty(pwd)) {
+                    MToast.showToast(R.string.pwd_code_is_null);
                 } else {
 
                     login(phone, pwd);
@@ -158,7 +163,7 @@ public class LoginActivity extends BaseActivity {
                 .flatMap(new Func1<BaseResponse, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(final BaseResponse baseResponse) {
-                        return Observable.create(new Observable.OnSubscribe<Boolean>(){
+                        return Observable.create(new Observable.OnSubscribe<Boolean>() {
                             @Override
                             public void call(Subscriber<? super Boolean> subscriber) {
                                 if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
@@ -169,9 +174,11 @@ public class LoginActivity extends BaseActivity {
                                     boolean hasWallet = BtcWalltUtils.hasSetupHDWallet();
                                     List<StorableWallet> list = WalletStorage.getInstance(App.getInstance()).get();
                                     boolean hasEthWallet = false;
-                                    if(list.size() > 0) {
+                                    if (list.size() > 0) {
                                         hasEthWallet = true;
                                     }
+                                    if (EncryptUtils.isJGWBrand())
+                                        hasEthWallet = !TextUtils.isEmpty(SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.PREFERENCES_PUBLIC_KEY, "").toString());
                                     subscriber.onNext(hasEthWallet);
                                     subscriber.onCompleted();
 
@@ -183,26 +190,27 @@ public class LoginActivity extends BaseActivity {
                         });
                     }
                 })
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new RxSubscriber<Boolean>(this, getResources().getString(R.string.loading), true) {
-            @Override
-            protected void _onNext(Boolean hasWallet) {
-                if(!hasWallet) {
-                    ARouter.getInstance().build(RouterPath.LOAD_OR_CREATE_WALLET_ACTIVITY)
-                            .withString(EXTRA_USER,phone)
-                            .navigation();
-                } else {
-                    ARouter.getInstance().build(RouterPath.CHECK_TRANSACTION_PIN_ACTIVITY).navigation();
-                    finish();
-                }
-                finish();
-            }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscriber<Boolean>(this, getResources().getString(R.string.loading), true) {
+                               @Override
+                               protected void _onNext(Boolean hasWallet) {
+                                   if (!hasWallet) {
+                                       ARouter.getInstance().build(RouterPath.LOAD_OR_CREATE_WALLET_ACTIVITY)
+                                               .withString(EXTRA_USER, phone)
+                                               .navigation();
+                                   } else {
+                                       ARouter.getInstance().build(RouterPath.CHECK_TRANSACTION_PIN_ACTIVITY).navigation();
+                                       finish();
+                                   }
+                                   finish();
+                               }
 
-            @Override
-            protected void _onError(String message) {
-                MToast.showToast(message);
-            }
-        }
-        );
+                               @Override
+                               protected void _onError(String message) {
+                                   MToast.showToast(message);
+                               }
+                           }
+                );
     }
 
     @Override

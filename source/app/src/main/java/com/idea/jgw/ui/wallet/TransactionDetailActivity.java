@@ -72,7 +72,7 @@ public class TransactionDetailActivity extends BaseActivity {
     ClipboardManager mClipboardManager;
 
 
-    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Autowired(name = EXTRA_COIN_TYPE)
     int coinType;
@@ -148,6 +148,11 @@ public class TransactionDetailActivity extends BaseActivity {
         tvCommission.setText(getResources().getString(R.string.commission) + ":" + df.format(gas.doubleValue()));
         BigDecimal amount = new BigDecimal(td.getAmountNative()).divide(bd);
         tvTransactionNumber.setText(df.format(amount.doubleValue()));
+        if(td.isError()) {
+            tvTransactionStatus.setText(R.string.fail);
+        } else {
+            tvTransactionStatus.setText(R.string.success);
+        }
         // amount > 0 表示接收，< 0表示发送
         if (td.getAmount() > 0) {
             tvSendLabel.setText(R.string.received);

@@ -82,7 +82,9 @@ public class Common {
         /**
          * 请求的url
          */
-        public static final String URL = "http://api.myetherapi.com/eth";//"http://10.0.2.2:8555";// " http://120.132.120.253:8546";
+//        public static final String URL = "http://api.myetherapi.com/eth";//"http://10.0.2.2:8555";// " http://120.132.120.253:8546";
+//        public static final String URL = "http://120.132.120.253:8546";//测试  http://120.132.120.253:8546
+        public static final String URL = "http://120.132.120.252:8545";//正式  http://120.132.120.252:8545
         /**
          * 智能合约地址
          */
@@ -99,6 +101,10 @@ public class Common {
          * 以太币私钥
          */
         public static final String PREFERENCES_PRIVET_KEY = "eth_PREFERENCES_PRIVET_KEY";
+        /**
+         * 以太币公钥
+         */
+        public static final String PREFERENCES_PUBLIC_KEY = "eth_PREFERENCES_PUBLIC_KEY";
         /**
          * 以太的密码
          */

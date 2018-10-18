@@ -22,6 +22,7 @@ import com.idea.jgw.bean.UserInfo;
 import com.idea.jgw.ui.BaseFragment;
 import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.CommonUtils;
+import com.idea.jgw.utils.common.DialogUtils;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.idea.jgw.utils.glide.GlideApp;
@@ -133,7 +134,8 @@ public class MineFragment extends BaseFragment {
                 ARouter.getInstance().build(RouterPath.FEEDBACK_ACTIVITY2).navigation();
                 break;
             case R.id.ll_crowd:
-                ARouter.getInstance().build(RouterPath.CROWD_ACTIVITY).navigation();
+                DialogUtils.showAlertDialog(getActivity(), R.string.function_is_developing, null);
+//                ARouter.getInstance().build(RouterPath.CROWD_ACTIVITY).navigation();
                 break;
             case R.id.iv_photo:
                 ARouter.getInstance().build(RouterPath.USER_INFO_ACTIVITY).withParcelable("userInfo", userInfo).navigation(getActivity(), UPDATE_INFO_REQUEST);
@@ -156,5 +158,11 @@ public class MineFragment extends BaseFragment {
                 }
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unSubscribe(getInfoSubscription);
     }
 }

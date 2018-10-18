@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -30,6 +31,9 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class EtherscanAPI {
+
+    public static final String HOST = "http://api.etherscan.io/"; //正式链
+//    public static final String HOST = "https://api-ropsten.etherscan.io/"; //测试链
 
     private String token;
 
@@ -57,11 +61,11 @@ public class EtherscanAPI {
     public void getInternalTransactions(String address, Callback b, boolean force) throws IOException {
         if (!force && RequestCache.getInstance().contains(RequestCache.TYPE_TXS_INTERNAL, address)) {
             b.onResponse(null, new Response.Builder().code(200).message("").request(new Request.Builder()
-                    .url("http://api.etherscan.io/api?module=account&action=txlistinternal&address=" + address + "&startblock=0&endblock=99999999&sort=asc&apikey=" + token)
+                    .url(HOST + "api?module=account&action=txlistinternal&address=" + address + "&startblock=0&endblock=99999999&sort=desc&apikey=" + token)
                     .build()).protocol(Protocol.HTTP_1_0).body(ResponseBody.create(MediaType.parse("JSON"), RequestCache.getInstance().get(RequestCache.TYPE_TXS_INTERNAL, address))).build());
             return;
         }
-        get("http://api.etherscan.io/api?module=account&action=txlistinternal&address=" + address + "&startblock=0&endblock=99999999&sort=asc&apikey=" + token, b);
+        get(HOST + "api?module=account&action=txlistinternal&address=" + address + "&startblock=0&endblock=99999999&sort=desc&apikey=" + token, b);
     }
 
 
@@ -74,24 +78,25 @@ public class EtherscanAPI {
      * @throws IOException Network exceptions
      */
     public void getNormalTransactions(String address, Callback b, boolean force) throws IOException {
-        if (!force && RequestCache.getInstance().contains(RequestCache.TYPE_TXS_NORMAL, address)) {
-//            MyLog.e("getNormalTransactions-url--->"+"http://api.etherscan.io/api?module=account&action=txlist&address=" + address + "&startblock=0&endblock=99999999&sort=asc&apikey=" + token);
-            b.onResponse(null, new Response.Builder().code(200).message("").request(new Request.Builder()
-                    .url("http://api.etherscan.io/api?module=account&action=txlist&address=" + address + "&startblock=0&endblock=99999999&sort=asc&apikey=" + token)
-                    .build()).protocol(Protocol.HTTP_1_0).body(ResponseBody.create(MediaType.parse("JSON"), RequestCache.getInstance().get(RequestCache.TYPE_TXS_NORMAL, address))).build());
-            return;
-        }
-        get("http://api.etherscan.io/api?module=account&action=txlist&address=" + address + "&startblock=0&endblock=99999999&sort=asc&apikey=" + token, b);
+//        if (!force && RequestCache.getInstance().contains(RequestCache.TYPE_TXS_NORMAL, address)) {
+////            MyLog.e("getNormalTransactions-url--->"+HOST + "api?module=account&action=txlist&address=" + address + "&startblock=0&endblock=99999999&sort=desc&apikey=" + token);
+//            b.onResponse(null, new Response.Builder().code(200).message("").request(new Request.Builder()
+//                    .cacheControl(CacheControl.FORCE_NETWORK)
+//                    .url(HOST + "api?module=account&action=txlist&address=" + address + "&startblock=0&endblock=99999999&sort=desc&apikey=" + token)
+//                    .build()).protocol(Protocol.HTTP_1_0).body(ResponseBody.create(MediaType.parse("JSON"), RequestCache.getInstance().get(RequestCache.TYPE_TXS_NORMAL, address))).build());
+//            return;
+//        }
+        get(HOST + "api?module=account&action=txlist&address=" + address + "&startblock=0&endblock=99999999&sort=desc&apikey=" + token, b);
     }
 
 
     public void getEtherPrice(Callback b) throws IOException {
-        get("http://api.etherscan.io/api?module=stats&action=ethprice&apikey=" + token, b);
+        get(HOST + "api?module=stats&action=ethprice&apikey=" + token, b);
     }
 
     //获取汽油价格
     public void getGasPrice(Callback b) throws IOException {
-        get("http://api.etherscan.io/api?module=proxy&action=eth_gasPrice&apikey=" + token, b);
+        get(HOST + "api?module=proxy&action=eth_gasPrice&apikey=" + token, b);
     }
 
 
@@ -155,18 +160,18 @@ public class EtherscanAPI {
 
 
     public void getGasLimitEstimate(String to, Callback b) throws IOException {
-        get("http://api.etherscan.io/api?module=proxy&action=eth_estimateGas&to=" + to + "&value=0xff22&gasPrice=0x051da038cc&gas=0xffffff&apikey=" + token, b);
+        get(HOST + "api?module=proxy&action=eth_estimateGas&to=" + to + "&value=0xff22&gasPrice=0x051da038cc&gas=0xffffff&apikey=" + token, b);
     }
 
 
     public void getBalance(String address, Callback b) throws IOException {
-        get("http://api.etherscan.io/api?module=account&action=balance&address=" + address + "&apikey=" + token, b);
+        get(HOST + "api?module=account&action=balance&address=" + address + "&apikey=" + token, b);
 //        get(Common.Eth.URL,b);
     }
 
 
     public void getNonceForAddress(String address, Callback b) throws IOException {
-        get("http://api.etherscan.io/api?module=proxy&action=eth_getTransactionCount&address=" + address + "&tag=latest&apikey=" + token, b);
+        get(HOST + "api?module=proxy&action=eth_getTransactionCount&address=" + address + "&tag=latest&apikey=" + token, b);
     }
 
 
@@ -176,7 +181,7 @@ public class EtherscanAPI {
 
 
     public void getBalances(ArrayList<StorableWallet> addresses, Callback b) throws IOException {
-        String url = "http://api.etherscan.io/api?module=account&action=balancemulti&address=";
+        String url = HOST + "api?module=account&action=balancemulti&address=";
         for (StorableWallet address : addresses)
             url += address.getPubKey() + ",";
         url = url.substring(0, url.length() - 1) + "&tag=latest&apikey=" + token; // remove last , AND add token
@@ -185,11 +190,12 @@ public class EtherscanAPI {
 
 
     public void forwardTransaction(String raw, Callback b) throws IOException {
-        get("http://api.etherscan.io/api?module=proxy&action=eth_sendRawTransaction&hex=" + raw + "&apikey=" + token, b);
+        get(HOST + "api?module=proxy&action=eth_sendRawTransaction&hex=" + raw + "&apikey=" + token, b);
     }
 
 
     public void get(String url, Callback b) throws IOException {
+
         Request request = new Request.Builder()
                 .url(url)
                 .build();

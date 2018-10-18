@@ -30,8 +30,8 @@ public class HelpActivity extends BaseActivity implements BaseCallback {
     Button btnOfBack;
     @BindView(R.id.tv_of_title)
     TextView tvOfTitle;
-    @BindView(R.id.tv_of_right)
-    TextView tvOfRight;
+    @BindView(R.id.btn_of_right)
+    Button btnOfRight;
     @BindView(R.id.ll_how_to_load)
     LinearLayout llHowToLoad;
 
@@ -50,7 +50,7 @@ public class HelpActivity extends BaseActivity implements BaseCallback {
         tvOfTitle.setText(R.string.help);
     }
 
-    @OnClick({R.id.btn_of_back, R.id.tv_of_right, R.id.ll_how_to_load, R.id.ll_how_to_load_oce})
+    @OnClick({R.id.btn_of_back, R.id.btn_of_right, R.id.ll_how_to_load, R.id.ll_how_to_load_oce})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_of_back:
@@ -59,7 +59,7 @@ public class HelpActivity extends BaseActivity implements BaseCallback {
             case R.id.ll_how_to_load_oce:
                 ARouter.getInstance().build(RouterPath.LOAD_OCE).navigation();
                 break;
-            case R.id.tv_of_right:
+            case R.id.btn_of_right:
                 showCustomerServiceDialog();
                 break;
             case R.id.ll_how_to_load:

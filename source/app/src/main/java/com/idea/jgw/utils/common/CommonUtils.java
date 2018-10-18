@@ -129,12 +129,14 @@ public class CommonUtils {
             cropPath = hldPath + cropFile;
             // 调用系统截图
             Intent intent = new Intent("com.android.camera.action.CROP");
+            Uri imageUri = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                intent.setDataAndType(FileProvider.getUriForFile(activity, "com.idea.jgw.fileprovider", new File(filePath)), "image/*");
+                imageUri = FileProvider.getUriForFile(activity, "com.idea.jgw.fileprovider", new File(filePath));
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
             } else {
-                intent.setDataAndType(Uri.fromFile(new File(filePath)), "image/*");
+                imageUri = Uri.fromFile(new File(filePath));
             }
+            intent.setDataAndType(imageUri, "image/*");
             intent.putExtra("scale", true);
             intent.putExtra("aspectX", 5);
             intent.putExtra("aspectY", 5);
@@ -156,37 +158,38 @@ public class CommonUtils {
      * 调用系统图库
      *
      * @param activity
-     * @param fileName
+     * @param requestCode
      */
-    public static String openSysPick(Activity activity, String fileName, int requestCode) {
-        String filePath = null;
-        String sdCarPath = activity.getExternalCacheDir().getPath();
-        // 判断sd卡是否存在
-        if (sdCarPath != null) {
-            String hldPath = sdCarPath + "/HldImage/";
-            filePath = hldPath + fileName;
-            // 创建文件夹，名称为HldImage，不会重复创建
-            File file = new File(hldPath);
-            if (!file.exists() && !file.isDirectory())
-                file.mkdir();
-            // 调用系统图库
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.setType("image/*");
-            intent.putExtra("crop", "true");
-            intent.putExtra("aspectX", 5);
-            intent.putExtra("aspectY", 5);
-            intent.putExtra("outputX", 900);
-            intent.putExtra("outputY", 900);
-            intent.putExtra("scale", true);
-			intent.putExtra("return-data", false);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(filePath)));
-            intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-            intent.putExtra("noFaceDetection", false); // no face detection
-            activity.startActivityForResult(intent, requestCode);
-        } else {
-            filePath = null;
-        }
-        return filePath;
+    public static void openSysPick(Activity activity, int requestCode) {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        activity.startActivityForResult(intent, requestCode);
+//        String filePath = null;
+//        String sdCarPath = activity.getExternalCacheDir().getPath();
+//        // 判断sd卡是否存在
+//        if (sdCarPath != null) {
+//            String hldPath = sdCarPath + "/HldImage/";
+//            filePath = hldPath + fileName;
+//            // 创建文件夹，名称为HldImage，不会重复创建
+//            File file = new File(hldPath);
+//            if (!file.exists() && !file.isDirectory())
+//                file.mkdir();
+//            // 调用系统图库
+//            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+////            intent.setType("image/*");
+////            intent.putExtra("crop", "true");
+////            intent.putExtra("aspectX", 5);
+////            intent.putExtra("aspectY", 5);
+////            intent.putExtra("outputX", 900);
+////            intent.putExtra("outputY", 900);
+////            intent.putExtra("scale", true);
+////			intent.putExtra("return-data", false);
+////            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(filePath)));
+////            intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+////            intent.putExtra("noFaceDetection", false); // no face detection
+//        } else {
+//            filePath = null;
+//        }
+//        return filePath;
     }
 
     /**
@@ -496,6 +499,22 @@ public class CommonUtils {
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             return info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return "1.0.1";
+    }
+
+    /**
+     * <p>获取当前app版本名称</p>
+     *
+     * @param context 程序Context
+     * @return 当前程序版本号
+     */
+    public static String getAppVersionName2(Context context) {
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return info.versionName + "." + info.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

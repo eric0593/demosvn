@@ -33,18 +33,23 @@ import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.CommonUtils;
 import com.idea.jgw.utils.common.MToast;
+import com.idea.jgw.utils.common.MyLog;
 import com.idea.jgw.utils.common.ShareKey;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.idea.jgw.view.FloatView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -77,6 +82,7 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
 
     private Subscription miningSubscription;
     private Subscription receiveMiningSubscription;
+    Subscription intervalSubscription;
     AllMiningData allMiningData;
 
     @Override
@@ -85,6 +91,24 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
         miningAdapter = new MiningAdapter(getActivity());
 //        miningAdapter.addDatas(getTestDatas(3));
         miningAdapter.setOnItemClickListener(this);
+        intervalSubscription = Observable.interval( 30, 30, TimeUnit.SECONDS)
+                .filter(new Func1<Long, Boolean>() {
+                    @Override
+                    public Boolean call(Long aLong) {
+                        return DiscoverFragment.this.isResumed() && fvOfMining.needRefresh();
+                    }
+                })
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        getMiningData(false);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        MyLog.d(throwable);
+                    }
+                });
     }
 
     @Nullable
@@ -299,11 +323,12 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
         super.onDestroy();
         unSubscribe(miningSubscription);
         unSubscribe(receiveMiningSubscription);
+        unSubscribe(intervalSubscription);
     }
 
-    public void unSubscribe(Subscription subscription) {
-        if(subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-    }
+//    public void unSubscribe(Subscription subscription) {
+//        if(subscription != null && !subscription.isUnsubscribed()) {
+//            subscription.unsubscribe();
+//        }
+//    }
 }

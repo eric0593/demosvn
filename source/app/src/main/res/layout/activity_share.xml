@@ -65,6 +65,7 @@
         android:layout_below="@id/iv_hashrate_logo"
         android:textColor="#b3b5bd"
         android:textSize="12sp"
+        android:visibility="gone"
         android:text="@string/jgw_service"/>
 
     <TextView

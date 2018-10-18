@@ -1,8 +1,7 @@
 package com.idea.jgw.ui.main.adapter;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +13,10 @@ import com.idea.jgw.R;
 import com.idea.jgw.common.Common;
 import com.idea.jgw.logic.eth.data.TransactionDisplay;
 import com.idea.jgw.logic.eth.utils.AddressNameConverter;
-import com.idea.jgw.logic.eth.utils.ExchangeCalculator;
 import com.idea.jgw.logic.eth.utils.Settings;
 import com.idea.jgw.ui.BaseRecyclerAdapter;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -93,6 +90,10 @@ public class TransferRecordListAdapter extends BaseRecyclerAdapter {
             v.ivOfTransferState.setVisibility(View.VISIBLE);
             v.ivOfTransferState.setImageResource(R.mipmap.send_success);
         }
+        if(box.isError()) {
+            v.ivOfTransferState.setVisibility(View.VISIBLE);
+            v.ivOfTransferState.setImageResource(R.mipmap.icon_send_failed);
+        }
         BigDecimal amount = new BigDecimal(box.getAmountNative()).divide(bd);
         if(amount.doubleValue() > 0){
             v.tvOfTransferValue.setText( "+"+df.format(amount.doubleValue()));
@@ -113,6 +114,11 @@ public class TransferRecordListAdapter extends BaseRecyclerAdapter {
                 v.ivOfDigitalCurrency.setImageResource(R.mipmap.icon_btc_small);
                 break;
         }
+    }
+
+    @NonNull
+    public String getBigDecimalText(BigDecimal amount) {
+        return String.valueOf(amount.setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue());
     }
 
     class DigitalCurrencyListHolder extends RecyclerView.ViewHolder {

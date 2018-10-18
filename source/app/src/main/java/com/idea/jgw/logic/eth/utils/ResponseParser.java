@@ -40,8 +40,8 @@ public class ResponseParser {
                     from = to;
                     to = temp;
                 }
-                if (data.getJSONObject(i).getString("value").equals("0") && !Settings.showTransactionsWithZero)
-                    continue; // Skip contract calls or empty transactions
+//                if (data.getJSONObject(i).getString("value").equals("0") && !Settings.showTransactionsWithZero)
+//                    continue; // Skip contract calls or empty transactions
 
 
                 TransactionDisplay td =   new TransactionDisplay(

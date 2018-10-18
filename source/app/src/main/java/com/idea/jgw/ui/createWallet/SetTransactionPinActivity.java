@@ -128,7 +128,7 @@ public class SetTransactionPinActivity extends TransactionPinActivity {
         }
 
         String  s = BtcWalltUtils.getPassphrase();
-        EthWalltUtils.createEthWallet2(SetTransactionPinActivity.this,s, new EthWalltUtils.CreateUalletCallback() {
+        EthWalltUtils.createEthWalletFromIC(SetTransactionPinActivity.this,s, new EthWalltUtils.CreateUalletCallback() {
             @Override
             public void onSuccess(String address) {
                 ARouter.getInstance().build(RouterPath.WALLET_CREATE_SUCCESS_ACTIVITY).navigation();
@@ -146,7 +146,7 @@ public class SetTransactionPinActivity extends TransactionPinActivity {
     }
 
     private void recoverWallet(final String mnemonicPassphrase) {
-        EthWalltUtils.createEthWallet2(SetTransactionPinActivity.this, mnemonicPassphrase, new EthWalltUtils.CreateUalletCallback() {
+        EthWalltUtils.createEthWalletFromIC(SetTransactionPinActivity.this, mnemonicPassphrase, new EthWalltUtils.CreateUalletCallback() {
             @Override
             public void onSuccess(String address) {
                 runOnUiThread(new Runnable() {

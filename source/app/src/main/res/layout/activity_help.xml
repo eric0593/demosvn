@@ -5,42 +5,44 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:paddingTop="16dp"
-        android:background="@mipmap/bg_of_title">
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:paddingTop="16dp"-->
+        <!--android:background="@mipmap/bg_of_title">-->
 
-        <Button
-            android:id="@+id/btn_of_back"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:drawableLeft="@mipmap/ic_of_back"
-            android:paddingLeft="16dp"
-            android:background="@null"/>
+        <!--<Button-->
+            <!--android:id="@+id/btn_of_back"-->
+            <!--android:layout_width="48dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:drawableLeft="@mipmap/ic_of_back"-->
+            <!--android:paddingLeft="16dp"-->
+            <!--android:background="@null"/>-->
 
-        <TextView
-            android:id="@+id/tv_of_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:background="@null"
-            android:textColor="#ffffff"
-            android:textSize="14sp"/>
+        <!--<TextView-->
+            <!--android:id="@+id/tv_of_title"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:background="@null"-->
+            <!--android:textColor="#ffffff"-->
+            <!--android:textSize="14sp"/>-->
 
-        <TextView
-            android:id="@+id/tv_of_right"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:paddingRight="16dp"
-            android:gravity="center_vertical"
-            android:text="@string/customer_service"
-            android:textSize="12sp"
-            android:textColor="@color/white"
-            android:background="@null"/>
+        <!--<TextView-->
+            <!--android:id="@+id/tv_of_right"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:paddingRight="16dp"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:text="@string/customer_service"-->
+            <!--android:textSize="12sp"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:background="@null"/>-->
 
-    </RelativeLayout>
+    <!--</RelativeLayout>-->
+
+    <include layout="@layout/layout_of_normal_title_with_right_btn" />
 
     <LinearLayout
         android:id="@+id/ll_how_to_load"

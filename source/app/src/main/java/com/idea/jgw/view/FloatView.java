@@ -24,6 +24,7 @@ import com.idea.jgw.R;
 import com.idea.jgw.utils.common.MyLog;
 import com.idea.jgw.utils.glide.GlideApp;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -47,7 +48,7 @@ public class FloatView extends RelativeLayout {
     private float childSize;
 
     public FloatView(Context context) {
-        this(context,null);
+        this(context, null);
         mcontext = context;
     }
 
@@ -68,6 +69,9 @@ public class FloatView extends RelativeLayout {
 
     private void init() {
 //        setDefaultView();
+        for(View view:mViews) {
+            remove(view);
+        }
         addChidView();
     }
 
@@ -89,7 +93,7 @@ public class FloatView extends RelativeLayout {
             floatview.setLayoutParams(tvLayoutParams);
             floatview.setTextColor(textColor);
             floatview.setTextSize(childSize);
-            floatview.setText(String.valueOf(mFloat.get(i).getValue()));
+            floatview.setText(String.valueOf(new BigDecimal(mFloat.get(i).getValue() + "").toString()));
             floatview.setGravity(Gravity.CENTER);
             String type = mFloat.get(i).getType();
 //            int resid = R.mipmap.icon_oce_small;
@@ -117,9 +121,12 @@ public class FloatView extends RelativeLayout {
         }
     }
 
+    public static int fromYDelta = -10;
+    public static int toYDelta = 20;
+
     //FloatView上下抖动的动画
     private void initFloatAnim(View view) {
-        Animation anim = new TranslateAnimation(0,0,-10,20);
+        Animation anim = new TranslateAnimation(0, 0, fromYDelta, toYDelta);
         anim.setInterpolator(new AccelerateDecelerateInterpolator());
         anim.setDuration(ANIMATION_TIME);
         anim.setRepeatCount(Integer.MAX_VALUE);
@@ -136,7 +143,7 @@ public class FloatView extends RelativeLayout {
     }
 
     //设置数据添加子小球
-    public void setList(List<? extends FloatViewData> list){
+    public void setList(List<? extends FloatViewData> list) {
         this.mFloat = list;
         //使用post方法确保在UI加载完的情况下 调用init() 避免获取到的宽高为0
         post(new Runnable() {
@@ -155,10 +162,10 @@ public class FloatView extends RelativeLayout {
         Random randomX = new Random();
         Random randomY = new Random();
         float x = randomX.nextFloat() * (parentWidth - childView.getMeasuredWidth());
-        float y = randomY.nextFloat() * (parentHeight - childView.getMeasuredHeight());
-        Log.d(TAG, "setChildViewPosition: parentWidth="+parentWidth+",parentHeight="+parentHeight);
-        Log.d(TAG, "setChildViewPosition: childWidth="+childView.getMeasuredWidth()+",childHeight="+childView.getMeasuredHeight());
-        Log.d(TAG, "setChildViewPosition: x="+x+",y="+y);
+        float y = randomY.nextFloat() * (parentHeight - childView.getMeasuredHeight() - toYDelta + fromYDelta) - fromYDelta;
+        Log.d(TAG, "setChildViewPosition: parentWidth=" + parentWidth + ",parentHeight=" + parentHeight);
+        Log.d(TAG, "setChildViewPosition: childWidth=" + childView.getMeasuredWidth() + ",childHeight=" + childView.getMeasuredHeight());
+        Log.d(TAG, "setChildViewPosition: x=" + x + ",y=" + y);
         childView.setX(x);
         childView.setY(y);
     }
@@ -169,7 +176,7 @@ public class FloatView extends RelativeLayout {
 //        remove(view);
         String type = view.getTag().toString();
         for (FloatViewData viewData : mFloat) {
-            if(viewData.getType().equals(type)) {
+            if (viewData.getType().equals(type)) {
                 mListener.itemClick(viewData);
             }
         }
@@ -181,8 +188,8 @@ public class FloatView extends RelativeLayout {
     }
 
     public void removeAt(String type) {
-        for(View view:mViews) {
-            if(view.getTag().equals(type)) {
+        for (View view : mViews) {
+            if (view.getTag().equals(type)) {
                 mViews.remove(view);
                 animRemoveView(view);
                 break;
@@ -191,9 +198,13 @@ public class FloatView extends RelativeLayout {
         }
     }
 
+    public boolean needRefresh() {
+        return mViews.size() != mFloat.size();
+    }
+
     private void animRemoveView(final View view) {
 //
-        ValueAnimator animator = ValueAnimator.ofFloat(parentHeight,0);
+        ValueAnimator animator = ValueAnimator.ofFloat(parentHeight, 0);
         animator.setDuration(1000);
         animator.setInterpolator(new LinearInterpolator());
 
@@ -202,10 +213,10 @@ public class FloatView extends RelativeLayout {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float Value = (float) animation.getAnimatedValue();
-                Log.d(TAG, "onAnimationUpdate: "+view.getTranslationY());
-                Log.d(TAG, "onAnimationUpdate: "+view.getY());
-                view.setAlpha(Value/parentHeight);
-                view.setTranslationY(view.getY()-(parentHeight-Value));
+                Log.d(TAG, "onAnimationUpdate: " + view.getTranslationY());
+                Log.d(TAG, "onAnimationUpdate: " + view.getY());
+                view.setAlpha(Value / parentHeight);
+                view.setTranslationY(view.getY() - (parentHeight - Value));
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
@@ -217,11 +228,11 @@ public class FloatView extends RelativeLayout {
         animator.start();
     }
 
-    public interface OnItemClickListener{
-        void  itemClick(FloatViewData value);
+    public interface OnItemClickListener {
+        void itemClick(FloatViewData value);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){
+    public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
     }
 

@@ -12,6 +12,8 @@ import com.idea.jgw.ui.BaseAdapter;
 import com.idea.jgw.ui.BaseRecyclerAdapter;
 import com.idea.jgw.utils.common.DateUtils;
 
+import java.math.BigDecimal;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -32,13 +34,13 @@ public class MiningDetailAdapter extends BaseAdapter<MiningCoinData, RecyclerVie
     public void onBind(RecyclerView.ViewHolder viewHolder, int realPosition, MiningCoinData data) {
         int type = data.getType();
         String prefix = "";
-        if(data.getType() == 1) {
+        if (data.getType() == 1) {
             prefix = "+";
-        } else if(type == 2) {
+        } else if (type == 2) {
             prefix = "-";
         }
-        ((DigitalCurrencyListHolder)viewHolder).tvOfMiningNumber.setText(prefix + String.valueOf(data.getNum()));
-        ((DigitalCurrencyListHolder)viewHolder).tvOfMiningTime.setText(DateUtils.longToString(data.getTime() * 1000, DateUtils.DTIME_STYLE1));
+        ((DigitalCurrencyListHolder) viewHolder).tvOfMiningNumber.setText(prefix + new BigDecimal(data.getNum() + "").toString());
+        ((DigitalCurrencyListHolder) viewHolder).tvOfMiningTime.setText(DateUtils.longToString(data.getTime() * 1000, DateUtils.DTIME_STYLE1));
     }
 
     class DigitalCurrencyListHolder extends Holder {

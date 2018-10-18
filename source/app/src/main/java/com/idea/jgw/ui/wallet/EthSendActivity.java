@@ -56,6 +56,9 @@ public class EthSendActivity extends SendActivity {
         tvLight.setText("wei");
 
         ivDigitalLogo.setImageResource(R.mipmap.icon_eth);
+//        etReceivedAddress.setText("0x58970b689e65d2bdef658027346adcd899b1b0e0");
+//        etSendAmount.setText("0.001");
+//        mWalletAddress = "0xd917d23add23a55713b0d5c803de9a8b450e509a";
     }
 
 
@@ -139,6 +142,9 @@ public class EthSendActivity extends SendActivity {
 
         return true;
     }
+//    protected void showPwdInputDialog() {
+//        onPaswordInputFinished("123456");
+//    }
 
     private boolean validAddress(String address) {
         if (!EthWalltUtils.isValidAddress(address)) {
@@ -155,7 +161,7 @@ public class EthSendActivity extends SendActivity {
         if (inputPsd.equals(paymentPwd)) {
             String pwd = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.PREFERENCES_PWD_KEY, "").toString();
             try {
-                EthWalltUtils.sendCoin(EthSendActivity.this, mWalletAddress, etReceivedAddress.getText().toString(), pwd, etSendAmount.getText().toString(), 7000000000L, 0, new TLCallback() {
+                EthWalltUtils.sendCoin(EthSendActivity.this, mWalletAddress, etReceivedAddress.getText().toString(), pwd, etSendAmount.getText().toString(), 7000000000L, 21000, new TLCallback() {
                     @Override
                     public void onSuccess(Object obj) {
 

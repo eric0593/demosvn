@@ -26,6 +26,7 @@ import com.idea.jgw.bean.UserInfo;
 import com.idea.jgw.dialog.ChoosePhotoDialog;
 import com.idea.jgw.dialog.LoadingDialog;
 import com.idea.jgw.ui.BaseActivity;
+import com.idea.jgw.ui.mining.ShareActivity;
 import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.CommonUtils;
@@ -49,6 +50,7 @@ import butterknife.OnClick;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -91,6 +93,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
     UserInfo userInfo;
     private String nickname;
     private String face;
+    private Subscription getInfoSubscription;
 
 
     @Override
@@ -115,12 +118,50 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
         } else {
             face = SharedPreferenceManager.getInstance().getFace();
             nickname = SharedPreferenceManager.getInstance().getNickname();
+            if (TextUtils.isEmpty(face) && TextUtils.isEmpty(nickname)) {
+                getInfo();
+            }
         }
         tvNickname.setText(nickname);
-        if(!TextUtils.isEmpty(face)) {
+        if (!TextUtils.isEmpty(face)) {
             GlideApp.with(this).load(BASE_HOST + face).apply(RequestOptions.circleCropTransform()).placeholder(R.mipmap.icon_default_photo).into(ivPhoto);
         }
         tvPhone.setText(SharedPreferenceManager.getInstance().getPhone());
+    }
+
+    private void getInfo() {
+        String token = SharedPreferenceManager.getInstance().getSession();
+        getInfoSubscription = ServiceApi.getInstance().getApiService()
+                .getinfo(token)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscriber<BaseResponse>(UserInfoActivity.this, getResources().getString(R.string.loading), true) {
+                               @Override
+                               protected void _onNext(BaseResponse baseResponse) {
+                                   if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
+                                       UserInfo userInfo = JSON.parseObject(baseResponse.getData().toString(), UserInfo.class);
+                                       String phone = SharedPreferenceManager.getInstance().getPhone();
+                                       SharedPreferenceManager.getInstance().setInvite_code(userInfo.getInvite_num());
+                                       SharedPreferenceManager.getInstance().setInvite_num(userInfo.getInvite_man_num());
+                                       SharedPreferenceManager.getInstance().setInvite_url(userInfo.getInvite_url());
+                                       SharedPreferenceManager.getInstance().setFace(userInfo.getFace());
+                                       SharedPreferenceManager.getInstance().setNickname(userInfo.getNickname());
+                                       tvNickname.setText(userInfo.getNickname());
+                                       if (!TextUtils.isEmpty(userInfo.getFace())) {
+                                           GlideApp.with(UserInfoActivity.this).load(BASE_HOST + userInfo.getFace()).apply(RequestOptions.circleCropTransform()).placeholder(R.mipmap.icon_default_photo).into(ivPhoto);
+                                       }
+                                   } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                                       reLogin();
+                                   } else {
+                                       MToast.showToast(baseResponse.getData().toString());
+                                   }
+                               }
+
+                               @Override
+                               protected void _onError(String message) {
+                                   MToast.showToast(message);
+                               }
+                           }
+                );
     }
 
     @OnClick({R.id.btn_of_back, R.id.iv_photo, R.id.ll_nickname, R.id.ll_phone})
@@ -146,7 +187,7 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
         Intent intent = new Intent();
         intent.putExtra("nickname", nickname);
         intent.putExtra("face", face);
-        setResult(RESULT_OK,intent);
+        setResult(RESULT_OK, intent);
         super.finish();
     }
 
@@ -236,7 +277,8 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
     }
 
     public void pickPhoto() {
-        userPhotoPath = CommonUtils.openSysPick(this, "userPhotoPath.jpg", OPEN_SYS_ALBUMS_REQUEST);
+        CommonUtils.openSysPick(this, OPEN_SYS_ALBUMS_REQUEST);
+//        userPhotoPath = CommonUtils.cropImageUri(this, "userPhotoPath.jpg", OPEN_SYS_ALBUMS_REQUEST);
         choosePhotoDialog.dismiss();
     }
 
@@ -255,13 +297,14 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
                 case OPEN_SYS_ALBUMS_REQUEST:
                     if (data != null) {
                         userPhotoPath = CommonUtils.getRealPathFromUri(this, data.getData());
-                        updateUserPhoto(userPhotoPath);
+                        userPhotoPath = CommonUtils.cropImageUri(this, userPhotoPath, SYS_CROP_REQUEST);
+//                        updateUserPhoto(userPhotoPath);
                     } else {
                         MToast.showToast("图片损坏，请重新选择");
                     }
                     break;
                 case UPDATE_NICKNAME:
-                    if(data.hasExtra("nickname")) {
+                    if (data.hasExtra("nickname")) {
                         nickname = data.getStringExtra("nickname");
                         tvNickname.setText(nickname);
                     }
@@ -312,8 +355,8 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
                 if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
                     face = baseResponse.getData().toString();
                     if (!UserInfoActivity.this.isDestroyed())
-                    GlideApp.with(UserInfoActivity.this).load(BASE_HOST + face).apply(RequestOptions.circleCropTransform()).placeholder(R.mipmap.icon_default_photo).into(ivPhoto);
-                    if(file.exists()) {
+                        GlideApp.with(UserInfoActivity.this).load(BASE_HOST + face).apply(RequestOptions.circleCropTransform()).placeholder(R.mipmap.icon_default_photo).into(ivPhoto);
+                    if (file.exists()) {
                         file.delete();
                     }
                 } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
@@ -356,6 +399,12 @@ public class UserInfoActivity extends BaseActivity implements ChoosePhotoDialog.
                 GlideApp.with(UserInfoActivity.this).load(userPhotoPath).into((ImageView) view);
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unSubscribe(getInfoSubscription);
     }
 
 }

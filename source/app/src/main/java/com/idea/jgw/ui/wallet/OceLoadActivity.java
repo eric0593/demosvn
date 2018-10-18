@@ -23,7 +23,9 @@ public class OceLoadActivity extends BaseActivity {
     EditText etPrivateKey;
     EditText etPublicKey;
     Button btnLoad;
+    Button btn_role;
     String maijia = "phenix3LvG3Ka7JQHQzXJhvcEdkCjnY5gurcNX5P";
+    String maijia2 = "phenix3Q3J9eN44DKv6eeBH3Z9wf9n74G5hwTVS3";  //买家地址
 
     @Override
     public int getLayoutId() {
@@ -36,7 +38,21 @@ public class OceLoadActivity extends BaseActivity {
         etPrivateKey = findViewById(R.id.et_privateKey);
         etPublicKey = findViewById(R.id.et_publicKey);
         btnLoad = findViewById(R.id.btn_load);
+        btn_role = findViewById(R.id.btn_role);
         etAddrss.setText(maijia);
+
+        btn_role.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(btn_role.getText().toString().trim().equals(getString(R.string.merchants))) {
+                    btn_role.setText(R.string.customer);
+                    etAddrss.setText(maijia2);
+                } else {
+                    btn_role.setText(R.string.merchants);
+                    etAddrss.setText(maijia);
+                }
+            }
+        });
 
         btnLoad.setOnClickListener(new View.OnClickListener() {
             @Override

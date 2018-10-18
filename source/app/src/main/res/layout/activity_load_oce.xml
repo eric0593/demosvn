@@ -74,6 +74,12 @@
             android:hint="公钥" />
 
         <Button
+            android:id="@+id/btn_role"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/merchants" />
+
+        <Button
             android:id="@+id/btn_load"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

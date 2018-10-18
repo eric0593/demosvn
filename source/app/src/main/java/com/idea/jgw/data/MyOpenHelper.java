@@ -489,28 +489,29 @@ public class MyOpenHelper extends SQLiteOpenHelper implements IOpenHelper {
      * @param table
      */
     private void createTableIfNotExists(Class table) {
-        if (!isTableExists(table)) {
-            SQLiteDatabase db = getWritableDatabase();
-            StringBuilder builder = new StringBuilder();
-            builder.append("CREATE TABLE IF NOT EXISTS ");
-            builder.append(table.getName().replaceAll("\\.", "_"));
-            builder.append(" (");
-            Field id = getFieldId(table);
-            if (id == null) {
-                builder.append("_id Integer PRIMARY KEY AUTOINCREMENT,");
-            } else {
-                builder.append(id.getName()).append("  PRIMARY KEY, ");
-            }
-            for (Field field : table.getDeclaredFields()) {
-                int modifiers = field.getModifiers();
-                if (!field.equals(id) && !Modifier.isStatic(modifiers)) {
-                    builder.append(field.getName()).append(",");
-                }
-            }
-            builder.deleteCharAt(builder.length() - 1);
-            builder.append(")");
-            db.execSQL(builder.toString());
-        }
+        createTableIfNotExists(table.getName().replaceAll("\\.", "_"), table);
+//        if (!isTableExists(table)) {
+//            SQLiteDatabase db = getWritableDatabase();
+//            StringBuilder builder = new StringBuilder();
+//            builder.append("CREATE TABLE IF NOT EXISTS ");
+//            builder.append(table.getName().replaceAll("\\.", "_"));
+//            builder.append(" (");
+//            Field id = getFieldId(table);
+//            if (id == null) {
+//                builder.append("_id Integer PRIMARY KEY AUTOINCREMENT,");
+//            } else {
+//                builder.append(id.getName()).append("  PRIMARY KEY, ");
+//            }
+//            for (Field field : table.getDeclaredFields()) {
+//                int modifiers = field.getModifiers();
+//                if (!field.equals(id) && !Modifier.isStatic(modifiers)) {
+//                    builder.append(field.getName()).append(" TEXT").append(",");
+//                }
+//            }
+//            builder.deleteCharAt(builder.length() - 1);
+//            builder.append(")");
+//            db.execSQL(builder.toString());
+//        }
     }
 
     /**
@@ -533,7 +534,7 @@ public class MyOpenHelper extends SQLiteOpenHelper implements IOpenHelper {
             for (Field field : table.getDeclaredFields()) {
                 int modifiers = field.getModifiers();
                 if (!field.equals(id) && !Modifier.isStatic(modifiers)) {
-                    builder.append(field.getName()).append(",");
+                    builder.append(field.getName()).append(" TEXT").append(",");
                 }
             }
             builder.deleteCharAt(builder.length() - 1);
@@ -551,11 +552,15 @@ public class MyOpenHelper extends SQLiteOpenHelper implements IOpenHelper {
         Field fieldId = null;
         try {
             fieldId = table.getDeclaredField("id");
-            if (fieldId == null) {
-                table.getDeclaredField("_id");
-            }
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
+        }
+        if (fieldId == null) {
+            try {
+                fieldId = table.getDeclaredField("_id");
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
         }
         return fieldId;
     }

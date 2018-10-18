@@ -30,7 +30,7 @@ public class App extends Application {
     public static Stack<Activity> activityStack;//App所有页面堆栈
 
     //开关类
-    public static boolean debug = false;  //是否测试
+    public static boolean debug = true;  //是否测试
     public static String APP_KEY = "1ac3660a73e00";
     public static String APP_SECRET = "28051a43a5283acea68e0e13b0b4e76c";
 
@@ -39,6 +39,8 @@ public class App extends Application {
     public static boolean login = false;
     //测试IP
     public static boolean testIP = true;
+    //功能测试
+    public static boolean test = false;
     //钱包测试
     public static boolean isWalletDebug = false;
 
@@ -63,7 +65,7 @@ public class App extends Application {
         if (debug) {           // 这两行必须写在init之前，否则这些配置在init过程中将无效
             ARouter.openLog();     // 打印日志
             ARouter.openDebug();   // 开启调试模式(如果在InstantRun模式下运行，必须开启调试模式！线上版本需要关闭,否则有安全风险)
-            initLeakcanary(this);
+//            initLeakcanary(this);
         }
         ARouter.init(this); // 尽可能早，推荐在Application中初始化
     }

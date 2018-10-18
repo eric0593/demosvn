@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -88,7 +89,7 @@ public class EthBalanceActivity extends BalanceActivity {
 
         String balance = getIntent().getStringExtra(EXTRA_AMOUNT);
         if (!TextUtils.isEmpty(balance))
-            tvOfUsableBalanceValue.setText(balance);
+            tvOfUsableBalanceValue.setText(getBigDecimalText(new BigDecimal(balance)));
 
         String ethAddress = SPreferencesHelper.getInstance(App.getInstance()).getData(Common.Eth.PREFERENCES_ADDRESS_KEY, "").toString();
         //钱包为空
@@ -149,7 +150,7 @@ public class EthBalanceActivity extends BalanceActivity {
 
                         mCurAvailable = amount;
 
-                        tvOfUsableBalanceValue.setText(String.valueOf(amount.doubleValue()));
+                        tvOfUsableBalanceValue.setText(getBigDecimalText(amount));
                     }
 
                     @Override
@@ -289,6 +290,7 @@ public class EthBalanceActivity extends BalanceActivity {
                         public void onResponse(Call call, Response response) throws IOException {
                             String restring = response.body().string();
                             MyLog.e("response--->>" + restring);
+                            System.out.println("response--->>" + restring);
                             if (restring != null && restring.length() > 2)
                                 RequestCache.getInstance().put(RequestCache.TYPE_TXS_NORMAL, currentWallet.getPubKey(), restring);
                             final ArrayList<TransactionDisplay> w = new ArrayList<TransactionDisplay>(ResponseParser.parseTransactions(restring, "Unnamed Address", currentWallet.getPubKey(), TransactionDisplay.NORMAL));
