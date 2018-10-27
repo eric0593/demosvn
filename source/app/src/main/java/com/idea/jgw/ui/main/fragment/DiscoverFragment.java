@@ -2,8 +2,11 @@ package com.idea.jgw.ui.main.fragment;
 
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +17,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -22,19 +26,16 @@ import com.idea.jgw.App;
 import com.idea.jgw.R;
 import com.idea.jgw.RouterPath;
 import com.idea.jgw.api.retrofit.ServiceApi;
+import com.idea.jgw.bean.AllMiningData;
 import com.idea.jgw.bean.BaseResponse;
 import com.idea.jgw.bean.CoinMining;
-import com.idea.jgw.bean.AllMiningData;
 import com.idea.jgw.ui.BaseAdapter;
 import com.idea.jgw.ui.BaseFragment;
-import com.idea.jgw.ui.BaseRecyclerAdapter;
 import com.idea.jgw.ui.main.adapter.MiningAdapter;
-import com.idea.jgw.utils.SPreferencesHelper;
 import com.idea.jgw.utils.baserx.RxSubscriber;
 import com.idea.jgw.utils.common.CommonUtils;
 import com.idea.jgw.utils.common.MToast;
 import com.idea.jgw.utils.common.MyLog;
-import com.idea.jgw.utils.common.ShareKey;
 import com.idea.jgw.utils.common.SharedPreferenceManager;
 import com.idea.jgw.view.FloatView;
 
@@ -79,6 +80,8 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
     RecyclerView rvOfDetailAsset;
     @BindView(R.id.fv_of_mining)
     FloatView fvOfMining;
+    @BindView(R.id.iv_of_content_bg)
+    ImageView ivOfContentBg;
 
     private Subscription miningSubscription;
     private Subscription receiveMiningSubscription;
@@ -91,13 +94,7 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
         miningAdapter = new MiningAdapter(getActivity());
 //        miningAdapter.addDatas(getTestDatas(3));
         miningAdapter.setOnItemClickListener(this);
-        intervalSubscription = Observable.interval( 30, 30, TimeUnit.SECONDS)
-                .filter(new Func1<Long, Boolean>() {
-                    @Override
-                    public Boolean call(Long aLong) {
-                        return DiscoverFragment.this.isResumed() && fvOfMining.needRefresh();
-                    }
-                })
+        intervalSubscription = Observable.interval(30, 30, TimeUnit.SECONDS)
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
@@ -140,7 +137,7 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
     }
 
     @Override
-    public void showPhoneStateExplain(Intent intent){
+    public void showPhoneStateExplain(Intent intent) {
         showExplain(intent, getString(R.string.why_need_phone_state2));
     }
 
@@ -168,13 +165,13 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
                                        miningAdapter.replaceDatas(coinMinings);
 
                                        List<FloatView.FloatViewData> list = new ArrayList<>();
-                                       for(CoinMining coinMining : coinMinings) {
-                                           if(coinMining.getReceive_profit() > 0) {
+                                       for (CoinMining coinMining : coinMinings) {
+                                           if (coinMining.getReceive_profit() > 0) {
                                                FloatView.FloatViewData data = new FloatView.FloatViewData();
-                                               if(App.testIP) {
+                                               if (App.testIP) {
                                                    data.setType(coinMining.getCoin_info().getCharX());
                                                } else {
-                                                   data.setType(coinMining.getCoin_info().getId()+ "");
+                                                   data.setType(coinMining.getCoin_info().getId() + "");
                                                }
                                                data.setValue(coinMining.getReceive_profit());
                                                data.setUrl(coinMining.getCoin_info().getFace());
@@ -182,7 +179,7 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
                                            }
                                        }
                                        fvOfMining.setList(list);
-                                   } else if(baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
+                                   } else if (baseResponse.getCode() == BaseResponse.INVALID_SESSION) {
                                        reLogin();
                                        MToast.showToast(baseResponse.getData().toString());
                                    } else {
@@ -208,8 +205,8 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
                                protected void _onNext(BaseResponse baseResponse) {
                                    if (baseResponse.getCode() == BaseResponse.RESULT_OK) {
                                        fvOfMining.removeAt(type);
-                                       for(CoinMining coinMining : miningAdapter.getmDatas()) {
-                                           if(coinMining.getCoin_info().getCharX().equals(type)) {
+                                       for (CoinMining coinMining : miningAdapter.getmDatas()) {
+                                           if (coinMining.getCoin_info().getCharX().equals(type)) {
                                                double profit = coinMining.getBalance() + value;
                                                coinMining.setBalance(profit);
                                                break;
@@ -244,7 +241,7 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
     @Override
     public void onItemClick(int position, CoinMining data) {
         String coinType = data.getCoin_info().getCharX();
-        if(!App.testIP) {
+        if (!App.testIP) {
             coinType = data.getCoin_info().getId() + "";
         }
         String coinLogo = data.getCoin_info().getFace();
@@ -255,7 +252,12 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
     @Override
     public void onResume() {
         super.onResume();
-        initMediaPlayer();
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                initMediaPlayer();
+//            }
+//        }, 1000);
     }
 
     private void initSurfaceView() {
@@ -282,13 +284,22 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
     }
 
     boolean loopVideo;
+    Bitmap bitmap;
 
     private void initMediaPlayer() {
 
         try {
+            ivOfContentBg.setVisibility(View.VISIBLE);
             mMediaPlayer = new MediaPlayer();
             mMediaPlayer.reset();//初始化
             AssetFileDescriptor afd = getActivity().getAssets().openFd("video1.mp4");//获取视频资源
+            if(bitmap == null || bitmap.isRecycled()) {
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                retriever.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                bitmap = retriever.getFrameAtTime(1, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+                retriever.release();
+            }
+            ivOfContentBg.setImageBitmap(bitmap);
             mMediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             mMediaPlayer.setDisplay(svOfContent.getHolder());
             mMediaPlayer.prepareAsync();
@@ -296,6 +307,16 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
             mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
+                    mMediaPlayer.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+                        @Override
+                        public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                            if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                                svOfContent.setVisibility(View.VISIBLE);
+                                ivOfContentBg.setVisibility(View.GONE);
+                            }
+                            return true;
+                        }
+                    });
                     mMediaPlayer.start();
                 }
             });
@@ -324,6 +345,9 @@ public class DiscoverFragment extends BaseFragment implements BaseAdapter.OnItem
         unSubscribe(miningSubscription);
         unSubscribe(receiveMiningSubscription);
         unSubscribe(intervalSubscription);
+        if(bitmap != null && !bitmap.isRecycled()) {
+            bitmap.recycle();
+        }
     }
 
 //    public void unSubscribe(Subscription subscription) {

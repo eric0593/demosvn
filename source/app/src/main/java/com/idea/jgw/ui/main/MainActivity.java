@@ -1,6 +1,8 @@
 package com.idea.jgw.ui.main;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -67,6 +69,9 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     public static final int CAMERA_CODE = 678;
     public static final int CHANGE_WIFI_STATE_CODE = 789;
     public static final int READ_LOGS_CDOE = 890;
+    static final String MINE_FRAGMENT_TAG = "mine";
+    static final String WALLET_FRAGMENT_TAG = "wallet";
+    static final String DISCOVER_FRAGMENT_TAG = "discover";
 
 
     @BindView(R.id.home_container)
@@ -110,31 +115,72 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         walletFragment = new WalletFragment();
         discoverFragment = new DiscoverFragment();
         mineFragment = new MineFragment();
-        currentFragment = walletFragment;
+//        currentFragment = discoverFragment;
 
         radioGroupButton.setOnCheckedChangeListener(this);
-        rbOfWallet.setChecked(true);
+        rbOfDiscovery.setChecked(true);
+//        radioGroupButton.check(R.id.btn_of_discovery);
+//        showFragment(DISCOVER_FRAGMENT_TAG);
     }
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             case R.id.btn_of_wallet:
-                currentFragment = walletFragment;
-                rbOfWallet.setSelected(true);
-                getFragmentManager().beginTransaction().replace(R.id.home_container, currentFragment).commit();
+                showFragment(WALLET_FRAGMENT_TAG);
+//                currentFragment = walletFragment;
+//                rbOfWallet.setSelected(true);
+//                getFragmentManager().beginTransaction().replace(R.id.home_container, currentFragment).commit();
                 break;
             case R.id.btn_of_discovery:
-                currentFragment = discoverFragment;
-                rbOfDiscovery.setSelected(true);
-                getFragmentManager().beginTransaction().replace(R.id.home_container, currentFragment).commit();
+                showFragment(DISCOVER_FRAGMENT_TAG);
+//                currentFragment = discoverFragment;
+//                rbOfDiscovery.setSelected(true);
+//                getFragmentManager().beginTransaction().replace(R.id.home_container, currentFragment).commit();
                 break;
             case R.id.rb_of_mine:
-                currentFragment = mineFragment;
-                rbOfMine.setSelected(true);
-                getFragmentManager().beginTransaction().replace(R.id.home_container, currentFragment).commit();
+                showFragment(MINE_FRAGMENT_TAG);
+//                currentFragment = mineFragment;
+//                rbOfMine.setSelected(true);
+//                getFragmentManager().beginTransaction().replace(R.id.home_container, currentFragment).commit();
                 break;
         }
+    }
+
+    private void showFragment(String tag) {
+        FragmentManager manager = getFragmentManager();
+        Fragment fragment = manager.findFragmentByTag(tag);
+        FragmentTransaction transaction = manager.beginTransaction();
+        if (currentFragment != null) {
+            transaction.hide(currentFragment);
+        }
+        if (fragment == null) {
+            if (tag.equals(WALLET_FRAGMENT_TAG)) {
+                fragment = walletFragment;
+//                rbOfWallet.setChecked(true);
+            } else if (tag.equals(DISCOVER_FRAGMENT_TAG)) {
+                fragment = discoverFragment;
+//                rbOfDiscovery.setChecked(true);
+            } else if (tag.equals(MINE_FRAGMENT_TAG)) {
+                fragment = mineFragment;
+//                rbOfMine.setChecked(true);
+            }
+            transaction.add(R.id.home_container, fragment, tag).commit();
+        } else {
+//            if (tag.equals(CLASSIFY_FRAGMENT_TAG)) {
+//                btnOfClassify.setSelected(true);
+//            } else if (tag.equals(RANKING_FRAGMENT_TAG)) {
+//                btnOfRanking.setSelected(true);
+//            } else if (tag.equals(ALERT_FRAGMENT_TAG)) {
+//                btnOfAlert.setSelected(true);
+//            } else if (tag.equals(MINE_FRAGMENT_TAG)) {
+//                rbOfUser.setSelected(true);
+//            } else {
+//                btnOfHome.setSelected(true);
+//            }
+            transaction.show(fragment).commit();
+        }
+        currentFragment = fragment;
     }
 
     @Override
